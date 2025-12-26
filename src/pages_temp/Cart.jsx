@@ -15,31 +15,44 @@ export default function Cart({ cart, setCart }) {
   };
 
   const checkout = async () => {
-    const res = await fetch("/api/create-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantity: cart.quantity }),
-    });
+    try {
+      // 1. Call backend to create order
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/create-order`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ quantity: cart.quantity }),
+        }
+      );
 
-    const order = await res.json();
+      const order = await res.json();
+      console.log("Order received:", order);
 
-    const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: order.amount,
-      currency: "INR",
-      name: "Ventire",
-      description: "Ventire Air Purifier",
-      order_id: order.id,
-      handler: function (response) {
-        navigate(`/success?pid=${response.razorpay_payment_id}`);
-      },
-      modal: {
-        ondismiss: () => navigate("/failure"),
-      },
-      theme: { color: "#16a34a" },
-    };
+      // 2. Razorpay options
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: "INR",
+        name: "Ventire",
+        description: "Ventire Air Purifier",
+        order_id: order.id,
+        handler: function (response) {
+          navigate(`/success?pid=${response.razorpay_payment_id}`);
+        },
+        modal: {
+          ondismiss: () => navigate("/failure"),
+        },
+        theme: { color: "#16a34a" },
+      };
 
-    new window.Razorpay(options).open();
+      // 3. Open Razorpay
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.error("Payment error:", err);
+      alert("Payment failed. Try again.");
+    }
   };
 
   if (cart.quantity === 0) {

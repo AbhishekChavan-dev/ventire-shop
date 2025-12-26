@@ -414,31 +414,53 @@ const ProductShowcase = ({ cart, setCart }) => {
 
   ];
 
-  const handlePayment = async () => {
-    const res = await fetch("/api/create-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantity }),
-    });
+  const buyNow = async () => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/create-order`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ quantity }),
+        }
+      );
 
-    const order = await res.json();
+      const order = await res.json();
 
-    const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: order.amount,
-      currency: "INR",
-      name: "Ventire",
-      description: "Ventire Air Purifier",
-      order_id: order.id,
-      handler: function (response) {
-        window.location.href = `/success?payment_id=${response.razorpay_payment_id}`;
-      },
-      theme: { color: "#16a34a" },
-    };
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: "INR",
+        name: "Ventire",
+        description: "Ventire Air Purifier",
+        order_id: order.id,
 
-    const rzp = new window.Razorpay(options);
-    rzp.open();
+        // ✅ SUCCESS
+        handler: function (response) {
+          console.log("Payment success:", response);
+          window.location.href =
+            `/success?pid=${response.razorpay_payment_id}`;
+        },
+
+        // ❌ FAILURE / CANCEL
+        modal: {
+          ondismiss: function () {
+            console.log("Payment cancelled");
+            window.location.href = "/failure";
+          },
+        },
+
+        theme: { color: "#16a34a" },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.error("Buy Now error:", err);
+      alert("Unable to start payment. Try again.");
+    }
   };
+
 
   const addToCart = () => {
     setCart({
@@ -603,7 +625,7 @@ const ProductShowcase = ({ cart, setCart }) => {
 
               {/* Buy Now */}
               <button
-                onClick={handlePayment}
+                onClick={buyNow}
                 className="flex-1 bg-green-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-green-700 transition"
               >
                 Buy Now ₹{totalAmount}
