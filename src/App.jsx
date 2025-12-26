@@ -436,7 +436,6 @@ const ProductShowcase = ({ cart, setCart }) => {
 
         // ✅ SUCCESS
         handler: function (response) {
-          console.log("Payment success:", response);
           window.location.href =
             `/success?pid=${response.razorpay_payment_id}`;
         },
@@ -444,7 +443,6 @@ const ProductShowcase = ({ cart, setCart }) => {
         // ❌ FAILURE / CANCEL
         modal: {
           ondismiss: function () {
-            console.log("Payment cancelled");
             window.location.href = "/failure";
           },
         },
