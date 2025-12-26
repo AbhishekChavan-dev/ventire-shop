@@ -155,11 +155,11 @@ const Navbar = ({ cart }) => {
                 className="h-10 w-absolute"
               />
             </div>
-              <span className="text-2xl font-extrabold tracking-wide
+            <span className="text-2xl font-extrabold tracking-wide
                     bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500
                     text-transparent bg-clip-text">
-                Ventire
-              </span>
+              Ventire
+            </span>
           </div>
 
 
@@ -461,13 +461,18 @@ const ProductShowcase = ({ cart, setCart }) => {
               </div>
 
               <img
-
                 src={productImages[0]}
-
                 alt="Ventire Air Purifier"
-
-                className="w-full h-[500px] object-cover object-center transform hover:scale-105 transition-transform duration-700"
-
+                className="
+                           w-full 
+                           h-auto 
+                           md:h-[500px] 
+                           object-contain 
+                           md:object-cover 
+                           object-center 
+                           transition-transform 
+                           duration-700
+                           "
               />
 
               <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-lg text-xs text-gray-500 border border-gray-200">
