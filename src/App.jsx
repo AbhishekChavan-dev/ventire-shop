@@ -237,7 +237,31 @@ const Navbar = ({ cart }) => {
         <div className="md:hidden bg-white border-t border-gray-100 absolute w-full">
 
           <div className="px-4 pt-2 pb-6 space-y-2 shadow-lg">
+  {isCartPage ? (
+    <Link
+      to="/"
+      onClick={() => setIsOpen(false)}
+      className="block px-4 py-3 text-center bg-green-600 text-white rounded-lg font-semibold"
+    >
+      ← Back to Home
+    </Link>
+  ) : (
+    <>
+      <a href="#home" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Home</a>
+      <a href="#features" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Technology</a>
+      <a href="#product" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Shop</a>
 
+      <Link
+        to="/cart"
+        onClick={() => setIsOpen(false)}
+        className="block mt-4 bg-green-600 text-white px-5 py-3 rounded-lg text-center"
+      >
+        Cart ({cart.quantity})
+      </Link>
+    </>
+  )}
+</div>
+            {/*}
             <a href="#home" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Home</a>
 
             <a href="#features" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Technology</a>
@@ -254,9 +278,7 @@ const Navbar = ({ cart }) => {
               className="bg-green-600 text-white px-5 py-2 rounded-full hover:bg-green-700 transition-all shadow-lg shadow-green-200"
             >
               Cart ({cart.quantity})
-            </Link>
-
-          </div>
+            </Link>*/}
 
         </div>
 
