@@ -237,7 +237,7 @@ const Navbar = ({ cart }) => {
         <div className="md:hidden bg-white border-t border-gray-100 absolute w-full">
 
           <div className="px-4 pt-2 pb-6 space-y-2 shadow-lg">
-  {isCartPage ? (
+  {isCartPage && (
     <Link
       to="/"
       onClick={() => setIsOpen(false)}
@@ -245,7 +245,7 @@ const Navbar = ({ cart }) => {
     >
       ← Back to Home
     </Link>
-  ) : (
+  )} {!isCartPage && (
     <>
       <a href="#home" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Home</a>
       <a href="#features" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Technology</a>
