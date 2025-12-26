@@ -156,7 +156,7 @@ const Navbar = ({ cart }) => {
 
 
           <div className="hidden md:flex items-center space-x-8">
-             {/* SHOW ONLY ON HOME */}
+            {/* SHOW ONLY ON HOME */}
             {!isCartPage && (
               <>
                 <a href="#home" className="text-gray-600 hover:text-green-600">Home</a>
@@ -237,31 +237,31 @@ const Navbar = ({ cart }) => {
         <div className="md:hidden bg-white border-t border-gray-100 absolute w-full">
 
           <div className="px-4 pt-2 pb-6 space-y-2 shadow-lg">
-  {isCartPage && (
-    <Link
-      to="/"
-      onClick={() => setIsOpen(false)}
-      className="block px-4 py-3 text-center bg-green-600 text-white rounded-lg font-semibold"
-    >
-      ← Back to Home
-    </Link>
-  )} {!isCartPage && (
-    <>
-      <a href="#home" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Home</a>
-      <a href="#features" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Technology</a>
-      <a href="#product" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Shop</a>
+            {isCartPage && (
+              <Link
+                to="/"
+                onClick={() => setIsOpen(false)}
+                className="block px-4 py-3 text-center bg-green-600 text-white rounded-lg font-semibold"
+              >
+                ← Back to Home
+              </Link>
+            )} {!isCartPage && (
+              <>
+                <a href="#home" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Home</a>
+                <a href="#features" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Technology</a>
+                <a href="#product" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Shop</a>
 
-      <Link
-        to="/cart"
-        onClick={() => setIsOpen(false)}
-        className="block mt-4 bg-green-600 text-white px-5 py-3 rounded-lg text-center"
-      >
-        Cart ({cart.quantity})
-      </Link>
-    </>
-  )}
-</div>
-            {/*}
+                <Link
+                  to="/cart"
+                  onClick={() => setIsOpen(false)}
+                  className="block mt-4 bg-green-600 text-white px-5 py-3 rounded-lg text-center"
+                >
+                  Cart ({cart.quantity})
+                </Link>
+              </>
+            )}
+          </div>
+          {/*}
             <a href="#home" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Home</a>
 
             <a href="#features" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Technology</a>
@@ -286,7 +286,8 @@ const Navbar = ({ cart }) => {
 
     </nav>
 
-  )};
+  )
+};
 
 
 // 3. Hero Section
@@ -369,7 +370,7 @@ const ProductShowcase = ({ cart, setCart }) => {
 
   // ✅ QUANTITY STATE
   const [quantity, setQuantity] = useState(1);
-
+  const [addedMsg, setAddedMsg] = useState(false)
   const PRICE = 2499;
   const totalAmount = PRICE * quantity;
   const mrp = 3499;
@@ -419,6 +420,9 @@ const ProductShowcase = ({ cart, setCart }) => {
     setCart({
       quantity: cart.quantity + quantity,
     });
+
+    setAddedMsg(true);
+    setTimeout(() => setAddedMsg(false), 2000);
   };
 
   return (
@@ -555,7 +559,11 @@ const ProductShowcase = ({ cart, setCart }) => {
 
             </div> */}
             <div className="flex items-center space-x-4">
-
+              {addedMsg && (
+                <div className="fixed bottom-6 right-6 bg-green-600 text-white px-5 py-3 rounded-lg shadow-lg z-50">
+                  ✅ Added to cart
+                </div>
+              )}
               {/* Add to Cart */}
               <button
                 onClick={addToCart}
