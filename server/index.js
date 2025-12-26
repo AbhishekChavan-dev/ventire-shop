@@ -46,3 +46,8 @@ app.post("/create-order", async (req, res) => {
     res.status(500).json({ error: "Order creation failed" });
   }
 });
+{/*const PORT = 5000;
+
+app.listen(PORT, () => {
+  console.log(`✅ Backend running on http://localhost:${PORT}`);
+});*/}
