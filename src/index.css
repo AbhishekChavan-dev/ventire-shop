@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Wind animation */
+@keyframes float-wind {
+  0% {
+    transform: translateX(-10vw) translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(110vw) translateY(-50px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.animate-float-wind {
+  animation: float-wind linear infinite;
+}
