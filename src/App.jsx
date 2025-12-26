@@ -143,14 +143,23 @@ const Navbar = ({ cart }) => {
 
           <div className="flex items-center space-x-2">
 
-            <div className="bg-green-100 p-2 rounded-full">
+            {/*<div className="bg-green-100 p-2 rounded-full">
 
               <Wind className="h-6 w-6 text-green-600" />
 
+            </div>*/}
+            <div className="flex items-center space-x-3">
+              <img
+                src="/Ventire-logo.png"
+                alt="Ventire Logo"
+                className="h-10 w-absolute"
+              />
             </div>
-
-            <span className="text-2xl font-bold text-gray-800 tracking-tight">Ventire</span>
-
+              <span className="text-2xl font-extrabold tracking-wide
+                    bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500
+                    text-transparent bg-clip-text">
+                Ventire
+              </span>
           </div>
 
 
