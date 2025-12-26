@@ -17,13 +17,11 @@ export default function Cart({ cart, setCart }) {
   const checkout = async () => {
     try {
       // 1. Call backend to create order
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/create-order`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ quantity: cart.quantity }),
-        }
+      const res = await fetch("/api/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity: cart.quantity }),
+      }
       );
 
       const order = await res.json();

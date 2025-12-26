@@ -417,12 +417,11 @@ const ProductShowcase = ({ cart, setCart }) => {
   const buyNow = async () => {
     const API_URL = import.meta.env.VITE_API_URL;
     try {
-      const res = await fetch(`${API_URL}/create-order`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ quantity }),
-        }
+      const res = await fetch("/api/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity }),
+      }
       );
 
       const order = await res.json();
