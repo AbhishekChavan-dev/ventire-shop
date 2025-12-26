@@ -4,7 +4,9 @@ const PRICE = 2499;
 
 export default function Cart({ cart, setCart }) {
   const navigate = useNavigate();
-
+  const removeItem = () => {
+    setCart({ quantity: 0 });
+  };
   const totalAmount = cart.quantity * PRICE;
 
   const updateQuantity = (qty) => {
@@ -63,7 +65,13 @@ export default function Cart({ cart, setCart }) {
           <span>{cart.quantity}</span>
           <button onClick={() => updateQuantity(cart.quantity + 1)}>+</button>
         </div>
-
+        {/* REMOVE ITEM */}
+        <button
+          onClick={removeItem}
+          className="ml-auto text-red-600 hover:text-red-800 font-semibold"
+        >
+          Remove
+        </button>
         <button
           onClick={checkout}
           className="w-full mt-6 bg-green-600 text-white py-3 rounded-lg"
