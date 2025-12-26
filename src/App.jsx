@@ -223,7 +223,7 @@ const Navbar = ({ cart }) => {
 
 
 
-          <div className="md:hidden">
+          {/*<div className="md:hidden">
 
             <button onClick={() => setIsOpen(!isOpen)} className="text-gray-600 p-2">
 
@@ -231,8 +231,23 @@ const Navbar = ({ cart }) => {
 
             </button>
 
-          </div>
+          </div>*/}
+          <div className="md:hidden flex items-center gap-4">
+            {/* Mobile Cart Button */}
+            <Link to="/cart" className="relative">
+              <ShoppingBag size={24} className="text-green-600" />
+              {cart.quantity > 0 && (
+                <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                  {cart.quantity}
+                </span>
+              )}
+            </Link>
 
+            {/* Mobile Menu Button */}
+            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-600 p-2">
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
       </div>
