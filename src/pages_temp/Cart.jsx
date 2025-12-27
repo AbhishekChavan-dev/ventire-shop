@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { Beaker } from "lucide-react";
 const PRICE = 2499;
 
@@ -25,8 +25,7 @@ export default function Cart({ cart, setCart }) {
       // 1. Call backend to create order
       const res = await fetch("/api/create-order", {
         method: "POST",
-        headers: { "Content-Type": "application/json",
-                    Authorization: Bearer ( user )  },
+        headers: { "Content-Type": "application/json", },
         body: JSON.stringify({ quantity: cart.quantity }),
       }
       );
