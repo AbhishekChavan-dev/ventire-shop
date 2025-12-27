@@ -4,8 +4,12 @@ import { Beaker } from "lucide-react";
 const PRICE = 2499;
 
 export default function Cart({ cart, setCart }) {
-  const navigate = useNavigate();
-  const { user } = useAuth(); 
+  const { user } = useAuth();
+  const navigate = useNavigate(); 
+  if ( !user ) {
+        navigate("/login");
+        return;
+      }
   const removeItem = () => {
     setCart({ quantity: 0 });
   };
@@ -18,10 +22,7 @@ export default function Cart({ cart, setCart }) {
 
   const checkout = async () => {
     try {
-      if ( !user ) {
-        navigate("/login");
-        return;
-      }
+      
       // 1. Call backend to create order
       const res = await fetch("/api/create-order", {
         method: "POST",
