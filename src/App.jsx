@@ -6,8 +6,8 @@ import Failure from "./pages_temp/Failure";
 import React, { useState, useEffect } from 'react';
 
 import { ShoppingBag, Wind, Leaf, ShieldCheck, Zap, Droplets, Menu, X, ArrowRight, Star, Check } from 'lucide-react';
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import Login from "./pages_temp/Login";
+import Signup from "./pages_temp/Signup";
 
 <><Route path="/login" element={<Login />} /><Route path="/signup" element={<Signup />} /></>
 
