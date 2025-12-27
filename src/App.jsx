@@ -2,13 +2,20 @@ import { Routes, Route, Link, useNavigate, useLocation } from "react-router-dom"
 import Cart from "./pages_temp/Cart";
 import Success from "./pages_temp/Success";
 import Failure from "./pages_temp/Failure";
+
 import React, { useState, useEffect } from 'react';
 
 import { ShoppingBag, Wind, Leaf, ShieldCheck, Zap, Droplets, Menu, X, ArrowRight, Star, Check } from 'lucide-react';
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
+<><Route path="/login" element={<Login />} /><Route path="/signup" element={<Signup />} /></>
 
 // --- Components ---
-
+const [user, setUser] = useState(() => {
+  const saved = localStorage.getItem("ventire_user");
+  return saved ? JSON.parse(saved) : null;
+});
 
 
 // 1. Wind & Leaf Animation Component
@@ -165,6 +172,22 @@ const Navbar = ({ cart }) => {
 
 
           <div className="hidden md:flex items-center space-x-8">
+            {user ? (
+              <button
+                onClick={() => {
+                  localStorage.clear();
+                  window.location.href = "/";
+                }}
+                className="text-red-600"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link to="/login" className="text-green-600">
+                Login
+              </Link>
+            )}
+
             {/* SHOW ONLY ON HOME */}
             {!isCartPage && (
               <>
@@ -261,6 +284,22 @@ const Navbar = ({ cart }) => {
         <div className="md:hidden bg-white border-t border-gray-100 absolute w-full">
 
           <div className="px-4 pt-2 pb-6 space-y-2 shadow-lg">
+            {user ? (
+              <button
+                onClick={() => {
+                  localStorage.clear();
+                  window.location.href = "/";
+                }}
+                className="text-red-600"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link to="/login" className="text-green-600">
+                Login
+              </Link>
+            )}
+
             {isCartPage && (
               <Link
                 to="/"
@@ -459,9 +498,27 @@ const ProductShowcase = ({ cart, setCart }) => {
   };
 
 
-  const addToCart = () => {
+  {/*} const addToCart = () => {
     setCart({
       quantity: cart.quantity + quantity,
+    });
+
+    setAddedMsg(true);
+    setTimeout(() => setAddedMsg(false), 2000);
+  };*/}
+  const addToCart = async () => {
+    if (!localStorage.getItem("token")) {
+      alert("Please login first");
+      return;
+    }
+
+    await fetch("/api/cart", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ quantity }),
     });
 
     setAddedMsg(true);
@@ -957,6 +1014,9 @@ const App = () => {
 
         <Route path="/success" element={<Success />} />
         <Route path="/failure" element={<Failure />} />
+        <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route path="/signup" element={<Signup />} />
+
       </Routes>
 
       <Footer />

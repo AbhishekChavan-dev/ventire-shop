@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "../context/AuthContext";
 const PRICE = 2499;
 
 export default function Cart({ cart, setCart }) {
   const navigate = useNavigate();
+  const { user } = useAuth(); 
   const removeItem = () => {
     setCart({ quantity: 0 });
   };
@@ -16,10 +17,15 @@ export default function Cart({ cart, setCart }) {
 
   const checkout = async () => {
     try {
+      if ( !user ) {
+        navigate("/login");
+        return;
+      }
       // 1. Call backend to create order
       const res = await fetch("/api/create-order", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+         },
         body: JSON.stringify({ quantity: cart.quantity }),
       }
       );
