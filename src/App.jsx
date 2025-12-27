@@ -9,8 +9,6 @@ import { ShoppingBag, Wind, Leaf, ShieldCheck, Zap, Droplets, Menu, X, ArrowRigh
 import Login from "./pages_temp/Login";
 import Signup from "./pages_temp/Signup";
 
-<><Route path="/login" element={<Login />} /><Route path="/signup" element={<Signup />} /></>
-
 // --- Components ---
 const [user, setUser] = useState(() => {
   const saved = localStorage.getItem("ventire_user");
