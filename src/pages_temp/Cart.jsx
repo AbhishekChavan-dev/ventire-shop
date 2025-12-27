@@ -1,15 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
 import { Beaker } from "lucide-react";
 const PRICE = 2499;
 
 export default function Cart({ cart, setCart }) {
   const { user } = useAuth();
   const navigate = useNavigate(); 
-  if ( !user ) {
-        navigate("/login");
-        return;
-      }
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
+  if (!user) return null;
   const removeItem = () => {
     setCart({ quantity: 0 });
   };
