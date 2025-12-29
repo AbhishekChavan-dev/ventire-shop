@@ -48,20 +48,24 @@ export default function Cart({ cart, setCart }) {
         description: "Ventire Air Purifier",
         order_id: order.id,
         handler: async function (response) {
+
+          // 1️⃣ Store order in DB
           await fetch("/api/store-order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              orderId: order.id,
+              orderId: order.id, // 👈 Razorpay Order ID
               paymentId: response.razorpay_payment_id,
-              quantity: cart.quantity,
+              quantity,
               amount: order.amount,
               status: "PAID",
             }),
           });
 
-          navigate(`/success?pid=${response.razorpay_payment_id}`);
+          // 2️⃣ Redirect with Order ID
+          navigate(`/success?orderId=${order.id}&paymentId=${response.razorpay_payment_id}`);
         },
+
         modal: {
           ondismiss: () => navigate("/failure"),
         },

@@ -436,11 +436,13 @@ const ProductShowcase = ({ cart, setCart }) => {
 
         // ✅ SUCCESS
         handler: async function (response) {
+
+          // 1️⃣ Store order in DB
           await fetch("/api/store-order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              orderId: order.id,
+              orderId: order.id, // 👈 Razorpay Order ID
               paymentId: response.razorpay_payment_id,
               quantity,
               amount: order.amount,
@@ -448,9 +450,9 @@ const ProductShowcase = ({ cart, setCart }) => {
             }),
           });
 
-          window.location.href = `/success?pid=${response.razorpay_payment_id}`;
+          // 2️⃣ Redirect with Order ID
+          navigate(`/success?orderId=${order.id}&paymentId=${response.razorpay_payment_id}`);
         },
-
         // ❌ FAILURE / CANCEL
         modal: {
           ondismiss: function () {
