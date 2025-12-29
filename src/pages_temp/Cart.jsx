@@ -48,22 +48,27 @@ export default function Cart({ cart, setCart }) {
         description: "Ventire Air Purifier",
         order_id: order.id,
         handler: async function (response) {
-          const saveRes = await fetch("/api/store-order", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              orderId: order.id,
-              paymentId: response.razorpay_payment_id,
-              amount: order.amount,
-              quantity: cart.quantity,
-              status: "PAID",
-            }),
-          });
+          try {
+            // 1. Save order in backend
+            await fetch("/api/store-order", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpayOrderId: response.razorpay_order_id,
+                quantity: cart.quantity,
+                amount: totalAmount,
+              }),
+            });
 
-          const data = await saveRes.json();
-
-          navigate(`/success?orderId=${order.id}`);
+            // 2. Navigate to success page
+            navigate(`/Success?orderId=${response.razorpay_order_id}`);
+          } catch (err) {
+            console.error("Order save failed", err);
+            navigate("/Failure");
+          }
         },
+
 
         modal: {
           ondismiss: () => navigate("/failure"),
