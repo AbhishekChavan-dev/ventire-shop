@@ -5,15 +5,15 @@ import { Beaker } from "lucide-react";
 const PRICE = 2499;
 
 export default function Cart({ cart, setCart }) {
-  // const { user } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  //useEffect(() => {
-   // if (!user) {
-   //   navigate("/login");
-    //}
-  //}, [user, navigate]);
+ {/*} useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
- // if (!user) return null;
+  if (!user) return null;*/}
 
   const removeItem = () => {
     setCart({ quantity: 0 });
@@ -48,24 +48,20 @@ export default function Cart({ cart, setCart }) {
         description: "Ventire Air Purifier",
         order_id: order.id,
         handler: async function (response) {
-
-          // 1️⃣ Store order in DB
           await fetch("/api/store-order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              orderId: order.id, // 👈 Razorpay Order ID
+              orderId: order.id,
               paymentId: response.razorpay_payment_id,
-              quantity,
+              quantity: cart.quantity,
               amount: order.amount,
               status: "PAID",
             }),
           });
 
-          // 2️⃣ Redirect with Order ID
-          navigate(`/success?orderId=${order.id}&paymentId=${response.razorpay_payment_id}`);
+          navigate(`/success?pid=${response.razorpay_payment_id}`);
         },
-
         modal: {
           ondismiss: () => navigate("/failure"),
         },
