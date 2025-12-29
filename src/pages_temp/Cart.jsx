@@ -15,9 +15,9 @@ export default function Cart({ cart, setCart }) {
 
  // if (!user) return null;
 
- // const removeItem = () => {
-  //  setCart({ quantity: 0 });
-  //};
+  const removeItem = () => {
+    setCart({ quantity: 0 });
+  };
   const totalAmount = cart.quantity * PRICE;
 
   const updateQuantity = (qty) => {
