@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const OrderSchema = new mongoose.Schema(
   {
-    razorpayOrderId: String,
-    razorpayPaymentId: String,
-    amount: Number,
-    quantity: Number,
-    status: String,
+    razorpayOrderId: { type: String, required: true },
+    razorpayPaymentId: { type: String },
+    amount: { type: Number, required: true },
+    quantity: { type: Number, required: true },
+    status: { type: String, required: true },
   },
   { timestamps: true }
 );
