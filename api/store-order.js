@@ -2,20 +2,28 @@ import connectDB from "../lib/mongodb";
 import Order from "../models/Orders";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST")
-    return res.status(405).end("Method not allowed");
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
 
   try {
     await connectDB();
 
-    console.log("📦 Order received:", req.body);
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Empty request body",
+      });
+    }
+
+    console.log("📦 Store Order Body:", req.body);
 
     const {
       orderId,
       paymentId,
       amount,
-      quantity,
-      status,
+      quantity = 1,
+      status = "paid",
     } = req.body;
 
     const savedOrder = await Order.create({
@@ -26,12 +34,15 @@ export default async function handler(req, res) {
       status,
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
-      order: savedOrder,
+      orderId: savedOrder._id,
     });
   } catch (error) {
     console.error("❌ Store order error:", error);
-    res.status(500).json({ success: false });
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
   }
 }

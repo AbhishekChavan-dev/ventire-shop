@@ -52,14 +52,18 @@ export default function Cart({ cart, setCart }) {
             // 1. Save order in backend
             await fetch("/api/store-order", {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json",
+              },
               body: JSON.stringify({
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpayOrderId: response.razorpay_order_id,
-                quantity: cart.quantity,
-                amount: totalAmount,
+                orderId: response.razorpay_order_id,
+                paymentId: response.razorpay_payment_id,
+                amount: response.amount,
+                quantity: 1,
+                status: "paid",
               }),
             });
+
 
             // 2. Navigate to success page
             navigate(`/Success?orderId=${response.razorpay_order_id}`);
