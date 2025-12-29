@@ -450,13 +450,13 @@ const ProductShowcase = ({ cart, setCart }) => {
 
           const data = await saveRes.json();
 
-          window.location.href = `/success?orderId=${order.id}}`;
+          window.location.href = `/Success?orderId=${order.id}}`;
         },
 
         // ❌ FAILURE / CANCEL
         modal: {
           ondismiss: function () {
-            window.location.href = "/failure";
+            window.location.href = "/Failure";
           },
         },
 
