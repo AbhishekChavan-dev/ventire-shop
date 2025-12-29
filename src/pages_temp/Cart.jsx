@@ -5,19 +5,19 @@ import { Beaker } from "lucide-react";
 const PRICE = 2499;
 
 export default function Cart({ cart, setCart }) {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const navigate = useNavigate();
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [user, navigate]);
+  //useEffect(() => {
+   // if (!user) {
+   //   navigate("/login");
+    //}
+  //}, [user, navigate]);
 
-  if (!user) return null;
+ // if (!user) return null;
 
-  const removeItem = () => {
-    setCart({ quantity: 0 });
-  };
+ // const removeItem = () => {
+  //  setCart({ quantity: 0 });
+  //};
   const totalAmount = cart.quantity * PRICE;
 
   const updateQuantity = (qty) => {
