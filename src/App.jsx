@@ -435,9 +435,20 @@ const ProductShowcase = ({ cart, setCart }) => {
         order_id: order.id,
 
         // ✅ SUCCESS
-        handler: function (response) {
-          window.location.href =
-            `/success?pid=${response.razorpay_payment_id}`;
+        handler: async function (response) {
+          await fetch("/api/store-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderId: order.id,
+              paymentId: response.razorpay_payment_id,
+              quantity,
+              amount: order.amount,
+              status: "PAID",
+            }),
+          });
+
+          window.location.href = `/success?pid=${response.razorpay_payment_id}`;
         },
 
         // ❌ FAILURE / CANCEL
