@@ -1,9 +1,20 @@
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
+import { Beaker } from "lucide-react";
 const PRICE = 2499;
 
 export default function Cart({ cart, setCart }) {
+  const { user } = useAuth();
   const navigate = useNavigate();
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
+  if (!user) return null;
+
   const removeItem = () => {
     setCart({ quantity: 0 });
   };
@@ -16,10 +27,11 @@ export default function Cart({ cart, setCart }) {
 
   const checkout = async () => {
     try {
+
       // 1. Call backend to create order
       const res = await fetch("/api/create-order", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", },
         body: JSON.stringify({ quantity: cart.quantity }),
       }
       );
@@ -35,7 +47,19 @@ export default function Cart({ cart, setCart }) {
         name: "Ventire",
         description: "Ventire Air Purifier",
         order_id: order.id,
-        handler: function (response) {
+        handler: async function (response) {
+          await fetch("/api/store-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderId: order.id,
+              paymentId: response.razorpay_payment_id,
+              quantity: cart.quantity,
+              amount: order.amount,
+              status: "PAID",
+            }),
+          });
+
           navigate(`/success?pid=${response.razorpay_payment_id}`);
         },
         modal: {
