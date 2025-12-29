@@ -1,40 +1,37 @@
-import { connectDB } from "../lib/mongodb";
-import Order from "../models/Order";
+import connectDB from "../lib/mongodb";
+import Order from "../models/Orders";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
+  if (req.method !== "POST")
+    return res.status(405).end("Method not allowed");
 
   try {
     await connectDB();
 
+    console.log("📦 Order received:", req.body);
+
     const {
       orderId,
       paymentId,
-      quantity,
       amount,
+      quantity,
       status,
     } = req.body;
 
-    if (!orderId || !paymentId) {
-      return res.status(400).json({ message: "Missing fields" });
-    }
-
-    const order = await Order.create({
-      orderId,
-      paymentId,
-      quantity,
+    const savedOrder = await Order.create({
+      razorpayOrderId: orderId,
+      razorpayPaymentId: paymentId,
       amount,
+      quantity,
       status,
     });
 
-    return res.status(200).json({
+    res.status(201).json({
       success: true,
-      order,
+      order: savedOrder,
     });
   } catch (error) {
-    console.error("Mongo order save error:", error);
-    return res.status(500).json({ message: "Server error" });
+    console.error("❌ Store order error:", error);
+    res.status(500).json({ success: false });
   }
 }

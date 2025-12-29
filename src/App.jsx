@@ -436,19 +436,21 @@ const ProductShowcase = ({ cart, setCart }) => {
 
         // ✅ SUCCESS
         handler: async function (response) {
-          await fetch("/api/store-order", {
+          const saveRes = await fetch("/api/store-order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               orderId: order.id,
               paymentId: response.razorpay_payment_id,
-              quantity,
               amount: order.amount,
+              quantity: cart.quantity,
               status: "PAID",
             }),
           });
 
-          window.location.href = `/success?pid=${response.razorpay_payment_id}`;
+          const data = await saveRes.json();
+
+          window.location.href = `/success?orderId=${order.id}}`;
         },
 
         // ❌ FAILURE / CANCEL
