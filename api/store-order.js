@@ -1,30 +1,25 @@
+export const config = {
+  runtime: "nodejs",
+};
+
 import connectDB from "../lib/mongodb";
 import Order from "../models/Orders";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
     await connectDB();
 
-    if (!req.body || Object.keys(req.body).length === 0) {
-      return res.status(400).json({
-        success: false,
-        error: "Empty request body",
-      });
+    console.log("📦 Order received:", req.body);
+
+    const { orderId, paymentId, amount, quantity, status } = req.body;
+
+    if (!orderId) {
+      return res.status(400).json({ error: "orderId missing" });
     }
-
-    console.log("📦 Store Order Body:", req.body);
-
-    const {
-      orderId,
-      paymentId,
-      amount,
-      quantity = 1,
-      status = "paid",
-    } = req.body;
 
     const savedOrder = await Order.create({
       razorpayOrderId: orderId,
@@ -36,13 +31,13 @@ export default async function handler(req, res) {
 
     return res.status(201).json({
       success: true,
-      orderId: savedOrder._id,
+      order: savedOrder,
     });
   } catch (error) {
     console.error("❌ Store order error:", error);
     return res.status(500).json({
       success: false,
-      error: error.message,
+      message: error.message,
     });
   }
 }
