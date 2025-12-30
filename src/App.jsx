@@ -596,6 +596,8 @@ const ProductShowcase = ({ cart, setCart, user }) => {
             const data = await res.json();
             // 3. Check if the server sent back the custom ID (VT-XXXX)
             if (data.success && data.displayId) {
+              // 🟢 SUCCESS: Clear the cart state here
+              setCart({ quantity: 0 });
               // ✅ SUCCESS: Redirect using the custom VT-XXXX ID
               window.location.href = `/Success?orderNo=${data.displayId}`;
             } else {

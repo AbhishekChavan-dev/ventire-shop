@@ -99,6 +99,8 @@ export default function Cart({ cart, setCart }) {
 
             const data = await res.json();
             if (data.success && data.displayId) {
+              // 🟢 SUCCESS: Clear the cart state here
+              setCart({ quantity: 0 });
               // ✅ SUCCESS: Redirect using the custom VT-XXXX ID
               // 2. Navigate to success page
               navigate(`/Success?orderNo=${data.displayId}`);
