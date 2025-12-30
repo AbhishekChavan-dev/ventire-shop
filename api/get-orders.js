@@ -1,20 +1,20 @@
 import connectDB from "../lib/mongodb";
 import Order from "../models/Orders";
+import mongoose from "mongoose";
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") return res.status(405).end();
+  await connectDB();
+  const { userId } = req.query;
 
   try {
-    await connectDB();
-    const { userId } = req.query;
+    // 🟢 Convert the string ID into a real MongoDB ObjectId
+    const queryId = mongoose.Types.ObjectId.isValid(userId) 
+      ? new mongoose.Types.ObjectId(userId) 
+      : userId;
 
-    if (!userId) {
-      return res.status(400).json({ message: "User ID required" });
-    }
-
-    // Find all orders for this user, sorted by newest first
-    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+    const orders = await Order.find({ userId: queryId }).sort({ createdAt: -1 });
     
+    console.log(`Found ${orders.length} orders for user: ${userId}`);
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ error: error.message });
