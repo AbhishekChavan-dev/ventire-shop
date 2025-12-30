@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 //import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
-import Login from "./pages_temp/LoginAuth.jsx";
+import Login from "./LoginAuth.jsx";
 import { Beaker, Trash2, User} from "lucide-react";
 const PRICE = 2499;
 
