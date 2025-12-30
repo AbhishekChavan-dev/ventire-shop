@@ -6,7 +6,7 @@ import MyOrders from "./pages_temp/MyOrders";
 import Login from "./pages_temp/LoginAuth.jsx";
 import React, { useState, useEffect } from 'react';
 
-import { ShoppingBag, Wind, Leaf, ShieldCheck, Zap, Droplets, Menu, X, ArrowRight, Star, Check } from 'lucide-react';
+import { ShoppingBag, Wind, Leaf, ShieldCheck, Zap, Droplets, Menu, X, ArrowRight, Star, Check, Package } from 'lucide-react';
 
 
 // --- Components ---
