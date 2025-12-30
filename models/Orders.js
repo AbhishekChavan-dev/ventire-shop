@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const OrderSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    useremail: { type: String, required: true }, // Add this
+    useremail: { type: String }, // Add this
     razorpayOrderId: { type: String, required: true },
     razorpayPaymentId: { type: String },
     amount: { type: Number, required: true },

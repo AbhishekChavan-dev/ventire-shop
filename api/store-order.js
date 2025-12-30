@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { orderId, paymentId, signature, amount, quantity, status, userId  } = req.body;
+        const { orderId, paymentId, signature, amount, quantity, status, userId, useremail  } = req.body;
         // 1. SECURITY CHECK: Verify the Signature
         const secret = process.env.RAZORPAY_KEY_SECRET;
         const generated_signature = crypto
@@ -35,6 +35,7 @@ export default async function handler(req, res) {
 
         const savedOrder = await Order.create({
             userId: userId, // 👈 Link the order to the user
+            useremail: useremail,
             razorpayOrderId: orderId,
             razorpayPaymentId: paymentId,
             amount,
