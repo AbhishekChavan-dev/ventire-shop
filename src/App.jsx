@@ -333,7 +333,15 @@ const Navbar = ({ cart, user, onLogout }) => {
                         <p className="text-xs text-gray-500">Signed in as</p>
                         <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
                       </div>
-
+                      {/* 🟢 NEW: LINK TO MY ORDERS */}
+                      <Link
+                        to="/myorders"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50 transition-colors flex items-center gap-2"
+                      >
+                        <Package size={16} className="text-gray-400" />
+                        <span>My Orders</span>
+                      </Link>
                       {/* Action Buttons */}
                       <button
                         onClick={() => {
