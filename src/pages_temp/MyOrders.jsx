@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Package, Clock, CheckCircle } from 'lucide-react';
+import { Package, Clock, CheckCircle, MapPin, Truck, ShoppingBag, Calendar } from 'lucide-react';
 
 const MyOrders = ({ user }) => {
     const [orders, setOrders] = useState([]);

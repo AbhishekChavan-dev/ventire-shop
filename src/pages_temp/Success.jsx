@@ -52,7 +52,7 @@ const Success = () => {
 export default Success;*/}
 import { useSearchParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { CheckCircle, MapPin, Package, Truck } from "lucide-react";
+import { CheckCircle, MapPin, Package, Truck, ShoppingBag } from "lucide-react";
 
 const Success = () => {
   const [searchParams] = useSearchParams();
