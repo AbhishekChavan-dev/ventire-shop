@@ -2,7 +2,7 @@ import { Routes, Route, Link, useNavigate, useLocation } from "react-router-dom"
 import Cart from "./pages_temp/Cart";
 import Success from "./pages_temp/Success";
 import Failure from "./pages_temp/Failure";
-import Login from "./pages_temp/login";
+import Login from "./pages_temp/Login";
 import React, { useState, useEffect } from 'react';
 
 import { ShoppingBag, Wind, Leaf, ShieldCheck, Zap, Droplets, Menu, X, ArrowRight, Star, Check } from 'lucide-react';
@@ -981,13 +981,13 @@ const App = () => {
           element={
             localStorage.getItem("token")
               ? <Cart cart={cart} setCart={setCart} />
-              : <Navigate to="/login" />
+              : <Navigate to="/Login" />
           }
         />
          
 
         <Route path="/success" element={<Success />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/Login" element={<Login />} />
         <Route path="/failure" element={<Failure />} />
       </Routes>
 
