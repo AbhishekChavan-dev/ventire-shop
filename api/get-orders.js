@@ -1,22 +1,35 @@
+// api/get-orders.js
 import connectDB from "../lib/mongodb";
 import Order from "../models/Orders";
+import mongoose from "mongoose";
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") return res.status(405).end();
-
+  // 1. Connect to Database
   try {
     await connectDB();
-    const { userId } = req.query;
+  } catch (err) {
+    return res.status(500).json({ error: "Database connection failed" });
+  }
 
+  const { userId } = req.query;
+
+  try {
     if (!userId) {
-      return res.status(400).json({ message: "User ID required" });
+      return res.status(400).json({ message: "User ID is required" });
     }
 
-    // Find all orders for this user, sorted by newest first
-    const orders = await Order.find({ userId: userId }).sort({ createdAt: -1 });
-    
-    res.status(200).json(orders);
+    // 2. Querying logic
+    // We search for the ID as a string AND as an ObjectId to be safe
+    const orders = await Order.find({
+      $or: [
+        { userId: userId },
+        { userId: new mongoose.Types.ObjectId(userId) }
+      ]
+    }).sort({ createdAt: -1 });
+
+    return res.status(200).json(orders);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Order Fetch Error:", error);
+    return res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 }
