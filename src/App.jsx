@@ -528,7 +528,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
       return;
     }
     // 🟢 Use a fallback check for the ID
-    const currentUserId = user._id || user.id;
+    const currentUserId = user._id;
     const API_URL = import.meta.env.VITE_API_URL;
     try {
       const res = await fetch("/api/create-order", {
@@ -567,7 +567,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
                 amount: totalAmount,
                 quantity: cart.quantity,
                 status: "paid",
-                userId: user.id || user._id//added
+                userId: currentUserI//added
               }),
             });
             window.location.href =
