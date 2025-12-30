@@ -278,7 +278,7 @@ const Navbar = ({ cart, user, onLogout }) => {
                 {user ? (
                   <div className="flex items-center gap-4 border-l pl-8 border-gray-100">
                     <div className="flex flex-col items-end">
-                      <span className="text-sm font-bold text-gray-900">{user.name}</span>
+                      <span className="text-xs font-bold text-gray-900">{user.name}</span>
                       <button
                         onClick={onLogout}
                         className="text-xs text-red-500 hover:underline"
