@@ -1,4 +1,4 @@
-import { Routes, Route, Link, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, Link, useNavigate, useLocation, Navigate } from "react-router-dom";
 import Cart from "./pages_temp/Cart";
 import Success from "./pages_temp/Success";
 import Failure from "./pages_temp/Failure";
@@ -940,29 +940,24 @@ const App = () => {
   useEffect(() => {
     localStorage.setItem("ventire_cart", JSON.stringify(cart));
   }, [cart]);
+  // 👤 AUTH STATE (New Logic Added Here)
+  const [user, setUser] = useState(null);
 
+  // Sync Cart to LocalStorage
+  useEffect(() => {
+    localStorage.setItem("ventire_cart", JSON.stringify(cart));
+  }, [cart]);
 
-  // return (
-
-  //<div className="font-sans antialiased bg-white text-gray-900">
-
-  //<Navbar cart={cart} />
-
-  //<Hero />
-
-  //<ProductShowcase cart={cart} setCart={setCart} />
-
-
-  //<Features />
-
-  // <Footer />
-
-  // </div> 
-
-  // );
+  // Sync User session on Page Load (New Logic Added Here)
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
   return (
     <div className="font-sans antialiased bg-white text-gray-900">
-      <Navbar cart={cart} />
+      <Navbar cart={cart} user={user} />
 
       <Routes>
         <Route
@@ -976,11 +971,11 @@ const App = () => {
           }
         />
 
-        <Routes
+        <Route
           path="/cart"
           element={<Cart cart={cart} setCart={setCart} />}
         />
-         
+
 
         <Route path="/success" element={<Success />} />
         <Route path="/login" element={<Login />} />
