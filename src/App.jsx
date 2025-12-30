@@ -819,7 +819,19 @@ const ProductShowcase = ({ cart, setCart, user }) => {
         </div>
 
       </div>
+      {isProcessing && (
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/80 backdrop-blur-md">
+          <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
+          <h2 className="text-2xl font-bold text-gray-900">Confirming Your Order...</h2>
+          <p className="text-gray-500 mt-2">Please do not refresh or close this page.</p>
 
+          {/* Optional: Add a small lock icon for trust */}
+          <div className="mt-8 flex items-center text-gray-400 text-sm">
+            <ShieldCheck size={16} className="mr-2" />
+            Secure Transaction via Razorpay
+          </div>
+        </div>
+      )}
     </div>
 
   );
