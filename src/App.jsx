@@ -128,7 +128,7 @@ const WindAnimation = () => {
 
 // 2. Navigation Bar
 
-const Navbar = ({ cart }) => {
+const Navbar = ({ cart, user }) => {
 
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
