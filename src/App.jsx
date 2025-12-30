@@ -584,6 +584,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
 
         // ✅ SUCCESS
         handler: async function (response) {
+          const navigate = useNavigate(); // 🟢 Ensure this is here
           setIsProcessing(true); // 🟢 Start the loading overlay
           try {
             // 1. Save order in backend
