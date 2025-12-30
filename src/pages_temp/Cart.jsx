@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 //import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
-import { Beaker, Trash2, User } from "lucide-react";
+import { Beaker, Trash2, User, ShieldCheck } from "lucide-react";
 const PRICE = 2499;
 
 export default function Cart({ cart, setCart }) {
@@ -9,6 +9,7 @@ export default function Cart({ cart, setCart }) {
   const navigate = useNavigate();
   // 1. Get user from localStorage
   const [user, setUser] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const currentUser = localStorage.getItem("user");
   if (!currentUser) {
     alert("Please login to purchase");
@@ -76,6 +77,8 @@ export default function Cart({ cart, setCart }) {
           email: user.email,
         },
         handler: async function (response) {
+          // 2. TRIGGER LOADING WHEN PAYMENT IS SUCCESSFUL
+          setIsProcessing(true);
           try {
             // 1. Save order in backend
             const res = await fetch("/api/store-order", {
@@ -159,9 +162,24 @@ export default function Cart({ cart, setCart }) {
           onClick={checkout}
           className="w-full mt-6 bg-green-600 text-white py-3 rounded-lg"
         >
-          Pay ₹{totalAmount}
+          Proceed to Pay ₹{totalAmount}
         </button>
       </div>
+      {/* 3. THE LOADING OVERLAY UI */}
+      {isProcessing && (
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/90 backdrop-blur-md">
+          <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
+          <h2 className="text-2xl font-bold text-gray-900">Processing Your Order...</h2>
+          <p className="text-gray-500 mt-2 text-center px-4">
+            We are securing your transaction. <br />
+            Please do not close this window.
+          </p>
+          <div className="mt-8 flex items-center text-gray-400 text-sm">
+            <ShieldCheck size={18} className="mr-2 text-green-500" />
+            Secure Payment Confirmed
+          </div>
+        </div>
+      )}
     </div>
   );
 }
