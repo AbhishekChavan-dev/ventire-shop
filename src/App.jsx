@@ -592,8 +592,17 @@ const ProductShowcase = ({ cart, setCart, user }) => {
                 useremail: user.email
               }),
             });
-            window.location.href =
-              (`/Success?orderId=${response.razorpay_payment_id}`);
+            const data = await res.json();
+            // 3. Check if the server sent back the custom ID (VT-XXXX)
+            if (data.success && data.displayId) {
+              // ✅ SUCCESS: Redirect using the custom VT-XXXX ID
+              window.location.href = `/Success?orderNo=${data.displayId}`;
+            } else {
+              // ⚠️ FALLBACK: If API failed but payment worked, use Razorpay ID so they aren't stuck
+              window.location.href = `/Success?orderNo=${response.razorpay_order_id}`;
+            }
+            {/*window.location.href =
+              (`/Success?orderId=${response.razorpay_payment_id}`);*/}
           } catch (err) {
             console.error("Order save failed", err);
             navigate("/Failure");

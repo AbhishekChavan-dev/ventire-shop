@@ -23,7 +23,7 @@ import { CheckCircle, ShoppingBag } from "lucide-react";
 
 const Success = () => {
   const [searchParams] = useSearchParams();
-  const orderNo = searchParams.get("orderNo"); // 🟢 Get the VT-XXXX code
+  const orderNo = searchParams.get("orderNo"); // 🟢 Get the VT-XXXX 
 
   return (
     <div className="pt-32 pb-20 flex flex-col items-center justify-center px-4">
