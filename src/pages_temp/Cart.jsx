@@ -9,7 +9,12 @@ export default function Cart({ cart, setCart }) {
   const navigate = useNavigate();
   // 1. Get user from localStorage
   const [user, setUser] = useState(null);
-
+  
+    if (!user) {
+      alert("Please login to purchase");
+      navigate("/login");
+      return;
+    }
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
