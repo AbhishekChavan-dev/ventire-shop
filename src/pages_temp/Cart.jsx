@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 //import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
+import Login from "./pages_temp/LoginAuth.jsx";
 import { Beaker, Trash2, User} from "lucide-react";
 const PRICE = 2499;
 
@@ -12,7 +13,7 @@ export default function Cart({ cart, setCart }) {
   
     if (!user) {
       alert("Please login to purchase");
-      navigate("/");
+      navigate("/Login");
       return;
     }
   useEffect(() => {
@@ -43,7 +44,7 @@ export default function Cart({ cart, setCart }) {
     // 2. Security Check: Ensure user is logged in before paying
     if (!user) {
       alert("Please login to proceed with payment");
-      navigate("/login");
+      navigate("/Login");
       return;
     }
     try {
