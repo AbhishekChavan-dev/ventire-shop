@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 //import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
-import { Beaker, Trash2, User} from "lucide-react";
+import { Beaker, Trash2, User } from "lucide-react";
 const PRICE = 2499;
 
 export default function Cart({ cart, setCart }) {
@@ -10,11 +10,11 @@ export default function Cart({ cart, setCart }) {
   // 1. Get user from localStorage
   const [user, setUser] = useState(null);
   const currentUser = localStorage.getItem("user");
-    if (!currentUser) {
-      alert("Please login to purchase");
-      navigate("/LoginAuth");
-      return;
-    }
+  if (!currentUser) {
+    alert("Please login to purchase");
+    navigate("/LoginAuth");
+    return;
+  }
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
@@ -49,16 +49,17 @@ export default function Cart({ cart, setCart }) {
     try {
 
       // 1. Call backend to create order
-      const res = await fetch("/api/create-order", {
+      const resCreate = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json", },
-        body: JSON.stringify({ quantity: cart.quantity,
+        body: JSON.stringify({
+          quantity: cart.quantity,
           userId: user.id || user._id // Use whichever your DB returns
-         }),
+        }),
       }
       );
 
-      const order = await res.json();
+      const order = await resCreate.json();
       console.log("Order received:", order);
 
       // 2. Razorpay options
@@ -72,11 +73,12 @@ export default function Cart({ cart, setCart }) {
         // 4. Prefill user data in Razorpay UI for better UX
         prefill: {
           name: user.name,
-          email: user.email,},
+          email: user.email,
+        },
         handler: async function (response) {
           try {
             // 1. Save order in backend
-            await fetch("/api/store-order", {
+            const res = await fetch("/api/store-order", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -92,9 +94,15 @@ export default function Cart({ cart, setCart }) {
               }),
             });
 
-
-            // 2. Navigate to success page
-            navigate(`/Success?orderId=${response.razorpay_order_id}`);
+            const data = await res.json();
+            if (data.success && data.displayId) {
+              // ✅ SUCCESS: Redirect using the custom VT-XXXX ID
+              // 2. Navigate to success page
+              navigate(`/Success?orderNo=${data.displayId}`);
+            } else {
+              // ⚠️ FALLBACK: If API failed but payment worked, use Razorpay ID so they aren't stuck
+              navigate(`/Success?orderNo=${response.razorpay_order_id}`);
+            }
           } catch (err) {
             console.error("Order save failed", err);
             navigate("/Failure");
