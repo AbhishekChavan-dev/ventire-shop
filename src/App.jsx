@@ -138,7 +138,7 @@ const Navbar = ({ cart, user }) => {
     localStorage.clear(); // Clears user, token, AND ventire_cart
     setUser(null);
     setCart({ quantity: 0 });
-    window.location.href = "/"; // Force refresh to clear state
+    window.location.href = "/login"; // Force refresh to clear state
   };
   return (
 
