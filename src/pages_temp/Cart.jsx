@@ -12,7 +12,7 @@ export default function Cart({ cart, setCart }) {
   
     if (!user) {
       alert("Please login to purchase");
-      navigate("/login");
+      navigate("/");
       return;
     }
   useEffect(() => {
