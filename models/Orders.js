@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const OrderSchema = new mongoose.Schema(
   {
+    orderNumber: { type: Number },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     useremail: { type: String }, // Add this
     razorpayOrderId: { type: String, required: true },

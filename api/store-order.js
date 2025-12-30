@@ -5,13 +5,16 @@ import crypto from "crypto"; // Built-in Node.js module
 import connectDB from "../lib/mongodb.js";
 import Order from "../models/Orders.js";
 
+// Helper to generate code
+const generateShortId = () => `VT-${Math.floor(1000 + Math.random() * 9000)}`;
+
 export default async function handler(req, res) {
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed" });
     }
 
     try {
-        const { orderId, paymentId, signature, amount, quantity, status, userId, useremail  } = req.body;
+        const { orderId, paymentId, signature, amount, quantity, status, userId, useremail } = req.body;
         // 1. SECURITY CHECK: Verify the Signature
         const secret = process.env.RAZORPAY_KEY_SECRET;
         const generated_signature = crypto
@@ -23,17 +26,19 @@ export default async function handler(req, res) {
             console.error("❌ Security Alert: Invalid Signature!");
             return res.status(400).json({ success: false, message: "Transaction invalid" });
         }
+
         await connectDB();
 
         console.log("📦 Order received:", req.body);
 
-
+        const customOrderId = generateShortId(); // 🟢 Generate VT-XXXX
 
         if (!orderId) {
             return res.status(400).json({ error: "orderId missing" });
         }
 
         const savedOrder = await Order.create({
+            orderNumber: customOrderId, // 🟢 Save the simple number
             userId: userId, // 👈 Link the order to the user
             useremail: useremail,
             razorpayOrderId: orderId,
@@ -43,9 +48,14 @@ export default async function handler(req, res) {
             status,
         });
 
-        return res.status(201).json({
+        {/*} return res.status(201).json({
             success: true,
             order: savedOrder,
+        });*/}
+        // 🟢 Send the custom ID back to the frontend
+        res.status(200).json({
+            success: true,
+            displayId: customOrderId
         });
     } catch (error) {
         console.error("❌ Store order error:", error);

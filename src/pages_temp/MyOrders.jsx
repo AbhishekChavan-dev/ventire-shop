@@ -41,7 +41,7 @@ const MyOrders = ({ user }) => {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <p className="text-xs text-gray-400 uppercase font-bold tracking-wider">Order ID</p>
-                  <p className="text-sm font-mono text-gray-600">{order.razorpayOrderId}</p>
+                  <p className="text-sm font-mono text-gray-600">{order.orderNumber}</p>
                 </div>
                 <span className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full font-bold flex items-center gap-1">
                   <CheckCircle size={12} /> {order.status.toUpperCase()}
