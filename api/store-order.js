@@ -3,7 +3,7 @@ export const config = {
 };
 
 import connectDB from "../lib/mongodb.js";
-import Order from "../models/Orders";
+import Order from "../models/Orders.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
