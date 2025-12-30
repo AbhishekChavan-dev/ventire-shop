@@ -1118,7 +1118,7 @@ const App = () => {
         <Route path="/success" element={<Success />} />
         <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} onLogout={handleLogout} />} />
         <Route path="/failure" element={<Failure />} />
-        <Route path="/myorders" element={<MyOrders user={user} />} />
+        <Route path="/my-orders" element={<MyOrders user={user} />} />
       </Routes>
 
       <Footer />
