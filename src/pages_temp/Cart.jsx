@@ -108,9 +108,9 @@ export default function Cart({ cart, setCart }) {
                 paymentId: response.razorpay_payment_id,
                 signature: response.razorpay_signature,
                 amount: totalAmount,
-                address,     // 🟢 PASS ADDRESS HERE
                 quantity: cart.quantity,
-                userId: user.id || user._id, // 5. Pass userId to store-order
+                userId: user._id, // 5. Pass userId to store-order
+                useremail:user.email,
                 address: address, // 🟢 3. Send address to backend
                 status: "paid",
               }),
@@ -122,7 +122,7 @@ export default function Cart({ cart, setCart }) {
               setCart({ quantity: 0 });
               // ✅ SUCCESS: Redirect using the custom VT-XXXX ID
               // 2. Navigate to success page
-              navigate(`/Success?orderNo=${data.displayId}`);
+              navigate(`/Success?orderNo=${data.displayId}`, {state: { address: address }});
             } else {
               // ⚠️ FALLBACK: If API failed but payment worked, use Razorpay ID so they aren't stuck
               navigate(`/Success?orderNo=${response.razorpay_order_id}`);

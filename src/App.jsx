@@ -610,7 +610,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
               // 🟢 SUCCESS: Clear the cart state here
               setCart({ quantity: 0 });
               // ✅ SUCCESS: Redirect using the custom VT-XXXX ID
-              window.location.href = `/Success?orderNo=${data.displayId}`;
+              window.location.href = `/Success?orderNo=${data.displayId}`, {state: { address: address }};
             } else {
               // ⚠️ FALLBACK: If API failed but payment worked, use Razorpay ID so they aren't stuck
               window.location.href = `/Success?orderNo=${response.razorpay_order_id}`;

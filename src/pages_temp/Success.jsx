@@ -50,17 +50,22 @@ const Success = () => {
   );
 };
 export default Success;*/}
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { CheckCircle, MapPin, Package, Truck, ShoppingBag } from "lucide-react";
 
 const Success = () => {
   const [searchParams] = useSearchParams();
+  const location = useLocation(); // 🟢 Access the passed state
   const orderNo = searchParams.get("orderNo");
-  const [orderDetails, setOrderDetails] = useState(null);
-  const [loading, setLoading] = useState(true);
-
+ // const [orderDetails, setOrderDetails] = useState(null);
+  //const [loading, setLoading] = useState(true);
+// 🟢 Use address from state if available, otherwise wait for fetch
+  const [orderDetails, setOrderDetails] = useState(location.state?.address ? { address: location.state.address } : null);
+  const [loading, setLoading] = useState(!location.state?.address);
   useEffect(() => {
+    // Only fetch if we DON'T have the address from the previous page
+    if (!orderDetails) {
     const fetchOrder = async () => {
       try {
         // We fetch by orderNumber (VT-XXXX)
@@ -75,6 +80,7 @@ const Success = () => {
         setLoading(false);
       }
     };
+  }
 
     if (orderNo) fetchOrder();
   }, [orderNo]);
