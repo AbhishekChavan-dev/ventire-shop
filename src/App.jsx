@@ -135,10 +135,13 @@ const Navbar = ({ cart, user }) => {
   const isCartPage = location.pathname === "/cart";
   // Logic to handle logout
   const handleLogout = () => {
+    // 1. Clear the physical storage
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     localStorage.clear(); // Clears user, token, AND ventire_cart
     setUser(null);
     setCart({ quantity: 0 });
-    window.location.href = "/login"; // Force refresh to clear state
+    window.location.href = "/"; // Force refresh to clear state
   };
   return (
 
@@ -190,7 +193,7 @@ const Navbar = ({ cart, user }) => {
                         Logout
                       </button>
                     </div>
-                    
+
                     <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold border border-green-200">
                       {user.name?.charAt(0).toUpperCase()}
                     </div>
