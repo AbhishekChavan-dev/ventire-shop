@@ -567,7 +567,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
                 amount: totalAmount,
                 quantity: cart.quantity,
                 status: "paid",
-                userId: currentUserI//added
+                userId: currentUserId//added
               }),
             });
             window.location.href =
