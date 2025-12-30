@@ -2,7 +2,7 @@ export const config = {
   runtime: "nodejs",
 };
 
-import connectDB from "../lib/mongodb";
+import connectDB from "../lib/mongodb.js";
 import Order from "../models/Orders";
 
 export default async function handler(req, res) {
