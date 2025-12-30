@@ -10,6 +10,13 @@ const OrderSchema = new mongoose.Schema(
     amount: { type: Number, required: true },
     quantity: { type: Number, required: true },
     status: { type: String, required: true },
+    // 🟢 NEW: Nested Address Object
+    address: {
+        street: { type: String, required: true },
+        city: { type: String, required: true },
+        pincode: { type: String, required: true },
+        phone: { type: String, required: true }
+    },
   },
   { timestamps: true }
 );

@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { orderId, paymentId, signature, amount, quantity, status, userId, useremail } = req.body;
+        const { orderId, paymentId, signature, amount, quantity, status, userId, useremail, address } = req.body;
         // 1. SECURITY CHECK: Verify the Signature
         const secret = process.env.RAZORPAY_KEY_SECRET;
         const generated_signature = crypto
@@ -28,7 +28,10 @@ export default async function handler(req, res) {
         }
 
         await connectDB();
-
+        // 🟢 3. Validate address exists before saving
+        if (!address || !address.street || !address.phone) {
+            return res.status(400).json({ success: false, message: "Shipping address is required" });
+        }
         console.log("📦 Order received:", req.body);
 
         const customOrderId = generateShortId(); // 🟢 Generate VT-XXXX
@@ -46,6 +49,7 @@ export default async function handler(req, res) {
             amount,
             quantity,
             status,
+            address: address, // 👈 This saves the street, city, pincode, and phone
         });
 
         {/*} return res.status(201).json({

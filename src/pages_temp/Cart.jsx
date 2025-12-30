@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 //import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
+import AddressForm from "../components/AddressForm";
 import { Beaker, Trash2, User, ShieldCheck } from "lucide-react";
 const PRICE = 2499;
 
@@ -10,6 +11,13 @@ export default function Cart({ cart, setCart }) {
   // 1. Get user from localStorage
   const [user, setUser] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  // 🟢 1. Address State
+  const [address, setAddress] = useState({
+    street: '',
+    city: '',
+    pincode: '',
+    phone: ''
+  });
   const currentUser = localStorage.getItem("user");
   if (!currentUser) {
     alert("Please login to purchase");
@@ -41,11 +49,20 @@ export default function Cart({ cart, setCart }) {
   };
 
   const checkout = async () => {
+    // 🟢 2. Validation: Ensure address is filled
+    if (!address.street || !address.pincode || !address.phone) {
+      alert("Please fill in your delivery address and phone number.");
+      return;
+    }
     // 2. Security Check: Ensure user is logged in before paying
     if (!user) {
       alert("Please login to proceed with payment");
       navigate("/Login");
       return;
+    }
+    // 1. Validate Address
+    if (!address.street || !address.pincode || !address.phone) {
+      return alert("Please fill in all shipping details!");
     }
     try {
 
@@ -91,8 +108,10 @@ export default function Cart({ cart, setCart }) {
                 paymentId: response.razorpay_payment_id,
                 signature: response.razorpay_signature,
                 amount: totalAmount,
+                address,     // 🟢 PASS ADDRESS HERE
                 quantity: cart.quantity,
                 userId: user.id || user._id, // 5. Pass userId to store-order
+                address: address, // 🟢 3. Send address to backend
                 status: "paid",
               }),
             });
@@ -160,6 +179,10 @@ export default function Cart({ cart, setCart }) {
         >
           Remove
         </button>
+        {/* 🟢 4. The Address Form */}
+        <div className="bg-white p-2 rounded-2xl border border-gray-100 shadow-sm">
+           <AddressForm address={address} setAddress={setAddress} />
+        </div>
         <button
           onClick={checkout}
           className="w-full mt-6 bg-green-600 text-white py-3 rounded-lg"

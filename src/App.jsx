@@ -3,6 +3,7 @@ import Cart from "./pages_temp/Cart";
 import Success from "./pages_temp/Success";
 import Failure from "./pages_temp/Failure";
 import MyOrders from "./pages_temp/MyOrders";
+import AddressForm from "./components/AddressForm";
 import Login from "./pages_temp/LoginAuth.jsx";
 import React, { useState, useEffect } from 'react';
 
@@ -516,7 +517,8 @@ const Hero = () => {
 // 4. Product Showcase Section
 
 const ProductShowcase = ({ cart, setCart, user }) => {
-
+  const [address, setAddress] = useState({ street: '', city: '', pincode: '', phone: '' });
+  const [showAddress, setShowAddress] = useState(false); // Toggle visibility
   const [activeImage, setActiveImage] = useState(0);
 
   // ✅ QUANTITY STATE
@@ -546,6 +548,14 @@ const ProductShowcase = ({ cart, setCart, user }) => {
     if (!user) {
       alert("Please login to purchase");
       navigate("/login");
+      return;
+    }
+    // 2. TOGGLE ADDRESS FORM OR VALIDATE
+    if (!showAddress) {
+      setShowAddress(true); // First click shows the form
+      return;
+    } if (!address.street || !address.pincode || !address.phone) {
+      alert("Please enter your delivery details before paying.");
       return;
     }
     // 🟢 Use a fallback check for the ID
@@ -590,7 +600,8 @@ const ProductShowcase = ({ cart, setCart, user }) => {
                 quantity: cart.quantity,
                 status: "paid",
                 userId: user._id,//added
-                useremail: user.email
+                useremail: user.email,
+                address: address, // 🟢 SEND ADDRESS TO BACKEND
               }),
             });
             const data = await res.json();
@@ -781,6 +792,18 @@ const ProductShowcase = ({ cart, setCart, user }) => {
               </button>
 
             </div> */}
+            {/* 3. SHOW ADDRESS FORM WHEN 'BUY NOW' IS CLICKED */}
+            {showAddress && (
+              <div className="mb-6 animate-in fade-in slide-in-from-top-4 duration-500">
+                <AddressForm address={address} setAddress={setAddress} />
+                <button
+                  onClick={() => setShowAddress(false)}
+                  className="text-xs text-gray-400 mt-2 hover:underline"
+                >
+                  Change shipping method?
+                </button>
+              </div>
+            )}
             <div className="flex items-center space-x-4">
               {addedMsg && (
                 <div className="fixed bottom-6 right-6 bg-green-600 text-white px-5 py-3 rounded-lg shadow-lg z-50">
@@ -800,7 +823,8 @@ const ProductShowcase = ({ cart, setCart, user }) => {
                 onClick={buyNow}
                 className="flex-1 bg-green-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-green-700 transition"
               >
-                Buy Now ₹{totalAmount}
+                {showAddress ? `Pay ₹${totalAmount}` : "Buy Now"}
+              // Buy Now ₹{totalAmount}
               </button>
 
             </div>
