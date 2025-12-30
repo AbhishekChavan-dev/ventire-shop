@@ -134,6 +134,8 @@ const Navbar = ({ cart, user, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const isCartPage = location.pathname === "/cart";
+  // 🟢 Check if we are currently on the My Orders page
+  const isOrdersPage = location.pathname === '/myorders';
   // Logic to handle logout
   const handleLogout = () => {
     // 1. Clear the physical storage
@@ -177,7 +179,7 @@ const Navbar = ({ cart, user, onLogout }) => {
 
           <div className="hidden md:flex items-center space-x-8">
             {/* SHOW ONLY ON HOME */}
-            {!isCartPage && (
+            {!isCartPage || !isOrdersPage && (
               <>
                 <a href="#home" className="text-gray-600 hover:text-green-600">Home</a>
                 <a href="#features" className="text-gray-600 hover:text-green-600">Technology</a>
@@ -247,7 +249,7 @@ const Navbar = ({ cart, user, onLogout }) => {
             )}
 
             {/* SHOW ONLY ON CART */}
-            {isCartPage && (
+            {isCartPage || isOrdersPage && (
               <Link
                 to="/"
                 className="bg-gray-900 text-white px-5 py-2 rounded-full hover:bg-gray-800"
