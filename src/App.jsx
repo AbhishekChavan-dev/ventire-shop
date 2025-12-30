@@ -831,7 +831,7 @@ const Features = () => {
 
       desc: "Sleep mode ensures purification without disturbing your dreams.",
 
-      icon: <Wind size={auto} className="text-white" />,
+      icon: <Wind size={24} className="text-white" />,
 
       color: "bg-teal-500"
 
