@@ -49,3 +49,4 @@ const Success = () => {
     </div>
   );
 };
+export default Success;
