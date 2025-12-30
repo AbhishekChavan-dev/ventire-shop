@@ -274,9 +274,32 @@ const Navbar = ({ cart, user, onLogout }) => {
                 </span>
               )}
             </Link>
-            <Link to="/login" className="text-gray-600 hover:text-green-600 font-semibold">
+            {/* 👤 PROFILE LOGIC START */}
+                {user ? (
+                  <div className="flex items-center gap-4 border-l pl-8 border-gray-100">
+                    <div className="flex flex-col items-end">
+                      <span className="text-sm font-bold text-gray-900">{user.name}</span>
+                      <button
+                        onClick={onLogout}
+                        className="text-xs text-red-500 hover:underline"
+                      >
+                        Logout
+                      </button>
+                    </div>
+
+                    <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold border border-green-200">
+                      {user.name?.charAt(0).toUpperCase()}
+                    </div>
+                  </div>
+                ) : (
+                  <Link to="/login" className="text-gray-600 hover:text-green-600 font-semibold">
+                    Login
+                  </Link>
+                )}
+                {/* 👤 PROFILE LOGIC END */}
+            {/*<Link to="/login" className="text-gray-600 hover:text-green-600 font-semibold">
               Login
-            </Link>
+            </Link>*/}
 
             {/* Mobile Menu Button */}
             <button onClick={() => setIsOpen(!isOpen)} className="text-gray-600 p-2">
