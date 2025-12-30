@@ -7,6 +7,15 @@ const PRICE = 2499;
 export default function Cart({ cart, setCart }) {
   //const { user } = useAuth();
   const navigate = useNavigate();
+  // 1. Get user from localStorage
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
   {/*} useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -26,13 +35,21 @@ export default function Cart({ cart, setCart }) {
   };
 
   const checkout = async () => {
+    // 2. Security Check: Ensure user is logged in before paying
+    if (!user) {
+      alert("Please login to proceed with payment");
+      navigate("/login");
+      return;
+    }
     try {
 
       // 1. Call backend to create order
       const res = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json", },
-        body: JSON.stringify({ quantity: cart.quantity }),
+        body: JSON.stringify({ quantity: cart.quantity,
+          userId: user.id || user._id // Use whichever your DB returns
+         }),
       }
       );
 
@@ -47,6 +64,10 @@ export default function Cart({ cart, setCart }) {
         name: "Ventire",
         description: "Ventire Air Purifier",
         order_id: order.id,
+        // 4. Prefill user data in Razorpay UI for better UX
+        prefill: {
+          name: user.name,
+          email: user.email,},
         handler: async function (response) {
           try {
             // 1. Save order in backend
@@ -61,6 +82,7 @@ export default function Cart({ cart, setCart }) {
                 signature: response.razorpay_signature,
                 amount: totalAmount,
                 quantity: cart.quantity,
+                userId: user.id || user._id, // 5. Pass userId to store-order
                 status: "paid",
               }),
             });
