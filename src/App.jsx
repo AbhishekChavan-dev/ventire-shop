@@ -1000,7 +1000,14 @@ const App = () => {
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (e) {
+        console.error("Invalid user data");
+        localStorage.removeItem("user"); // Clean up corrupt data
+      }
+    } else {
+      setUser(null); // Ensure user is null if nothing is in storage
     }
   }, []);
   return (
