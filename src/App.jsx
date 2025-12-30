@@ -544,7 +544,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
   ];
 
   const buyNow = async () => {
-    const navigate = useNavigate(); // 🟢 Ensure this is here
+
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
       alert("Please login to purchase");
@@ -612,12 +612,12 @@ const ProductShowcase = ({ cart, setCart, user }) => {
               // 🟢 SUCCESS: Clear the cart state here
               setCart({ quantity: 0 });
               // ✅ SUCCESS: Redirect using the custom VT-XXXX ID
-              navigate(`/Success?orderNo=${data.displayId}`, { state: { address: address } });
-              //window.location.href = `/Success?orderNo=${data.displayId}`, {state: { address: address }};
+              // navigate(`/Success?orderNo=${data.displayId}`, { state: { address: address } });
+              window.location.href = `/Success?orderNo=${data.displayId}`, { state: { address: address } };
             } else {
               // ⚠️ FALLBACK: If API failed but payment worked, use Razorpay ID so they aren't stuck
-              navigate(`/Success?orderNo=${response.razorpay_order_id}`);
-              // window.location.href = `/Success?orderNo=${response.razorpay_order_id}`;
+              //  navigate(`/Success?orderNo=${response.razorpay_order_id}`);
+              window.location.href = `/Success?orderNo=${response.razorpay_order_id}`;
             }
             {/*window.location.href =
               (`/Success?orderId=${response.razorpay_payment_id}`);*/}
