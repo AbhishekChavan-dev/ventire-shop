@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 //import { useAuth } from "../context/AuthContext";
-import { useEffect } from "react";
-import { Beaker } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Beaker, Trash2, User} from "lucide-react";
 const PRICE = 2499;
 
 export default function Cart({ cart, setCart }) {

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogIn, UserPlus, Mail, Lock, User as UserIcon, Loader2 } from 'lucide-react';
+import { LogIn, UserPlus, Mail, Lock,Beaker, Trash2, User as UserIcon, Loader2 } from 'lucide-react';
 
 export default function Login({ onLoginSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
