@@ -526,7 +526,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
   const totalAmount = PRICE * quantity;
   const mrp = 3499;
   const mrpamount = mrp * quantity;
-
+  const [isProcessing, setIsProcessing] = useState(false);
 
 
   // NOTE: In a real deployment, replace this URL with the uploaded image path or a hosted URL.
@@ -574,9 +574,10 @@ const ProductShowcase = ({ cart, setCart, user }) => {
 
         // ✅ SUCCESS
         handler: async function (response) {
+          setIsProcessing(true); // 🟢 Start the loading overlay
           try {
             // 1. Save order in backend
-           const res =  await fetch("/api/store-order", {
+            const res = await fetch("/api/store-order", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -606,6 +607,9 @@ const ProductShowcase = ({ cart, setCart, user }) => {
           } catch (err) {
             console.error("Order save failed", err);
             navigate("/Failure");
+          }
+          finally {
+            // We don't set it to false here because navigate() will take us away
           }
         },
 
