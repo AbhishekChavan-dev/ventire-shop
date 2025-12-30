@@ -2,7 +2,7 @@ import { Routes, Route, Link, useNavigate, useLocation } from "react-router-dom"
 import Cart from "./pages_temp/Cart";
 import Success from "./pages_temp/Success";
 import Failure from "./pages_temp/Failure";
-import Login from "./pages_temp/Login";
+import Login from "./pages_temp/LoginAuth.jsx";
 import React, { useState, useEffect } from 'react';
 
 import { ShoppingBag, Wind, Leaf, ShieldCheck, Zap, Droplets, Menu, X, ArrowRight, Star, Check } from 'lucide-react';
