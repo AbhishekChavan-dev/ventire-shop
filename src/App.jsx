@@ -128,7 +128,7 @@ const WindAnimation = () => {
 
 // 2. Navigation Bar
 
-const Navbar = ({ cart, user }) => {
+const Navbar = ({ cart, user, onLogout }) => {
 
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
@@ -187,7 +187,7 @@ const Navbar = ({ cart, user }) => {
                     <div className="flex flex-col items-end">
                       <span className="text-sm font-bold text-gray-900">{user.name}</span>
                       <button
-                        onClick={handleLogout}
+                        onClick={onLogout}
                         className="text-xs text-red-500 hover:underline"
                       >
                         Logout
