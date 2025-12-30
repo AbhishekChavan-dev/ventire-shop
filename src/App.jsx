@@ -133,7 +133,15 @@ const Navbar = ({ cart, user }) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const isCartPage = location.pathname === "/cart";
-
+  // Logic to handle logout
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.clear(); // Clears user, token, AND ventire_cart
+    setUser(null);
+    setCart({ quantity: 0 });
+    window.location.href = "/"; // Force refresh to clear state
+  };
   return (
 
     <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-green-50">
@@ -172,9 +180,28 @@ const Navbar = ({ cart, user }) => {
                 <a href="#home" className="text-gray-600 hover:text-green-600">Home</a>
                 <a href="#features" className="text-gray-600 hover:text-green-600">Technology</a>
                 <a href="#product" className="text-gray-600 hover:text-green-600">Shop</a>
-                <Link to="/login" className="text-gray-600 hover:text-green-600 font-semibold">
-                  Login
-                </Link>
+                {/* 👤 PROFILE LOGIC START */}
+                {user ? (
+                  <div className="flex items-center gap-4 border-l pl-8 border-gray-100">
+                    <div className="flex flex-col items-end">
+                      <span className="text-sm font-bold text-gray-900">{user.name}</span>
+                      <button
+                        onClick={handleLogout}
+                        className="text-xs text-red-500 hover:underline"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                    <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold border border-green-200">
+                      {user.name?.charAt(0).toUpperCase()}
+                    </div>
+                  </div>
+                ) : (
+                  <Link to="/login" className="text-gray-600 hover:text-green-600 font-semibold">
+                    Login
+                  </Link>
+                )}
+                {/* 👤 PROFILE LOGIC END */}
                 <Link
                   to="/cart"
                   className="bg-green-600 text-white px-5 py-2 rounded-full hover:bg-green-700"
@@ -421,12 +448,21 @@ const ProductShowcase = ({ cart, setCart }) => {
   ];
 
   const buyNow = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      alert("Please login to purchase");
+      navigate("/login");
+      return;
+    }
     const API_URL = import.meta.env.VITE_API_URL;
     try {
       const res = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ quantity }),
+        body: JSON.stringify({
+          quantity,
+          userId: user.id // 👈 Pass the ID here
+        }),
       }
       );
 
@@ -456,6 +492,7 @@ const ProductShowcase = ({ cart, setCart }) => {
                 amount: totalAmount,
                 quantity: cart.quantity,
                 status: "paid",
+                userId: user.id,//added
               }),
             });
             window.location.href =
