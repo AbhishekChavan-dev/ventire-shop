@@ -977,7 +977,16 @@ const App = () => {
   }, [cart]);
   // 👤 AUTH STATE (New Logic Added Here)
   const [user, setUser] = useState(null);
-
+// Function to be called by Login.jsx upon success
+  const handleLoginSuccess = (userData) => {
+    setUser(userData); // This triggers an immediate UI re-render
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null); // This triggers an immediate UI re-render
+    navigate("/");
+  };
   // Sync Cart to LocalStorage
   useEffect(() => {
     localStorage.setItem("ventire_cart", JSON.stringify(cart));
@@ -992,7 +1001,7 @@ const App = () => {
   }, []);
   return (
     <div className="font-sans antialiased bg-white text-gray-900">
-      <Navbar cart={cart} user={user} />
+      <Navbar cart={cart} user={user} onLogout={handleLogout} />
 
       <Routes>
         <Route
@@ -1013,7 +1022,7 @@ const App = () => {
 
 
         <Route path="/success" element={<Success />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
         <Route path="/failure" element={<Failure />} />
       </Routes>
 
