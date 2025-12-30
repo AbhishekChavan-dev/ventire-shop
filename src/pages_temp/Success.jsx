@@ -39,7 +39,7 @@ const Success = () => {
       </div>
 
       <div className="flex gap-4">
-        <Link to="/my-orders" className="bg-gray-900 text-white px-8 py-3 rounded-full font-bold hover:bg-gray-800 transition-all">
+        <Link to="/myorders" className="bg-gray-900 text-white px-8 py-3 rounded-full font-bold hover:bg-gray-800 transition-all">
           View My Orders
         </Link>
         <Link to="/" className="border border-gray-200 px-8 py-3 rounded-full font-bold hover:bg-gray-50 transition-all">
