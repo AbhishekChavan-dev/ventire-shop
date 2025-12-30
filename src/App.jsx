@@ -210,7 +210,7 @@ const Navbar = ({ cart, user, onLogout }) => {
                           </div>
                           {/* 🟢 NEW: LINK TO MY ORDERS */}
                           <Link
-                            to="/my-orders"
+                            to="/myorders"
                             onClick={() => setIsProfileOpen(false)}
                             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50 transition-colors flex items-center gap-2"
                           >
@@ -1118,7 +1118,7 @@ const App = () => {
         <Route path="/success" element={<Success />} />
         <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} onLogout={handleLogout} />} />
         <Route path="/failure" element={<Failure />} />
-        <Route path="/my-orders" element={<MyOrders user={user} />} />
+        <Route path="/myorders" element={<MyOrders user={user} />} />
       </Routes>
 
       <Footer />
