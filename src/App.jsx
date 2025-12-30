@@ -494,7 +494,7 @@ const Hero = () => {
 
 // 4. Product Showcase Section
 
-const ProductShowcase = ({ cart, setCart }) => {
+const ProductShowcase = ({ cart, setCart, user }) => {
 
   const [activeImage, setActiveImage] = useState(0);
 
@@ -527,6 +527,8 @@ const ProductShowcase = ({ cart, setCart }) => {
       navigate("/login");
       return;
     }
+    // 🟢 Use a fallback check for the ID
+    const currentUserId = user._id || user.id;
     const API_URL = import.meta.env.VITE_API_URL;
     try {
       const res = await fetch("/api/create-order", {
@@ -534,7 +536,7 @@ const ProductShowcase = ({ cart, setCart }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           quantity,
-          userId: user.id || user._id// 👈 Pass the ID here
+          userId: currentUserId// 👈 Pass the ID here
         }),
       }
       );
@@ -1091,7 +1093,7 @@ const App = () => {
           element={
             <>
               <Hero />
-              <ProductShowcase cart={cart} setCart={setCart} />
+              <ProductShowcase cart={cart} setCart={setCart} user={user}/>
               <Features />
             </>
           }
