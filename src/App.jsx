@@ -824,7 +824,6 @@ const ProductShowcase = ({ cart, setCart, user }) => {
                 className="flex-1 bg-green-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-green-700 transition"
               >
                 {showAddress ? `Pay ₹${totalAmount}` : "Buy Now"}
-              // Buy Now ₹{totalAmount}
               </button>
 
             </div>
