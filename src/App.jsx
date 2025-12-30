@@ -2,6 +2,7 @@ import { Routes, Route, Link, useNavigate, useLocation } from "react-router-dom"
 import Cart from "./pages_temp/Cart";
 import Success from "./pages_temp/Success";
 import Failure from "./pages_temp/Failure";
+import Login from "./pages_temp/Login";
 import React, { useState, useEffect } from 'react';
 
 import { ShoppingBag, Wind, Leaf, ShieldCheck, Zap, Droplets, Menu, X, ArrowRight, Star, Check } from 'lucide-react';
@@ -171,7 +172,9 @@ const Navbar = ({ cart }) => {
                 <a href="#home" className="text-gray-600 hover:text-green-600">Home</a>
                 <a href="#features" className="text-gray-600 hover:text-green-600">Technology</a>
                 <a href="#product" className="text-gray-600 hover:text-green-600">Shop</a>
-
+                <Link to="/login" className="text-gray-600 hover:text-green-600 font-semibold">
+                  Login
+                </Link>
                 <Link
                   to="/cart"
                   className="bg-green-600 text-white px-5 py-2 rounded-full hover:bg-green-700"
@@ -241,6 +244,9 @@ const Navbar = ({ cart }) => {
                   {cart.quantity}
                 </span>
               )}
+            </Link>
+            <Link to="/login" className="text-gray-600 hover:text-green-600 font-semibold">
+              Login
             </Link>
 
             {/* Mobile Menu Button */}
@@ -970,12 +976,18 @@ const App = () => {
           }
         />
 
-        <Route
+        <Routes
           path="/cart"
-          element={<Cart cart={cart} setCart={setCart} />}
+          element={
+            localStorage.getItem("token")
+              ? <Cart cart={cart} setCart={setCart} />
+              : <Navigate to="/login" />
+          }
         />
+         
 
         <Route path="/success" element={<Success />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/failure" element={<Failure />} />
       </Routes>
 
