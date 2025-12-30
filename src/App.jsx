@@ -536,7 +536,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           quantity,
-          userId: currentUserId// 👈 Pass the ID here
+          userId: user.email// 👈 Pass the ID here
         }),
       }
       );
@@ -567,7 +567,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
                 amount: totalAmount,
                 quantity: cart.quantity,
                 status: "paid",
-                userId: currentUserId//added
+                userId: user.email//added
               }),
             });
             window.location.href =
@@ -831,7 +831,7 @@ const Features = () => {
 
       desc: "Sleep mode ensures purification without disturbing your dreams.",
 
-      icon: <Wind size={32} className="text-white" />,
+      icon: <Wind size={auto} className="text-white" />,
 
       color: "bg-teal-500"
 
