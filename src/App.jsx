@@ -536,7 +536,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           quantity,
-          userID: user._id// 👈 Pass the ID here
+          userID: user.email// 👈 Pass the ID here
         }),
       }
       );
