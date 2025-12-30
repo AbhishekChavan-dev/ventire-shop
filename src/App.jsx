@@ -978,16 +978,12 @@ const App = () => {
 
         <Routes
           path="/cart"
-          element={
-            localStorage.getItem("token")
-              ? <Cart cart={cart} setCart={setCart} />
-              : <Navigate to="/Login" />
-          }
+          element={<Cart cart={cart} setCart={setCart} />}
         />
          
 
         <Route path="/success" element={<Success />} />
-        <Route path="/Login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/failure" element={<Failure />} />
       </Routes>
 
