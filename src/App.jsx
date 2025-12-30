@@ -1033,7 +1033,7 @@ const App = () => {
 
 
         <Route path="/success" element={<Success />} />
-        <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
+        <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} onLogout={handleLogout}/>} />
         <Route path="/failure" element={<Failure />} />
       </Routes>
 
