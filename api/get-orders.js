@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     }
 
     // Find all orders for this user, sorted by newest first
-    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+    const orders = await Order.find({ userId: userId }).sort({ createdAt: -1 });
     
     res.status(200).json(orders);
   } catch (error) {
