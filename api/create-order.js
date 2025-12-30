@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
     const { quantity, userId } = req.body;
     const options = {
-      amount: amount,
+      amount: quantity * 2499 * 100,
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
       notes: {
