@@ -1,6 +1,6 @@
 // api/get-orders.js
-import connectDB from "../lib/mongodb";
-import Order from "../models/Orders";
+import connectDB from "../lib/mongodb.js";
+import Order from "../models/Orders.js";
 import mongoose from "mongoose";
 
 export default async function handler(req, res) {
