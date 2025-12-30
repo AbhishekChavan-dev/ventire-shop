@@ -146,6 +146,8 @@ const Navbar = ({ cart, user, onLogout }) => {
     setCart({ quantity: 0 });
     window.location.href = "/"; // Force refresh to clear state
   };
+  const hiddenPages = ['/cart', '/myorders', '/success'];
+  const shouldHideLinks = hiddenPages.includes(location.pathname);
   return (
 
     <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-green-50">
@@ -179,7 +181,7 @@ const Navbar = ({ cart, user, onLogout }) => {
 
           <div className="hidden md:flex items-center space-x-8">
             {/* SHOW ONLY ON HOME */}
-            {!isCartPage || !isOrdersPage && (
+            {!shouldHideLinks && (
               <>
                 <a href="#home" className="text-gray-600 hover:text-green-600">Home</a>
                 <a href="#features" className="text-gray-600 hover:text-green-600">Technology</a>
@@ -249,7 +251,7 @@ const Navbar = ({ cart, user, onLogout }) => {
             )}
 
             {/* SHOW ONLY ON CART */}
-            {isCartPage || isOrdersPage && (
+            {shouldHideLinks && (
               <Link
                 to="/"
                 className="bg-gray-900 text-white px-5 py-2 rounded-full hover:bg-gray-800"
@@ -386,7 +388,7 @@ const Navbar = ({ cart, user, onLogout }) => {
         <div className="md:hidden bg-white border-t border-gray-100 absolute w-full">
 
           <div className="px-4 pt-2 pb-6 space-y-2 shadow-lg">
-            {isCartPage && (
+            {shouldHideLinks && (
               <Link
                 to="/"
                 onClick={() => setIsOpen(false)}
@@ -394,7 +396,7 @@ const Navbar = ({ cart, user, onLogout }) => {
               >
                 ← Back to Home
               </Link>
-            )} {!isCartPage && (
+            )} {!shouldHideLinks && (
               <>
                 <a href="#home" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Home</a>
                 <a href="#features" className="block px-3 py-2 text-gray-600 hover:bg-green-50 rounded-md">Technology</a>
