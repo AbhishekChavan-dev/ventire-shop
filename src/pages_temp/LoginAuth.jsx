@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogIn, UserPlus, Mail, Lock, User as UserIcon, Loader2 } from 'lucide-react';
 
-export default function Login() {
+export default function Login({ onLoginSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -36,6 +36,9 @@ export default function Login() {
         // Store the token and user info
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
+        if (onLoginSuccess) {
+          onLoginSuccess(data.user);
+        }
         navigate("/");
       } else {
         // After signup, switch to login view
@@ -52,7 +55,7 @@ export default function Login() {
   return (
     <div className="min-h-screen pt-32 pb-12 px-4 bg-gray-50 flex flex-col justify-center">
       <div className="max-w-md w-full mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
-        
+
         {/* Header */}
         <div className="bg-green-600 p-8 text-white text-center">
           <h2 className="text-3xl font-bold">{isLogin ? "Welcome Back" : "Join Ventire"}</h2>
@@ -80,7 +83,7 @@ export default function Login() {
                     required
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition"
                     placeholder="John Doe"
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
                 </div>
               </div>
@@ -95,7 +98,7 @@ export default function Login() {
                   required
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition"
                   placeholder="name@example.com"
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
               </div>
             </div>
@@ -109,7 +112,7 @@ export default function Login() {
                   required
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition"
                   placeholder="••••••••"
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 />
               </div>
             </div>

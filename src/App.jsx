@@ -190,6 +190,7 @@ const Navbar = ({ cart, user }) => {
                         Logout
                       </button>
                     </div>
+                    
                     <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold border border-green-200">
                       {user.name?.charAt(0).toUpperCase()}
                     </div>
@@ -977,7 +978,7 @@ const App = () => {
   }, [cart]);
   // 👤 AUTH STATE (New Logic Added Here)
   const [user, setUser] = useState(null);
-// Function to be called by Login.jsx upon success
+  // Function to be called by Login.jsx upon success
   const handleLoginSuccess = (userData) => {
     setUser(userData); // This triggers an immediate UI re-render
   };
