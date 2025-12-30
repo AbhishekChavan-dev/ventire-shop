@@ -9,7 +9,8 @@ const MyOrders = ({ user }) => {
     const fetchOrders = async () => {
       if (!user) return;
       try {
-        const res = await fetch(`/api/get-orders?userId=${user._id}`);
+        const userId = user._id;
+        const res = await fetch(`/api/get-orders?userId=${userId}`);
         const data = await res.json();
         setOrders(data);
       } catch (err) {
