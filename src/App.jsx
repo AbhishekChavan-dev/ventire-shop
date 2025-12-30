@@ -135,8 +135,6 @@ const Navbar = ({ cart, user }) => {
   const isCartPage = location.pathname === "/cart";
   // Logic to handle logout
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
     localStorage.clear(); // Clears user, token, AND ventire_cart
     setUser(null);
     setCart({ quantity: 0 });
