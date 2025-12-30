@@ -544,6 +544,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
   ];
 
   const buyNow = async () => {
+    const navigate = useNavigate(); // 🟢 Ensure this is here
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
       alert("Please login to purchase");
@@ -584,7 +585,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
 
         // ✅ SUCCESS
         handler: async function (response) {
-          const navigate = useNavigate(); // 🟢 Ensure this is here
+
           setIsProcessing(true); // 🟢 Start the loading overlay
           try {
             // 1. Save order in backend
