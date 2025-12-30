@@ -58,6 +58,7 @@ export default function Cart({ cart, setCart }) {
               body: JSON.stringify({
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
+                signature: response.razorpay_signature,
                 amount: totalAmount,
                 quantity: cart.quantity,
                 status: "paid",

@@ -1,7 +1,7 @@
 export const config = {
   runtime: "nodejs",
 };
-
+import crypto from "crypto"; // Built-in Node.js module
 import connectDB from "../lib/mongodb.js";
 import Order from "../models/Orders.js";
 
@@ -11,11 +11,23 @@ export default async function handler(req, res) {
   }
 
   try {
+    const { orderId, paymentId, signature, amount, quantity, status } = req.body;
+    // 1. SECURITY CHECK: Verify the Signature
+    const secret = process.env.RAZORPAY_KEY_SECRET;
+    const generated_signature = crypto
+      .createHmac("sha256", secret)
+      .update(orderId + "|" + paymentId)
+      .digest("hex");
+
+    if (generated_signature !== signature) {
+      console.error("❌ Security Alert: Invalid Signature!");
+      return res.status(400).json({ success: false, message: "Transaction invalid" });
+    }
     await connectDB();
 
     console.log("📦 Order received:", req.body);
 
-    const { orderId, paymentId, amount, quantity, status } = req.body;
+    
 
     if (!orderId) {
       return res.status(400).json({ error: "orderId missing" });

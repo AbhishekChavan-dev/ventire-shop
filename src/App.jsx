@@ -435,10 +435,29 @@ const ProductShowcase = ({ cart, setCart }) => {
         order_id: order.id,
 
         // ✅ SUCCESS
-        
-        handler: function (response) {
-          window.location.href =
-            `/success?pid=${response.razorpay_payment_id}`;
+        handler: async function (response) {
+          try {
+            // 1. Save order in backend
+            await fetch("/api/store-order", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                orderId: response.razorpay_order_id,
+                paymentId: response.razorpay_payment_id,
+                signature: response.razorpay_signature,
+                amount: totalAmount,
+                quantity: cart.quantity,
+                status: "paid",
+              }),
+            });
+            window.location.href =
+              (`/Success?orderId=${response.razorpay_payment_id}`);
+          } catch (err) {
+            console.error("Order save failed", err);
+            navigate("/Failure");
+          }
         },
 
         // ❌ FAILURE / CANCEL
