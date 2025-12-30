@@ -536,7 +536,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           quantity,
-          userId: user.email// 👈 Pass the ID here
+          userID: user._id// 👈 Pass the ID here
         }),
       }
       );
@@ -567,7 +567,8 @@ const ProductShowcase = ({ cart, setCart, user }) => {
                 amount: totalAmount,
                 quantity: cart.quantity,
                 status: "paid",
-                userId: user.email//added
+                userId: user._id,//added
+                useremail: user.email
               }),
             });
             window.location.href =
