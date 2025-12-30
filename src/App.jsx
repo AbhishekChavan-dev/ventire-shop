@@ -552,7 +552,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
     const currentUserId = user._id;
     const API_URL = import.meta.env.VITE_API_URL;
     try {
-      const res = await fetch("/api/create-order", {
+      const resCreate = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -562,7 +562,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
       }
       );
 
-      const order = await res.json();
+      const order = await resCreate.json();
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -576,7 +576,7 @@ const ProductShowcase = ({ cart, setCart, user }) => {
         handler: async function (response) {
           try {
             // 1. Save order in backend
-            await fetch("/api/store-order", {
+           const res =  await fetch("/api/store-order", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
