@@ -2,6 +2,7 @@ import { Routes, Route, Link, useNavigate, useLocation, Navigate } from "react-r
 import Cart from "./pages_temp/Cart";
 import Success from "./pages_temp/Success";
 import Failure from "./pages_temp/Failure";
+import MyOrders from "./pages_temp/MyOrders";
 import Login from "./pages_temp/LoginAuth.jsx";
 import React, { useState, useEffect } from 'react';
 
@@ -207,7 +208,15 @@ const Navbar = ({ cart, user, onLogout }) => {
                             <p className="text-xs text-gray-500">Signed in as</p>
                             <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
                           </div>
-
+                          {/* 🟢 NEW: LINK TO MY ORDERS */}
+                          <Link
+                            to="/my-orders"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50 transition-colors flex items-center gap-2"
+                          >
+                            <Package size={16} className="text-gray-400" />
+                            <span>My Orders</span>
+                          </Link>
                           {/* Action Buttons */}
                           <button
                             onClick={() => {
@@ -301,44 +310,44 @@ const Navbar = ({ cart, user, onLogout }) => {
             {/* 👤 PROFILE LOGIC START */}
             {user ? (
               <div className="relative">
-                    {/* The Rounded Icon (The Trigger) */}
-                    <button
-                      onClick={() => setIsProfileOpen(!isProfileOpen)}
-                      className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold border border-green-200 hover:bg-green-200 transition-colors"
-                    >
-                      {user.name.charAt(0).toUpperCase()}
-                    </button>
+                {/* The Rounded Icon (The Trigger) */}
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold border border-green-200 hover:bg-green-200 transition-colors"
+                >
+                  {user.name.charAt(0).toUpperCase()}
+                </button>
 
-                    {/* The Dropdown Menu */}
-                    {isProfileOpen && (
-                      <>
-                        {/* Invisible backdrop to close menu when clicking outside */}
-                        <div
-                          className="fixed inset-0 z-10"
-                          onClick={() => setIsProfileOpen(false)}
-                        ></div>
+                {/* The Dropdown Menu */}
+                {isProfileOpen && (
+                  <>
+                    {/* Invisible backdrop to close menu when clicking outside */}
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setIsProfileOpen(false)}
+                    ></div>
 
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 border border-gray-100 z-20">
-                          {/* Name Header */}
-                          <div className="px-4 py-2 border-b border-gray-50">
-                            <p className="text-xs text-gray-500">Signed in as</p>
-                            <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
-                          </div>
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 border border-gray-100 z-20">
+                      {/* Name Header */}
+                      <div className="px-4 py-2 border-b border-gray-50">
+                        <p className="text-xs text-gray-500">Signed in as</p>
+                        <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
+                      </div>
 
-                          {/* Action Buttons */}
-                          <button
-                            onClick={() => {
-                              setIsProfileOpen(false);
-                              onLogout();
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
-                          >
-                            <span>Logout</span>
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </div>
+                      {/* Action Buttons */}
+                      <button
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          onLogout();
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
+                      >
+                        <span>Logout</span>
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             ) : (
               <Link to="/login" className="text-gray-600 hover:text-green-600 font-semibold">
                 Login
@@ -1094,7 +1103,7 @@ const App = () => {
           element={
             <>
               <Hero />
-              <ProductShowcase cart={cart} setCart={setCart} user={user}/>
+              <ProductShowcase cart={cart} setCart={setCart} user={user} />
               <Features />
             </>
           }
@@ -1109,6 +1118,7 @@ const App = () => {
         <Route path="/success" element={<Success />} />
         <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} onLogout={handleLogout} />} />
         <Route path="/failure" element={<Failure />} />
+        <Route path="/my-orders" element={<MyOrders user={user} />} />
       </Routes>
 
       <Footer />
