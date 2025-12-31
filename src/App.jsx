@@ -166,16 +166,16 @@ const Navbar = ({ cart, user, onLogout }) => {
             </div>*/}
             <div className="flex items-center space-x-3">
               <img
-                src="/Ventire-logo.png"
+                src="/logo.jpeg"
                 alt="Ventire Logo"
                 className="h-10 w-absolute"
               />
             </div>
-            <span className="text-2xl font-extrabold tracking-wide
+            {/*<span className="text-2xl font-extrabold tracking-wide
                     bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500
                     text-transparent bg-clip-text">
               Ventire
-            </span>
+            </span>*/}
           </div>
 
 
