@@ -516,63 +516,390 @@ const Hero = () => {
 
 // 4. Product Showcase Section
 
-const ProductShowcase = ({ cart, setCart, user }) => {
+// const ProductShowcase = ({ cart, setCart, user }) => {
+//   const [address, setAddress] = useState({ street: '', city: '', pincode: '', phone: '' });
+//   const [showAddress, setShowAddress] = useState(false); // Toggle visibility
+//   const [activeImage, setActiveImage] = useState(0);
+
+//   // ✅ QUANTITY STATE
+//   const [quantity, setQuantity] = useState(1);
+//   const [addedMsg, setAddedMsg] = useState(false)
+//   const PRICE = 2499;
+//   const totalAmount = PRICE * quantity;
+//   const mrp = 3499;
+//   const mrpamount = mrp * quantity;
+//   const [isProcessing, setIsProcessing] = useState(false);
+
+
+//   // NOTE: In a real deployment, replace this URL with the uploaded image path or a hosted URL.
+
+//   // Using a placeholder that resembles the white cylindrical purifier described.
+
+//   const productImages = [
+
+//     "/Air purifier.jpg",
+
+//     // Ideally, the second image would be the specific one uploaded by the user
+
+//   ];
+
+//   const buyNow = async () => {
+
+//     const user = JSON.parse(localStorage.getItem("user"));
+//     if (!user) {
+//       alert("Please login to purchase");
+//       navigate("/login");
+//       return;
+//     }
+//     // 2. TOGGLE ADDRESS FORM OR VALIDATE
+//     if (!showAddress) {
+//       setShowAddress(true); // First click shows the form
+//       return;
+//     } if (!address.street || !address.pincode || !address.phone) {
+//       alert("Please enter your delivery details before paying.");
+//       return;
+//     }
+//     // 🟢 Use a fallback check for the ID
+//     const currentUserId = user._id;
+//     const API_URL = import.meta.env.VITE_API_URL;
+//     try {
+//       const resCreate = await fetch("/api/create-order", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({
+//           quantity,
+//           userID: user._id// 👈 Pass the ID here
+//         }),
+//       }
+//       );
+
+//       const order = await resCreate.json();
+
+//       const options = {
+//         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+//         amount: order.amount,
+//         currency: "INR",
+//         name: "Ventire",
+//         description: "Ventire Air Purifier",
+//         order_id: order.id,
+
+//         // ✅ SUCCESS
+//         handler: async function (response) {
+
+//           setIsProcessing(true); // 🟢 Start the loading overlay
+//           try {
+//             // 1. Save order in backend
+//             const res = await fetch("/api/store-order", {
+//               method: "POST",
+//               headers: {
+//                 "Content-Type": "application/json",
+//               },
+//               body: JSON.stringify({
+//                 orderId: response.razorpay_order_id,
+//                 paymentId: response.razorpay_payment_id,
+//                 signature: response.razorpay_signature,
+//                 amount: totalAmount,
+//                 quantity: cart.quantity,
+//                 status: "paid",
+//                 userId: user._id,//added
+//                 useremail: user.email,
+//                 address: address, // 🟢 SEND ADDRESS TO BACKEND
+//               }),
+//             });
+//             const data = await res.json();
+//             // 3. Check if the server sent back the custom ID (VT-XXXX)
+//             if (data.success && data.displayId) {
+//               // 🟢 SUCCESS: Clear the cart state here
+//               setCart({ quantity: 0 });
+//               // ✅ SUCCESS: Redirect using the custom VT-XXXX ID
+//               // navigate(`/Success?orderNo=${data.displayId}`, { state: { address: address } });
+//               window.location.href = `/Success?orderNo=${data.displayId}`, { state: { address: address } };
+//             } else {
+//               // ⚠️ FALLBACK: If API failed but payment worked, use Razorpay ID so they aren't stuck
+//               //  navigate(`/Success?orderNo=${response.razorpay_order_id}`);
+//               window.location.href = `/Success?orderNo=${response.razorpay_order_id}`;
+//             }
+//             {/*window.location.href =
+//               (`/Success?orderId=${response.razorpay_payment_id}`);*/}
+//           } catch (err) {
+//             console.error("Order save failed", err);
+//             navigate("/Failure");
+//           }
+//           finally {
+//             // We don't set it to false here because navigate() will take us away
+//           }
+//         },
+
+//         // ❌ FAILURE / CANCEL
+//         modal: {
+//           ondismiss: function () {
+//             window.location.href = "/failure";
+//           },
+//         },
+
+//         theme: { color: "#16a34a" },
+//       };
+
+//       const rzp = new window.Razorpay(options);
+//       rzp.open();
+//     } catch (err) {
+//       console.error("Buy Now error:", err);
+//       alert("Unable to start payment. Try again.");
+//     }
+//   };
+
+
+//   const addToCart = () => {
+//     setCart({
+//       quantity: cart.quantity + quantity,
+//     });
+
+//     setAddedMsg(true);
+//     setTimeout(() => setAddedMsg(false), 2000);
+//   };
+
+//   return (
+
+//     <div id="product" className="py-24 bg-white relative">
+
+//       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+
+
+//           {/* Image Gallery */}
+
+//           <div className="relative group">
+
+//             <div className="absolute inset-0 bg-gradient-to-tr from-green-100 to-blue-50 rounded-3xl transform -rotate-2 scale-105 group-hover:rotate-0 transition-transform duration-500"></div>
+
+//             <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+
+//               {/* Badge */}
+
+//               <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold z-10">
+
+//                 Sale -28%
+
+//               </div>
+
+//               <img
+//                 src={productImages[0]}
+//                 alt="Ventire Air Purifier"
+//                 className="
+//                            w-full 
+//                            h-auto 
+//                            md:h-[500px] 
+//                            object-contain 
+//                            md:object-cover 
+//                            object-center 
+//                            transition-transform 
+//                            duration-700
+//                            "
+//               />
+
+//               <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-lg text-xs text-gray-500 border border-gray-200">
+
+//                 *Model shown is Ventire Pure-X1
+
+//               </div>
+
+//             </div>
+
+//           </div>
+
+
+
+//           {/* Product Details */}
+
+//           <div>
+
+//             <div className="mb-2 text-green-600 font-semibold uppercase tracking-wider text-sm">Best Seller</div>
+
+//             <h2 className="text-4xl font-bold text-gray-900 mb-4">Ventire Smart Air Purifier</h2>
+
+
+
+//             <div className="flex items-center space-x-4 mb-6">
+
+//               <div className="flex text-yellow-400">
+
+//                 {[...Array(5)].map((_, i) => <Star key={i} size={20} fill="currentColor" />)}
+
+//               </div>
+
+//               <span className="text-gray-500 text-sm">(428 Reviews)</span>
+
+//             </div>
+
+
+
+//             <div className="mb-8">
+
+//               <span className="text-gray-400 text-2xl line-through mr-3">{mrpamount}</span>
+
+//               <span className="text-5xl font-bold text-gray-900">
+//                 ₹{totalAmount}
+//               </span>
+
+//               <p className="text-green-600 text-sm mt-2 font-medium">Inclusive of all taxes</p>
+
+//             </div>
+//             <div className="flex items-center gap-4 mt-4">
+//               <button
+//                 onClick={() => setQuantity(q => Math.max(1, q - 1))}
+//                 className="px-4 py-2 border rounded-lg text-xl"
+//               >
+//                 −
+//               </button>
+
+//               <span className="text-lg font-semibold">{quantity}</span>
+
+//               <button
+//                 onClick={() => setQuantity(q => q + 1)}
+//                 className="px-4 py-2 border rounded-lg text-xl"
+//               >
+//                 +
+//               </button>
+//             </div>
+
+
+
+//             <div className="space-y-4 mb-8">
+
+//               <FeatureRow icon={<ShieldCheck className="text-green-500" />} text="H13 Level HEPA Filter Element" />
+
+//               <FeatureRow icon={<Wind className="text-blue-500" />} text="Removes Bacterial Allergens & Dust" />
+
+//               <FeatureRow icon={<Zap className="text-yellow-500" />} text="Formaldehyde & Smoke Removal" />
+
+//               <FeatureRow icon={<Droplets className="text-purple-500" />} text="Aromatherapy Storage Box Included" />
+
+//             </div>
+
+
+
+//             {/* <div className="flex items-center space-x-4">
+
+//               <button
+//   onClick={handlePayment}
+//   className="flex-1 bg-green-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-green-700 transition"
+// >
+//   Pay ₹{totalAmount}
+// </button>
+
+//               <button className="p-4 rounded-xl border-2 border-gray-200 hover:border-green-500 hover:text-green-500 transition-colors">
+
+//                 <Star size={24} />
+
+//               </button>
+
+//             </div> */}
+//             {/* 3. SHOW ADDRESS FORM WHEN 'BUY NOW' IS CLICKED */}
+//             {showAddress && (
+//               <div className="mb-6 animate-in fade-in slide-in-from-top-4 duration-500">
+//                 <AddressForm address={address} setAddress={setAddress} />
+//                 <button
+//                   onClick={() => setShowAddress(false)}
+//                   className="text-xs text-gray-400 mt-2 hover:underline"
+//                 >
+//                   Change shipping method?
+//                 </button>
+//               </div>
+//             )}
+//             <div className="flex items-center space-x-4">
+//               {addedMsg && (
+//                 <div className="fixed bottom-6 right-6 bg-green-600 text-white px-5 py-3 rounded-lg shadow-lg z-50">
+//                   ✅ Added to cart
+//                 </div>
+//               )}
+//               {/* Add to Cart */}
+//               <button
+//                 onClick={addToCart}
+//                 className="flex-1 bg-gray-900 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gray-800 transition"
+//               >
+//                 Add to Cart
+//               </button>
+
+//               {/* Buy Now */}
+//               <button
+//                 onClick={buyNow}
+//                 className="flex-1 bg-green-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-green-700 transition"
+//               >
+//                 {showAddress ? `Pay ₹${totalAmount}` : "Buy Now"}
+//               </button>
+
+//             </div>
+
+
+
+
+//             <p className="mt-6 text-sm text-gray-500 flex items-center">
+
+//               <Check size={16} className="text-green-500 mr-2" />
+
+//               Free Delivery in 8-10 Days
+
+//             </p>
+
+//           </div>
+
+//         </div>
+
+//       </div>
+//       {isProcessing && (
+//         <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/80 backdrop-blur-md">
+//           <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
+//           <h2 className="text-2xl font-bold text-gray-900">Confirming Your Order...</h2>
+//           <p className="text-gray-500 mt-2">Please do not refresh or close this page.</p>
+
+//           {/* Optional: Add a small lock icon for trust */}
+//           <div className="mt-8 flex items-center text-gray-400 text-sm">
+//             <ShieldCheck size={16} className="mr-2" />
+//             Secure Transaction via Razorpay
+//           </div>
+//         </div>
+//       )}
+//     </div>
+
+//   );
+
+// };
+
+const ProductShowcase = ({ product, cart, setCart, user }) => {
+  // --- Component State ---
   const [address, setAddress] = useState({ street: '', city: '', pincode: '', phone: '' });
-  const [showAddress, setShowAddress] = useState(false); // Toggle visibility
-  const [activeImage, setActiveImage] = useState(0);
-
-  // ✅ QUANTITY STATE
+  const [showAddress, setShowAddress] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [addedMsg, setAddedMsg] = useState(false)
-  const PRICE = 2499;
-  const totalAmount = PRICE * quantity;
-  const mrp = 3499;
-  const mrpamount = mrp * quantity;
+  const [addedMsg, setAddedMsg] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const navigate = useNavigate();
 
+  // --- Dynamic Calculations from DB ---
+  const PRICE = product.price;
+  const totalAmount = PRICE * quantity;
+  const mrpAmount = (product.mrp || PRICE * 1.4) * quantity;
 
-  // NOTE: In a real deployment, replace this URL with the uploaded image path or a hosted URL.
-
-  // Using a placeholder that resembles the white cylindrical purifier described.
-
-  const productImages = [
-
-    "/Air purifier.jpg",
-
-    // Ideally, the second image would be the specific one uploaded by the user
-
-  ];
-
+  // --- Payment & Cart Logic ---
   const buyNow = async () => {
-
-    const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
       alert("Please login to purchase");
       navigate("/login");
       return;
     }
-    // 2. TOGGLE ADDRESS FORM OR VALIDATE
-    if (!showAddress) {
-      setShowAddress(true); // First click shows the form
-      return;
-    } if (!address.street || !address.pincode || !address.phone) {
-      alert("Please enter your delivery details before paying.");
+    if (!showAddress) { setShowAddress(true); return; }
+    if (!address.street || !address.pincode || !address.phone) {
+      alert("Please enter delivery details.");
       return;
     }
-    // 🟢 Use a fallback check for the ID
-    const currentUserId = user._id;
-    const API_URL = import.meta.env.VITE_API_URL;
+
     try {
       const resCreate = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          quantity,
-          userID: user._id// 👈 Pass the ID here
-        }),
-      }
-      );
-
+        body: JSON.stringify({ quantity, userID: user._id, productId: product._id }),
+      });
       const order = await resCreate.json();
 
       const options = {
@@ -580,294 +907,91 @@ const ProductShowcase = ({ cart, setCart, user }) => {
         amount: order.amount,
         currency: "INR",
         name: "Ventire",
-        description: "Ventire Air Purifier",
+        description: product.name,
         order_id: order.id,
-
-        // ✅ SUCCESS
-        handler: async function (response) {
-
-          setIsProcessing(true); // 🟢 Start the loading overlay
-          try {
-            // 1. Save order in backend
-            const res = await fetch("/api/store-order", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                orderId: response.razorpay_order_id,
-                paymentId: response.razorpay_payment_id,
-                signature: response.razorpay_signature,
-                amount: totalAmount,
-                quantity: cart.quantity,
-                status: "paid",
-                userId: user._id,//added
-                useremail: user.email,
-                address: address, // 🟢 SEND ADDRESS TO BACKEND
-              }),
-            });
-            const data = await res.json();
-            // 3. Check if the server sent back the custom ID (VT-XXXX)
-            if (data.success && data.displayId) {
-              // 🟢 SUCCESS: Clear the cart state here
-              setCart({ quantity: 0 });
-              // ✅ SUCCESS: Redirect using the custom VT-XXXX ID
-              // navigate(`/Success?orderNo=${data.displayId}`, { state: { address: address } });
-              window.location.href = `/Success?orderNo=${data.displayId}`, { state: { address: address } };
-            } else {
-              // ⚠️ FALLBACK: If API failed but payment worked, use Razorpay ID so they aren't stuck
-              //  navigate(`/Success?orderNo=${response.razorpay_order_id}`);
-              window.location.href = `/Success?orderNo=${response.razorpay_order_id}`;
-            }
-            {/*window.location.href =
-              (`/Success?orderId=${response.razorpay_payment_id}`);*/}
-          } catch (err) {
-            console.error("Order save failed", err);
-            navigate("/Failure");
-          }
-          finally {
-            // We don't set it to false here because navigate() will take us away
-          }
+        handler: async (response) => {
+          setIsProcessing(true);
+          const res = await fetch("/api/store-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+              amount: totalAmount,
+              quantity,
+              productId: product._id, // Track which product was bought
+              userId: user._id,
+              address: address,
+            }),
+          });
+          const data = await res.json();
+          if (data.success) window.location.href = `/Success?orderNo=${data.displayId}`;
         },
-
-        // ❌ FAILURE / CANCEL
-        modal: {
-          ondismiss: function () {
-            window.location.href = "/failure";
-          },
-        },
-
         theme: { color: "#16a34a" },
       };
-
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-    } catch (err) {
-      console.error("Buy Now error:", err);
-      alert("Unable to start payment. Try again.");
-    }
+      new window.Razorpay(options).open();
+    } catch (err) { alert("Payment failed to start."); }
   };
 
-
   const addToCart = () => {
-    setCart({
-      quantity: cart.quantity + quantity,
-    });
-
+    // Logic to add specific product object to cart
+    setCart((prev) => ({
+      ...prev,
+      quantity: prev.quantity + quantity,
+      items: [...(prev.items || []), { ...product, qty: quantity }]
+    }));
     setAddedMsg(true);
     setTimeout(() => setAddedMsg(false), 2000);
   };
 
   return (
+    <div className="py-12 border-b border-gray-100 last:border-0">
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-    <div id="product" className="py-24 bg-white relative">
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-
-
-
-          {/* Image Gallery */}
-
-          <div className="relative group">
-
-            <div className="absolute inset-0 bg-gradient-to-tr from-green-100 to-blue-50 rounded-3xl transform -rotate-2 scale-105 group-hover:rotate-0 transition-transform duration-500"></div>
-
-            <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-
-              {/* Badge */}
-
-              <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold z-10">
-
-                Sale -28%
-
-              </div>
-
-              <img
-                src={productImages[0]}
-                alt="Ventire Air Purifier"
-                className="
-                           w-full 
-                           h-auto 
-                           md:h-[500px] 
-                           object-contain 
-                           md:object-cover 
-                           object-center 
-                           transition-transform 
-                           duration-700
-                           "
-              />
-
-              <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-lg text-xs text-gray-500 border border-gray-200">
-
-                *Model shown is Ventire Pure-X1
-
-              </div>
-
-            </div>
-
+        {/* Left: Product Image */}
+        <div className="relative group">
+          <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+            <img src={product.image || "/Air purifier.jpg"} alt={product.name} className="w-full h-[400px] object-contain" />
           </div>
-
-
-
-          {/* Product Details */}
-
-          <div>
-
-            <div className="mb-2 text-green-600 font-semibold uppercase tracking-wider text-sm">Best Seller</div>
-
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Ventire Smart Air Purifier</h2>
-
-
-
-            <div className="flex items-center space-x-4 mb-6">
-
-              <div className="flex text-yellow-400">
-
-                {[...Array(5)].map((_, i) => <Star key={i} size={20} fill="currentColor" />)}
-
-              </div>
-
-              <span className="text-gray-500 text-sm">(428 Reviews)</span>
-
-            </div>
-
-
-
-            <div className="mb-8">
-
-              <span className="text-gray-400 text-2xl line-through mr-3">{mrpamount}</span>
-
-              <span className="text-5xl font-bold text-gray-900">
-                ₹{totalAmount}
-              </span>
-
-              <p className="text-green-600 text-sm mt-2 font-medium">Inclusive of all taxes</p>
-
-            </div>
-            <div className="flex items-center gap-4 mt-4">
-              <button
-                onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                className="px-4 py-2 border rounded-lg text-xl"
-              >
-                −
-              </button>
-
-              <span className="text-lg font-semibold">{quantity}</span>
-
-              <button
-                onClick={() => setQuantity(q => q + 1)}
-                className="px-4 py-2 border rounded-lg text-xl"
-              >
-                +
-              </button>
-            </div>
-
-
-
-            <div className="space-y-4 mb-8">
-
-              <FeatureRow icon={<ShieldCheck className="text-green-500" />} text="H13 Level HEPA Filter Element" />
-
-              <FeatureRow icon={<Wind className="text-blue-500" />} text="Removes Bacterial Allergens & Dust" />
-
-              <FeatureRow icon={<Zap className="text-yellow-500" />} text="Formaldehyde & Smoke Removal" />
-
-              <FeatureRow icon={<Droplets className="text-purple-500" />} text="Aromatherapy Storage Box Included" />
-
-            </div>
-
-
-
-            {/* <div className="flex items-center space-x-4">
-
-              <button
-  onClick={handlePayment}
-  className="flex-1 bg-green-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-green-700 transition"
->
-  Pay ₹{totalAmount}
-</button>
-
-              <button className="p-4 rounded-xl border-2 border-gray-200 hover:border-green-500 hover:text-green-500 transition-colors">
-
-                <Star size={24} />
-
-              </button>
-
-            </div> */}
-            {/* 3. SHOW ADDRESS FORM WHEN 'BUY NOW' IS CLICKED */}
-            {showAddress && (
-              <div className="mb-6 animate-in fade-in slide-in-from-top-4 duration-500">
-                <AddressForm address={address} setAddress={setAddress} />
-                <button
-                  onClick={() => setShowAddress(false)}
-                  className="text-xs text-gray-400 mt-2 hover:underline"
-                >
-                  Change shipping method?
-                </button>
-              </div>
-            )}
-            <div className="flex items-center space-x-4">
-              {addedMsg && (
-                <div className="fixed bottom-6 right-6 bg-green-600 text-white px-5 py-3 rounded-lg shadow-lg z-50">
-                  ✅ Added to cart
-                </div>
-              )}
-              {/* Add to Cart */}
-              <button
-                onClick={addToCart}
-                className="flex-1 bg-gray-900 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gray-800 transition"
-              >
-                Add to Cart
-              </button>
-
-              {/* Buy Now */}
-              <button
-                onClick={buyNow}
-                className="flex-1 bg-green-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-green-700 transition"
-              >
-                {showAddress ? `Pay ₹${totalAmount}` : "Buy Now"}
-              </button>
-
-            </div>
-
-
-
-
-            <p className="mt-6 text-sm text-gray-500 flex items-center">
-
-              <Check size={16} className="text-green-500 mr-2" />
-
-              Free Delivery in 8-10 Days
-
-            </p>
-
-          </div>
-
         </div>
 
+        {/* Right: Product Details */}
+        <div>
+          <h2 className="text-4xl font-bold text-gray-900 mb-2">{product.name}</h2>
+          <div className="mb-6">
+            <span className="text-gray-400 line-through mr-3">₹{mrpAmount}</span>
+            <span className="text-5xl font-bold text-gray-900">₹{totalAmount}</span>
+          </div>
+
+          {/* Quantity Selector */}
+          <div className="flex items-center gap-4 mb-8">
+            <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="p-2 border rounded">-</button>
+            <span className="font-bold">{quantity}</span>
+            <button onClick={() => setQuantity(q => q + 1)} className="p-2 border rounded">+</button>
+          </div>
+          <div className="space-y-4 mb-8">
+            {product.features && product.features.map((feat, index) => (
+              <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <Check size={18} className="text-green-500" />
+                <span className="text-gray-700 font-medium">{feat}</span>
+              </div>
+            ))}
+          </div>
+          {showAddress && <AddressForm address={address} setAddress={setAddress} />}
+
+          <div className="flex gap-4">
+            <button onClick={addToCart} className="flex-1 bg-gray-900 text-white py-4 rounded-xl font-semibold">Add to Cart</button>
+            <button onClick={buyNow} className="flex-1 bg-green-600 text-white py-4 rounded-xl font-semibold">
+              {showAddress ? "Confirm & Pay" : "Buy Now"}
+            </button>
+          </div>
+        </div>
       </div>
-      {isProcessing && (
-        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/80 backdrop-blur-md">
-          <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
-          <h2 className="text-2xl font-bold text-gray-900">Confirming Your Order...</h2>
-          <p className="text-gray-500 mt-2">Please do not refresh or close this page.</p>
-
-          {/* Optional: Add a small lock icon for trust */}
-          <div className="mt-8 flex items-center text-gray-400 text-sm">
-            <ShieldCheck size={16} className="mr-2" />
-            Secure Transaction via Razorpay
-          </div>
-        </div>
-      )}
+      {isProcessing && <div className="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">Processing...</div>}
     </div>
-
   );
-
 };
-
-
 
 const FeatureRow = ({ icon, text }) => (
 
@@ -1132,7 +1256,26 @@ const Footer = () => {
 // Main App Component
 
 const App = () => {
+  // Inside your App component
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/get-products.js');
+        const data = await response.json();
+        if (data.success) {
+          setProducts(data.products);
+        }
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
   // 🛒 CART STATE
   const [cart, setCart] = useState(() => {
     const saved = localStorage.getItem("ventire_cart");
@@ -1183,7 +1326,19 @@ const App = () => {
           element={
             <>
               <Hero />
-              <ProductShowcase cart={cart} setCart={setCart} user={user} />
+              {/* <ProductShowcase cart={cart} setCart={setCart} user={user} /> */}
+              <div id="product-list" className="bg-white">
+                {/* products comes from your fetch('/api/get-products') */}
+                {products.map((item) => (
+                  <ProductShowcase
+                    key={item._id}
+                    product={item}
+                    cart={cart}
+                    setCart={setCart}
+                    user={user}
+                  />
+                ))}
+              </div>
               <Features />
             </>
           }
