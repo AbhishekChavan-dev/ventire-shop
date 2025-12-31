@@ -1,4 +1,3 @@
-// api/get-products.js
 import dbConnect from '../lib/mongodb.js'; // Adjust path to your db connection
 import Product from '../models/Product.js';
 
