@@ -1263,7 +1263,7 @@ const App = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api/get-products.js');
+        const response = await fetch('/api/get-products');
         const data = await response.json();
         if (data.success) {
           setProducts(data.products);
