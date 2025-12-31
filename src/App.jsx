@@ -166,16 +166,16 @@ const Navbar = ({ cart, user, onLogout }) => {
             </div>*/}
             <div className="flex items-center space-x-3">
               <img
-                src="/logo.jpeg"
+                src="/Ventire-logo.png"
                 alt="Ventire Logo"
-                className="h-10 w-absolute"
+                className="h-7 w-absolute"
               />
             </div>
-            {/*<span className="text-2xl font-extrabold tracking-wide
+            <span className="text-2xl font-extrabold tracking-wide
                     bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500
                     text-transparent bg-clip-text">
               Ventire
-            </span>*/}
+            </span>
           </div>
 
 
@@ -1009,18 +1009,32 @@ const Footer = () => {
 
           <div className="col-span-1 md:col-span-1">
 
-            <div className="flex items-center space-x-2 mb-6">
+            {/*<div className="flex items-center space-x-2 mb-6">
 
               <div className="bg-green-500 p-2 rounded-full">
 
-                <Wind className="h-5 w-5 text-white" />
+                <img
+                src="/Ventire-logo.png"
+                alt="Ventire Logo"
+                className="h-10 w-absolute"
+              />
 
               </div>
 
               <span className="text-2xl font-bold tracking-tight">Ventire</span>
 
+            </div>*/}
+            <div className="flex items-center space-x-2 mb-6">
+              {/* Removed bg-green-500 and p-2 to make the background transparent */}
+              <div className="rounded-full overflow-hidden">
+                <img
+                  src="/Ventire-logo.png"
+                  alt="Ventire Logo"
+                  className="h-8 w-auto object-contain"
+                />
+              </div>
+              <span className="text-2xl font-bold tracking-tight">Ventire</span>
             </div>
-
             <p className="text-gray-400 text-sm leading-relaxed">
 
               Bringing the freshness of nature into your modern home. Professional purification solutions.
