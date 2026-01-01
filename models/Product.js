@@ -17,9 +17,9 @@ const ProductSchema = new mongoose.Schema({
   mrp: { 
     type: Number 
   },
-  image: { 
-    type: String, 
-    default: "/Air purifier.jpg" 
+  images: { 
+    type: [String], // Array of strings
+    default: ["/no_img.jpg"] 
   },
   category: { 
     type: String, 

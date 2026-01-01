@@ -875,7 +875,13 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
   const [addedMsg, setAddedMsg] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
+  // 🟢 State to track the selected image (defaults to the first one)
+  const [activeImage, setActiveImage] = useState(0);
 
+  // Fallback in case images array is empty
+  const images = product.images && product.images.length > 0
+    ? product.images
+    : ["/no_img.jpg"];
   // --- Dynamic Calculations from DB ---
   const PRICE = product.price;
   const totalAmount = PRICE * quantity;
@@ -949,10 +955,36 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
     <div className="py-12 border-b border-gray-100 last:border-0">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-        {/* Left: Product Image */}
+        {/* Left: Product Image
         <div className="relative group">
           <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
             <img src={product.image || "/Air purifier.jpg"} alt={product.name} className="w-full h-[400px] object-contain" />
+          </div>
+        </div> */}
+        {/* Left Column: Image Gallery */}
+        <div className="space-y-4">
+          {/* Main Large Image */}
+          <div className="relative bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-lg aspect-square">
+            <img
+              src={images[activeImage]}
+              alt={product.name}
+              className="w-full h-full object-contain transition-all duration-500"
+            />
+          </div>
+
+          {/* Thumbnails Row */}
+          <div className="flex gap-4 overflow-x-auto pb-2">
+            {images.map((img, index) => (
+              <button
+                key={index}
+                onClick={() => setActiveImage(index)}
+                className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all
+                ${activeImage === index ? 'border-green-600 ring-2 ring-green-100' : 'border-gray-100 hover:border-gray-300'}
+              `}
+              >
+                <img src={img} className="w-full h-full object-cover" alt="thumbnail" />
+              </button>
+            ))}
           </div>
         </div>
 
