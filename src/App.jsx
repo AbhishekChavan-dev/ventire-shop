@@ -1,4 +1,4 @@
-import { Routes, Route, Link, useNavigate, useLocation, Navigate, Router } from "react-router-dom";
+import { Routes, Route, Link, useNavigate, useLocation, Navigate, BrowserRouter as Router } from "react-router-dom";
 import Cart from "./pages_temp/Cart";
 import Success from "./pages_temp/Success";
 import Failure from "./pages_temp/Failure";
