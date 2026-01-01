@@ -147,7 +147,7 @@ const Success = () => {
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const orderNo = searchParams.get("orderNo");
-  
+
   // 🟢 1. Initialize state with data from 'navigate' if it exists
   const [orderDetails, setOrderDetails] = useState(location.state?.address ? { address: location.state.address } : null);
   const [loading, setLoading] = useState(!location.state?.address);
@@ -164,9 +164,10 @@ const Success = () => {
         }
       } catch (err) {
         console.error("Order fetch error:", err);
-      } finally {
-        setLoading(false);
       }
+      // finally {
+      //   setLoading(false);
+      // }
     };
 
     // 🟢 3. Only run the fetch if we don't already have the address from state
@@ -175,12 +176,13 @@ const Success = () => {
     }
   }, [orderNo, orderDetails]);
 
+  setLoading(false);
   return (
     <div className="pt-32 pb-20 flex flex-col items-center justify-center px-4">
       <div className="bg-green-100 p-4 rounded-full mb-6">
         <CheckCircle size={60} className="text-green-600" />
       </div>
-      
+
       <h1 className="text-4xl font-bold text-gray-900 mb-2 text-center">Payment Successful!</h1>
       <p className="text-gray-500 mb-8 text-center text-lg">
         Your order has been placed successfully.
@@ -199,7 +201,7 @@ const Success = () => {
             <Truck size={18} className="text-green-600" />
             <h3 className="font-bold text-gray-800">Shipping To</h3>
           </div>
-          
+
           <div className="flex gap-3">
             <MapPin size={20} className="text-gray-400 mt-1 shrink-0" />
             <div className="text-sm text-gray-600">
