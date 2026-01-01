@@ -3,6 +3,7 @@ import Cart from "./pages_temp/Cart";
 import Success from "./pages_temp/Success";
 import Failure from "./pages_temp/Failure";
 import MyOrders from "./pages_temp/MyOrders";
+import AnimatedBanner from "./components/AnimatedBanner";
 import AddressForm from "./components/AddressForm";
 import Login from "./pages_temp/LoginAuth.jsx";
 import React, { useState, useEffect } from 'react';
@@ -127,7 +128,34 @@ const WindAnimation = () => {
 
 };
 
+const AnnouncementBanner = () => {
+  return (
+    <div className="relative overflow-hidden bg-gradient-to-r from-green-900 via-emerald-800 to-green-900 py-2.5">
+      {/* Animated Shine Effect */}
+      <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-shine" />
 
+      <div className="max-w-7xl mx-auto px-4 flex justify-center items-center">
+        <p className="text-white text-sm md:text-base font-medium tracking-[0.2em] uppercase flex items-center gap-3">
+          <span className="opacity-80">Respire</span>
+          <span className="h-1 w-1 bg-green-400 rounded-full animate-pulse"></span>
+          <span className="opacity-90">Aspire</span>
+          <span className="h-1 w-1 bg-green-400 rounded-full animate-pulse"></span>
+          <span className="font-bold text-green-50">Ventire</span>
+        </p>
+      </div>
+
+      <style>{`
+        @keyframes shine {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        .animate-shine {
+          animation: shine 5s infinite linear;
+        }
+      `}</style>
+    </div>
+  );
+};
 
 // 2. Navigation Bar
 
@@ -152,7 +180,7 @@ const Navbar = ({ cart, user, onLogout }) => {
   const shouldHideLinks = hiddenPages.includes(location.pathname);
   return (
 
-    <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-green-50">
+    <nav className="sticky top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-green-50">
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -1395,8 +1423,14 @@ const App = () => {
   }, []);
   return (
     <div className="font-sans antialiased bg-white text-gray-900">
-      <Navbar cart={cart} user={user} onLogout={handleLogout} />
-
+      {/* 🟢 TOP BANNER
+      <AnnouncementBanner />
+      <Navbar cart={cart} user={user} onLogout={handleLogout} /> */}
+      {/* Container for both Banner and Nav */}
+      <header className="sticky top-0 w-full z-50">
+        <AnimatedBanner />
+        <Navbar cart={cart} user={user} onLogout={handleLogout} />
+      </header>
       <ScrollToTop /> {/* 🟢 It must live inside the Router */}
       <Routes>
         <Route
