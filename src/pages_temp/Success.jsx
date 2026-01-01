@@ -139,84 +139,181 @@ const Success = () => {
 };
 
 export default Success;*/}
-import { useSearchParams, Link, useLocation } from "react-router-dom";
+// import { useSearchParams, Link, useLocation } from "react-router-dom";
+// import { useEffect, useState } from "react";
+// import { CheckCircle, MapPin, Truck, Package } from "lucide-react";
+
+// const Success = () => {
+//   const [searchParams] = useSearchParams();
+//   const location = useLocation();
+//   const orderNo = searchParams.get("orderNo");
+  
+//   // 🟢 1. Initialize state with data from 'navigate' if it exists
+//   const [orderDetails, setOrderDetails] = useState(location.state?.address ? { address: location.state.address } : null);
+//   const [loading, setLoading] = useState(!location.state?.address);
+
+//   useEffect(() => {
+//     // 🟢 2. Define the function INSIDE the useEffect to avoid reference errors
+//     const fetchOrderData = async () => {
+//       if (!orderNo) return;
+//       try {
+//         const res = await fetch(`/api/get-order-details?orderNo=${orderNo}`);
+//         const data = await res.json();
+//         if (data.success) {
+//           setOrderDetails(data.order);
+//         }
+//       } catch (err) {
+//         console.error("Order fetch error:", err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     // 🟢 3. Only run the fetch if we don't already have the address from state
+//     if (!orderDetails) {
+//       fetchOrderData();
+//     }
+//   }, [orderNo, orderDetails]);
+
+//   return (
+    
+//     <div className="pt-32 pb-20 flex flex-col items-center justify-center px-4">
+//       <div className="bg-green-100 p-4 rounded-full mb-6">
+//         <CheckCircle size={60} className="text-green-600" />
+//       </div>
+      
+//       <h1 className="text-4xl font-bold text-gray-900 mb-2 text-center">Payment Successful!</h1>
+//       <p className="text-gray-500 mb-8 text-center text-lg">
+//         Your order has been placed successfully.
+//       </p>
+
+//       {/* Order Number Card */}
+//       <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 w-full max-w-md text-center mb-6">
+//         <p className="text-sm text-gray-400 uppercase tracking-widest font-bold mb-1">Order Number</p>
+//         <p className="text-3xl font-mono font-bold text-green-600">{orderNo || "..."}</p>
+//       </div>
+
+//       {/* 🟢 Shipping Card: This shows INSTANTLY if address came from 'location.state' */}
+//       {orderDetails?.address && (
+//         <div className="w-full max-w-md bg-white border border-green-100 rounded-2xl p-5 mb-8 shadow-sm">
+//           <div className="flex items-center gap-2 mb-3 pb-2 border-b border-gray-50">
+//             <Truck size={18} className="text-green-600" />
+//             <h3 className="font-bold text-gray-800">Shipping To</h3>
+//           </div>
+          
+//           <div className="flex gap-3">
+//             <MapPin size={20} className="text-gray-400 mt-1 shrink-0" />
+//             <div className="text-sm text-gray-600">
+//               <p className="font-bold text-gray-900">{orderDetails.address.street}</p>
+//               <p>{orderDetails.address.city}, {orderDetails.address.pincode}</p>
+//               <p className="mt-2 text-xs font-medium text-gray-500">
+//                 Contact: {orderDetails.address.phone}
+//               </p>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* Action Buttons */}
+//       <div className="flex gap-4 w-full max-w-md">
+//         <Link to="/myorders" className="flex-1 text-center bg-gray-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-gray-800 transition-all">
+//           My Orders
+//         </Link>
+//         <Link to="/" className="flex-1 text-center border border-gray-200 px-8 py-3 rounded-xl font-bold hover:bg-gray-50 transition-all text-gray-700">
+//           Home
+//         </Link>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Success;
+import { useSearchParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { CheckCircle, MapPin, Truck, Package } from "lucide-react";
+import { CheckCircle, MapPin, Truck } from "lucide-react";
 
 const Success = () => {
   const [searchParams] = useSearchParams();
-  const location = useLocation();
   const orderNo = searchParams.get("orderNo");
-
-  // 🟢 1. Initialize state with data from 'navigate' if it exists
-  const [orderDetails, setOrderDetails] = useState(location.state?.address ? { address: location.state.address } : null);
-  const [loading, setLoading] = useState(!location.state?.address);
+  
+  const [orderDetails, setOrderDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 🟢 2. Define the function INSIDE the useEffect to avoid reference errors
-    const fetchOrderData = async () => {
+    const fetchFullOrder = async () => {
       if (!orderNo) return;
       try {
+        // This API should return the full order object including the address
         const res = await fetch(`/api/get-order-details?orderNo=${orderNo}`);
         const data = await res.json();
         if (data.success) {
           setOrderDetails(data.order);
         }
       } catch (err) {
-        console.error("Order fetch error:", err);
+        console.error("Fetch error:", err);
+      } finally {
+        setLoading(false);
       }
-      // finally {
-      //   setLoading(false);
-      // }
     };
 
-    // 🟢 3. Only run the fetch if we don't already have the address from state
-    if (!orderDetails) {
-      fetchOrderData();
-    }
-  }, [orderNo, orderDetails]);
+    fetchFullOrder();
+  }, [orderNo]);
 
-  setLoading(false);
+  // 🟢 GATEKEEPER: If loading is true, we show a clean loader.
+  // This prevents the "Success" text from showing before the address is ready.
+  if (loading) {
+    return (
+      <div className="pt-40 flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-600 mb-4"></div>
+        <p className="text-gray-500 font-medium">Finalizing your order details...</p>
+      </div>
+    );
+  }
+
+  // 🟢 If loading is finished but no order was found
+  if (!orderDetails) {
+    return (
+      <div className="pt-40 text-center">
+        <h1 className="text-2xl font-bold">Order not found</h1>
+        <Link to="/" className="text-green-600 underline">Return Home</Link>
+      </div>
+    );
+  }
+
   return (
-    <div className="pt-32 pb-20 flex flex-col items-center justify-center px-4">
+    <div className="pt-32 pb-20 flex flex-col items-center justify-center px-4 animate-in fade-in duration-700">
       <div className="bg-green-100 p-4 rounded-full mb-6">
         <CheckCircle size={60} className="text-green-600" />
       </div>
-
+      
       <h1 className="text-4xl font-bold text-gray-900 mb-2 text-center">Payment Successful!</h1>
-      <p className="text-gray-500 mb-8 text-center text-lg">
-        Your order has been placed successfully.
-      </p>
+      <p className="text-gray-500 mb-8 text-center text-lg">Your order has been placed successfully.</p>
 
-      {/* Order Number Card */}
-      <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 w-full max-w-md text-center mb-6">
-        <p className="text-sm text-gray-400 uppercase tracking-widest font-bold mb-1">Order Number</p>
-        <p className="text-3xl font-mono font-bold text-green-600">{orderNo || "..."}</p>
-      </div>
+      {/* Order & Address Card (Rendered together) */}
+      <div className="w-full max-w-md space-y-4">
+        <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 text-center">
+          <p className="text-sm text-gray-400 uppercase tracking-widest font-bold mb-1">Order Number</p>
+          <p className="text-3xl font-mono font-bold text-green-600">{orderNo}</p>
+        </div>
 
-      {/* 🟢 Shipping Card: This shows INSTANTLY if address came from 'location.state' */}
-      {orderDetails?.address && (
-        <div className="w-full max-w-md bg-white border border-green-100 rounded-2xl p-5 mb-8 shadow-sm">
+        <div className="bg-white border border-green-100 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-3 pb-2 border-b border-gray-50">
             <Truck size={18} className="text-green-600" />
             <h3 className="font-bold text-gray-800">Shipping To</h3>
           </div>
-
+          
           <div className="flex gap-3">
             <MapPin size={20} className="text-gray-400 mt-1 shrink-0" />
             <div className="text-sm text-gray-600">
               <p className="font-bold text-gray-900">{orderDetails.address.street}</p>
               <p>{orderDetails.address.city}, {orderDetails.address.pincode}</p>
-              <p className="mt-2 text-xs font-medium text-gray-500">
-                Contact: {orderDetails.address.phone}
-              </p>
+              <p className="mt-2 text-xs font-medium text-gray-500">Contact: {orderDetails.address.phone}</p>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
-      {/* Action Buttons */}
-      <div className="flex gap-4 w-full max-w-md">
+      <div className="flex gap-4 w-full max-w-md mt-8">
         <Link to="/myorders" className="flex-1 text-center bg-gray-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-gray-800 transition-all">
           My Orders
         </Link>
