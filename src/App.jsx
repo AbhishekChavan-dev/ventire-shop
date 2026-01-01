@@ -978,7 +978,6 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
               alt={product.name}
               className="w-full h-full object-contain transition-all duration-500"
             />
-          </div>
           {/* ARROWS: Only show if there's more than 1 image */}
           {images.length > 1 && (
             <>
@@ -1011,6 +1010,7 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
               </div>
             </>
           )}
+          </div>
           {/* Thumbnails Row */}
           <div className="flex gap-4 overflow-x-auto pb-2">
             {images.map((img, index) => (
