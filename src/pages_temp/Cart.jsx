@@ -21,7 +21,7 @@ export default function Cart({ cart, setCart }) {
   const currentUser = localStorage.getItem("user");
   if (!currentUser) {
     alert("Please login to purchase");
-    navigate("/LoginAuth");
+    navigate("/login");
     return;
   }
   useEffect(() => {
