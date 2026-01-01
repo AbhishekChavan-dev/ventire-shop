@@ -978,38 +978,30 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
               alt={product.name}
               className="w-full h-full object-contain transition-all duration-500"
             />
-          {/* ARROWS: Only show if there's more than 1 image */}
-          {images.length > 1 && (
-            <>
-              {/* Left Arrow - Centered vertically, pinned to left */}
-              <button
-                onClick={prevImage}
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-30 
-                   bg-white/90 hover:bg-white text-gray-800 
-                   p-2 rounded-full shadow-lg border border-gray-100
-                   transition-all hover:scale-110 active:scale-95"
-                aria-label="Previous image"
-              >
-                <ChevronLeft size={28} />
-              </button>
+            {/* ARROWS: Only show if there's more than 1 image */}
+            {images.length > 1 && (
+              <>
+                {/* Left Arrow */}
+                <button
+                  onClick={prevImage}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
+                >
+                  <ChevronLeft size={24} className="text-gray-800" />
+                </button>
 
-              {/* Right Arrow - Centered vertically, pinned to right */}
-              <button
-                onClick={nextImage}
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-30 
-                   bg-white/90 hover:bg-white text-gray-800 
-                   p-2 rounded-full shadow-lg border border-gray-100
-                   transition-all hover:scale-110 active:scale-95"
-                aria-label="Next image"
-              >
-                <ChevronRight size={28} />
-              </button>
-              {/* Image Counter (Optional) */}
-              <div className="absolute bottom-4 right-6 bg-black/50 text-white px-3 py-1 rounded-full text-xs">
-                {activeImage + 1} / {images.length}
-              </div>
-            </>
-          )}
+                {/* Right Arrow */}
+                <button
+                  onClick={nextImage}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
+                >
+                  <ChevronRight size={24} className="text-gray-800" />
+                </button>
+                {/* Image Counter (Optional) */}
+                <div className="absolute bottom-4 right-6 bg-black/50 text-white px-3 py-1 rounded-full text-xs">
+                  {activeImage + 1} / {images.length}
+                </div>
+              </>
+            )}
           </div>
           {/* Thumbnails Row */}
           <div className="flex gap-4 overflow-x-auto pb-2">
