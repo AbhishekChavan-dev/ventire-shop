@@ -6,6 +6,7 @@ import MyOrders from "./pages_temp/MyOrders";
 import AddressForm from "./components/AddressForm";
 import Login from "./pages_temp/LoginAuth.jsx";
 import React, { useState, useEffect } from 'react';
+import ScrollToTop from "./components/ScrollToTop"; // Import it
 
 import { ChevronLeft, ChevronRight, ShoppingBag, Wind, Leaf, ShieldCheck, Zap, Droplets, Menu, X, ArrowRight, Star, Check, Package } from 'lucide-react';
 
