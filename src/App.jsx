@@ -937,6 +937,7 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
               productId: product._id, // Track which product was bought
               userId: user._id,
               address: address,
+              status: "paid",
             }),
           });
           const data = await res.json();
