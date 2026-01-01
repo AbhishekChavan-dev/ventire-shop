@@ -981,20 +981,23 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
             {/* ARROWS: Only show if there's more than 1 image */}
             {images.length > 1 && (
               <>
-                {/* Left Arrow */}
+                {/* Left Arrow - Centered vertically, pinned to left */}
                 <button
                   onClick={prevImage}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-40 
+                   bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-xl 
+                   opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 >
-                  <ChevronLeft size={24} className="text-gray-800" />
+                  <ChevronLeft size={24} />
                 </button>
 
-                {/* Right Arrow */}
                 <button
                   onClick={nextImage}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-40 
+                   bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-xl 
+                   opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 >
-                  <ChevronRight size={24} className="text-gray-800" />
+                  <ChevronRight size={24} />
                 </button>
                 {/* Image Counter (Optional) */}
                 <div className="absolute bottom-4 right-6 bg-black/50 text-white px-3 py-1 rounded-full text-xs">
