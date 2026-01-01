@@ -18,18 +18,21 @@ export default function Cart({ cart, setCart }) {
     pincode: '',
     phone: ''
   });
-  const currentUser = localStorage.getItem("user");
-  if (!currentUser) {
-    alert("Please login to purchase");
-    navigate("/login");
-    return;
-  }
+  // const currentUser = localStorage.getItem("user");
+  // if (!currentUser) {
+  //   alert("Please login to purchase");
+  //   navigate("/login");
+  //   return;
+  // }
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
-    if (savedUser) {
+    if (!savedUser) {
+      alert("Please login to purchase");
+      // navigate("/login");
+    } else {
       setUser(JSON.parse(savedUser));
     }
-  }, []);
+  }, [navigate]); // navigate is a stable dependency
   {/*} useEffect(() => {
     if (!user) {
       navigate("/login");
