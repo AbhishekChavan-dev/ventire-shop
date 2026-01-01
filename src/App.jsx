@@ -7,7 +7,7 @@ import AddressForm from "./components/AddressForm";
 import Login from "./pages_temp/LoginAuth.jsx";
 import React, { useState, useEffect } from 'react';
 
-import { ShoppingBag, Wind, Leaf, ShieldCheck, Zap, Droplets, Menu, X, ArrowRight, Star, Check, Package } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ShoppingBag, Wind, Leaf, ShieldCheck, Zap, Droplets, Menu, X, ArrowRight, Star, Check, Package } from 'lucide-react';
 
 
 // --- Components ---
@@ -882,6 +882,14 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
   const images = product.images && product.images.length > 0
     ? product.images
     : ["/no_img.jpg"];
+    // Navigation functions
+  const nextImage = () => {
+    setActiveImage((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setActiveImage((prev) => (prev - 1 + images.length) % images.length);
+  };
   // --- Dynamic Calculations from DB ---
   const PRICE = product.price;
   const totalAmount = PRICE * quantity;
@@ -971,7 +979,31 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
               className="w-full h-full object-contain transition-all duration-500"
             />
           </div>
+          {/* ARROWS: Only show if there's more than 1 image */}
+          {images.length > 1 && (
+            <>
+              {/* Left Arrow */}
+              <button 
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
+              >
+                <ChevronLeft size={24} className="text-gray-800" />
+              </button>
 
+              {/* Right Arrow */}
+              <button 
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
+              >
+                <ChevronRight size={24} className="text-gray-800" />
+              </button>
+
+              {/* Image Counter (Optional) */}
+              <div className="absolute bottom-4 right-6 bg-black/50 text-white px-3 py-1 rounded-full text-xs">
+                {activeImage + 1} / {images.length}
+              </div>
+            </>
+          )}
           {/* Thumbnails Row */}
           <div className="flex gap-4 overflow-x-auto pb-2">
             {images.map((img, index) => (
