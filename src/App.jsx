@@ -1,4 +1,4 @@
-import { Routes, Route, Link, useNavigate, useLocation, Navigate } from "react-router-dom";
+import { Routes, Route, Link, useNavigate, useLocation, Navigate, Router } from "react-router-dom";
 import Cart from "./pages_temp/Cart";
 import Success from "./pages_temp/Success";
 import Failure from "./pages_temp/Failure";
@@ -1386,43 +1386,44 @@ const App = () => {
   return (
     <div className="font-sans antialiased bg-white text-gray-900">
       <Navbar cart={cart} user={user} onLogout={handleLogout} />
+      <Router>
+        <ScrollToTop /> {/* 🟢 It must live inside the Router */}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <Hero />
+                {/* <ProductShowcase cart={cart} setCart={setCart} user={user} /> */}
+                <div id="product-list" className="bg-white">
+                  {/* products comes from your fetch('/api/get-products') */}
+                  {products.map((item) => (
+                    <ProductShowcase
+                      key={item._id}
+                      product={item}
+                      cart={cart}
+                      setCart={setCart}
+                      user={user}
+                    />
+                  ))}
+                </div>
+                <Features />
+              </>
+            }
+          />
 
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <Hero />
-              {/* <ProductShowcase cart={cart} setCart={setCart} user={user} /> */}
-              <div id="product-list" className="bg-white">
-                {/* products comes from your fetch('/api/get-products') */}
-                {products.map((item) => (
-                  <ProductShowcase
-                    key={item._id}
-                    product={item}
-                    cart={cart}
-                    setCart={setCart}
-                    user={user}
-                  />
-                ))}
-              </div>
-              <Features />
-            </>
-          }
-        />
-
-        <Route
-          path="/cart"
-          element={<Cart cart={cart} setCart={setCart} />}
-        />
+          <Route
+            path="/cart"
+            element={<Cart cart={cart} setCart={setCart} />}
+          />
 
 
-        <Route path="/success" element={<Success />} />
-        <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} onLogout={handleLogout} />} />
-        <Route path="/failure" element={<Failure />} />
-        <Route path="/myorders" element={<MyOrders user={user} />} />
-      </Routes>
-
+          <Route path="/success" element={<Success />} />
+          <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} onLogout={handleLogout} />} />
+          <Route path="/failure" element={<Failure />} />
+          <Route path="/myorders" element={<MyOrders user={user} />} />
+        </Routes>
+      </Router>
       <Footer />
     </div>
   );
