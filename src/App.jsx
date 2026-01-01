@@ -972,7 +972,7 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
         {/* Left Column: Image Gallery */}
         <div className="space-y-4">
           {/* Main Large Image */}
-          <div className="relative bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-lg aspect-square">
+          <div className="relative group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-lg aspect-square">
             <img
               src={images[activeImage]}
               alt={product.name}
