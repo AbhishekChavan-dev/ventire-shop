@@ -982,24 +982,29 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
           {/* ARROWS: Only show if there's more than 1 image */}
           {images.length > 1 && (
             <>
-              {/* Left Arrow - pointer-events-auto makes it clickable again */}
+              {/* Left Arrow - Centered vertically, pinned to left */}
               <button
                 onClick={prevImage}
-                className="pointer-events-auto z-50 bg-black text-white p-3 rounded-full shadow-2xl hover:scale-110 transition-transform"
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-30 
+                   bg-white/90 hover:bg-white text-gray-800 
+                   p-2 rounded-full shadow-lg border border-gray-100
+                   transition-all hover:scale-110 active:scale-95"
                 aria-label="Previous image"
               >
                 <ChevronLeft size={28} />
               </button>
 
-              {/* Right Arrow */}
+              {/* Right Arrow - Centered vertically, pinned to right */}
               <button
                 onClick={nextImage}
-                className="pointer-events-auto z-50 bg-black text-white p-3 rounded-full shadow-2xl hover:scale-110 transition-transform"
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-30 
+                   bg-white/90 hover:bg-white text-gray-800 
+                   p-2 rounded-full shadow-lg border border-gray-100
+                   transition-all hover:scale-110 active:scale-95"
                 aria-label="Next image"
               >
                 <ChevronRight size={28} />
               </button>
-
               {/* Image Counter (Optional) */}
               <div className="absolute bottom-4 right-6 bg-black/50 text-white px-3 py-1 rounded-full text-xs">
                 {activeImage + 1} / {images.length}
