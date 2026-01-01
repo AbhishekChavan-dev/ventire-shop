@@ -1327,7 +1327,16 @@ const App = () => {
   // Inside your App component
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  // 🟢 Fix for href="#product" not working on route changes
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location]);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -1388,13 +1397,15 @@ const App = () => {
     <div className="font-sans antialiased bg-white text-gray-900">
       <Navbar cart={cart} user={user} onLogout={handleLogout} />
 
-        <ScrollToTop /> {/* 🟢 It must live inside the Router */}
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <Hero />
+      <ScrollToTop /> {/* 🟢 It must live inside the Router */}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Hero />
+              {/* 🟢 ID MUST BE HERE FOR THE ANCHOR TO WORK */}
+              <section id="product" className="scroll-mt-24">
                 {/* <ProductShowcase cart={cart} setCart={setCart} user={user} /> */}
                 <div id="product-list" className="bg-white">
                   {/* products comes from your fetch('/api/get-products') */}
@@ -1408,22 +1419,23 @@ const App = () => {
                     />
                   ))}
                 </div>
-                <Features />
-              </>
-            }
-          />
+              </section>
+              <Features />
+            </>
+          }
+        />
 
-          <Route
-            path="/cart"
-            element={<Cart cart={cart} setCart={setCart} />}
-          />
+        <Route
+          path="/cart"
+          element={<Cart cart={cart} setCart={setCart} />}
+        />
 
 
-          <Route path="/success" element={<Success />} />
-          <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} onLogout={handleLogout} />} />
-          <Route path="/failure" element={<Failure />} />
-          <Route path="/myorders" element={<MyOrders user={user} />} />
-        </Routes>
+        <Route path="/success" element={<Success />} />
+        <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} onLogout={handleLogout} />} />
+        <Route path="/failure" element={<Failure />} />
+        <Route path="/myorders" element={<MyOrders user={user} />} />
+      </Routes>
       <Footer />
     </div>
   );
