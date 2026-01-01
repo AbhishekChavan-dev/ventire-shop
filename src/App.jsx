@@ -882,7 +882,7 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
   const images = product.images && product.images.length > 0
     ? product.images
     : ["/no_img.jpg"];
-    // Navigation functions
+  // Navigation functions
   const nextImage = () => {
     setActiveImage((prev) => (prev + 1) % images.length);
   };
@@ -982,20 +982,22 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
           {/* ARROWS: Only show if there's more than 1 image */}
           {images.length > 1 && (
             <>
-              {/* Left Arrow */}
-              <button 
+              {/* Left Arrow - pointer-events-auto makes it clickable again */}
+              <button
                 onClick={prevImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
+                className="pointer-events-auto z-50 bg-black text-white p-3 rounded-full shadow-2xl hover:scale-110 transition-transform"
+                aria-label="Previous image"
               >
-                <ChevronLeft size={24} className="text-black" />
+                <ChevronLeft size={28} />
               </button>
 
               {/* Right Arrow */}
-              <button 
+              <button
                 onClick={nextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
+                className="pointer-events-auto z-50 bg-black text-white p-3 rounded-full shadow-2xl hover:scale-110 transition-transform"
+                aria-label="Next image"
               >
-                <ChevronRight size={24} className="text-gray-800" />
+                <ChevronRight size={28} />
               </button>
 
               {/* Image Counter (Optional) */}
