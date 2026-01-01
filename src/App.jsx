@@ -1387,7 +1387,7 @@ const App = () => {
   return (
     <div className="font-sans antialiased bg-white text-gray-900">
       <Navbar cart={cart} user={user} onLogout={handleLogout} />
-      <Router>
+
         <ScrollToTop /> {/* 🟢 It must live inside the Router */}
         <Routes>
           <Route
@@ -1424,7 +1424,6 @@ const App = () => {
           <Route path="/failure" element={<Failure />} />
           <Route path="/myorders" element={<MyOrders user={user} />} />
         </Routes>
-      </Router>
       <Footer />
     </div>
   );
