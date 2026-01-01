@@ -987,7 +987,7 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
                 onClick={prevImage}
                 className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
               >
-                <ChevronLeft size={24} className="text-gray-800" />
+                <ChevronLeft size={24} className="text-black" />
               </button>
 
               {/* Right Arrow */}
