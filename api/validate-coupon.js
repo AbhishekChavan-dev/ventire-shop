@@ -1,34 +1,53 @@
-import connectDB from "../lib/mongodb.js";
-import Promotion from "../models/Promotion.js";
+import connectDB from "../../lib/mongodb";
+import Promotion from "../../models/Promotion";
 
 export default async function handler(req, res) {
-    if (req.method !== "POST") return res.status(405).end();
+  // 1. Prevent non-POST requests
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
 
-    try {
-        await connectDB();
-        const { code } = req.body;
+  try {
+    // 2. Ensure DB is connected BEFORE running queries
+    await connectDB();
 
-        const promo = await Promotion.findOne({
-            code: code.toUpperCase(),
-            isActive: true
-        });
-
-        if (!promo) {
-            return res.status(404).json({ message: "Coupon code not found or inactive." });
-        }
-
-        // Parse "20%" or "500" from the discount field
-        const discountStr = promo.discount;
-        const isPercentage = discountStr.includes("%");
-        const discountValue = parseFloat(discountStr.replace("%", ""));
-
-        return res.status(200).json({
-            success: true,
-            discountValue,
-            isPercentage,
-            code: promo.code
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    const { code } = req.body;
+    if (!code) {
+      return res.status(400).json({ message: "Coupon code is required" });
     }
+
+    // 3. Use .lean() for faster, read-only performance (helps on Vercel)
+    const promo = await Promotion.findOne({ 
+      code: code.trim().toUpperCase(), 
+      isActive: true 
+    }).lean();
+
+    if (!promo) {
+      return res.status(404).json({ message: "Invalid or expired coupon code." });
+    }
+
+    // 4. Robust parsing of your "20%" string
+    const discountStr = promo.discount ? promo.discount.toString() : "0"; 
+    const isPercentage = discountStr.includes("%");
+    const numericValue = parseFloat(discountStr.replace("%", ""));
+
+    if (isNaN(numericValue)) {
+      return res.status(500).json({ message: "Coupon data format error." });
+    }
+
+    return res.status(200).json({ 
+      success: true, 
+      discountValue: numericValue, 
+      isPercentage: isPercentage,
+      code: promo.code 
+    });
+
+  } catch (error) {
+    // 5. Check if the error is a connection issue
+    console.error("CRITICAL API ERROR:", error.message);
+    return res.status(500).json({ 
+      message: "Server Error", 
+      error: error.message // This helps you see the actual error in the browser network tab
+    });
+  }
 }
