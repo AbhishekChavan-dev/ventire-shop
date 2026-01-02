@@ -54,6 +54,19 @@ const AnimatedBanner = () => {
             <div className="absolute w-[200%] h-[1px] bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent animate-wind-streak"></div>
           </div>
         )}
+        {/* Stage 3: DYNAMIC COUPON */}
+        {step === 3 && (
+          <div className="absolute flex flex-col items-center animate-coupon-pop">
+            <span className="text-[10px] text-emerald-400 tracking-widest uppercase mb-0.5">Special Offer</span>
+            <div className="flex items-center gap-2">
+              <span className="text-white font-bold tracking-normal">{coupon.discount} OFF</span>
+              <span className="h-4 w-[1px] bg-white/20"></span>
+              <span className="text-emerald-300 font-mono font-bold px-2 py-0.5 border border-emerald-500/30 rounded bg-emerald-500/10">
+                {coupon.code}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       <style>{`
@@ -84,12 +97,19 @@ const AnimatedBanner = () => {
           0%, 100% { opacity: 0.2; }
           50% { opacity: 0.4; }
         }
+        @keyframes coupon-pop {
+          0% { opacity: 0; transform: scale(0.9); }
+          15% { opacity: 1; transform: scale(1); }
+          85% { opacity: 1; transform: scale(1); }
+          100% { opacity: 0; transform: scale(1.1); filter: blur(5px); }
+        }
         
         .animate-respire { animation: respire 2.5s ease-in-out forwards; }
         .animate-aspire { animation: aspire 2.5s ease-in-out forwards; }
         .animate-ventire-appear { animation: ventire-appear 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .animate-wind-streak { animation: wind-streak 2s ease-in-out infinite; }
         .animate-pulse-slow { animation: pulse-slow 4s ease-in-out infinite; }
+        .animate-coupon-pop { animation: coupon-pop 3.5s ease-out forwards; }
       `}</style>
     </div>
   );
