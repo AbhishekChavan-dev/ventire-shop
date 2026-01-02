@@ -261,7 +261,6 @@ export default function Cart({ cart, setCart }) {
     localStorage.setItem("ventire_cart", JSON.stringify(updatedCart));
   };
   const [guestEmail, setGuestEmail] = useState("");
-  const [emailError, setEmailError] = useState(false); // New state for aesthetic validation
   const checkout = async () => {
     const totalQty = cart.reduce((acc, item) => acc + item.quantity, 0);
     if (!address.street || !address.pincode || !address.phone) {
@@ -281,15 +280,11 @@ export default function Cart({ cart, setCart }) {
         return;
       }
       else {
-        // // If not logged in, ensure we have a guest email
-        // if (!user && !guestEmail) {
-        //   alert("Please provide an email address for order tracking.");
-        //   return;
-        // }
-        // 2. Aesthetic Guest Check
-        
-
-        setEmailError(false); // Clear error if validation passes
+        // If not logged in, ensure we have a guest email
+        if (!user && !guestEmail) {
+          alert("Please provide an email address for order tracking.");
+          return;
+        }
       }
       const finalEmail = user ? user.email : guestEmail;
       // Create a temporary guest object so the backend doesn't crash
@@ -381,16 +376,11 @@ export default function Cart({ cart, setCart }) {
   const [isGuestMode, setIsGuestMode] = useState(false);
 
   const handleCheckoutClick = () => {
-    // Perform validation here, not in the component body
-    if (!user && (!guestEmail || !guestEmail.includes('@'))) {
-      setEmailError(true);
-      // Optional: scroll to the input so the user sees the error
-      document.getElementById('guest-input')?.scrollIntoView({ behavior: 'smooth' });
+    // If logged in, go straight to payment
+    if (user) {
+      checkout();
       return;
     }
-
-    // If valid, proceed to payment logic
-     checkout();
     // If not logged in, show the Guest/Login selection UI
     setIsGuestMode(true);
   };
@@ -443,43 +433,6 @@ export default function Cart({ cart, setCart }) {
             >
               Proceed to Pay ₹{totalAmount}
             </button> */}
-            {/* Guest Email Section */}
-            {!user && (
-              <div id="guest-email-section" className="mb-8 animate-in fade-in duration-500">
-                <div className={`p-6 rounded-2xl border-2 transition-all duration-300 ${emailError ? "border-red-200 bg-red-50 shadow-sm" : "border-gray-100 bg-white"
-                  }`}>
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-tight">
-                      Contact Information
-                    </h3>
-                    {emailError && (
-                      <span className="text-xs font-bold text-red-500 animate-pulse">
-                        Email is required for tracking
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="relative">
-                    <input
-                      type="email"
-                      placeholder="Enter your email address"
-                      value={guestEmail}
-                      onChange={(e) => {
-                        setGuestEmail(e.target.value);
-                        if (emailError) setEmailError(false);
-                      }}
-                      className={`w-full p-4 rounded-xl outline-none transition-all ${emailError
-                          ? "bg-white border-2 border-red-500 ring-4 ring-red-50"
-                          : "bg-gray-50 border border-gray-200 focus:bg-white focus:border-green-500"
-                        }`}
-                    />
-                    <p className="text-[11px] text-gray-400 mt-2 ml-1">
-                      We’ll send your order confirmation and VT-ID here.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
             <div className="mt-8 border-t pt-8">
               {!user && isGuestMode ? (
                 <div className="bg-gray-50 p-6 rounded-2xl border border-gray-200 animate-in fade-in slide-in-from-bottom-4">
