@@ -612,7 +612,7 @@ export default function Cart({ cart, setCart }) {
         body: JSON.stringify({
           amount: totalAmount,
           quantity: totalItemsCount,
-          userId: user._id || currentUserData._id,
+          userId: user ? (user.id || user._id) : "000000000000000000000000",
         }),
       });
 
@@ -643,7 +643,7 @@ export default function Cart({ cart, setCart }) {
                 amount: totalAmount,
                 quantity: totalItemsCount,
                 items: cart,
-                userId: user._id || currentUserData._id,
+                userId: user ? (user.id || user._id) : "000000000000000000000000",
                 useremail: finalEmail,
                 address: address,
                 status: "paid",
