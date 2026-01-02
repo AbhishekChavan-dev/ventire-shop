@@ -110,10 +110,10 @@ const AnimatedBanner = () => {
           50% { opacity: 0.4; }
         }
         @keyframes coupon-pop {
-          0% { opacity: 0; transform: scale(0.9); }
-          15% { opacity: 1; transform: scale(1); }
-          85% { opacity: 1; transform: scale(1); }
-          100% { opacity: 0; transform: scale(1.1); filter: blur(5px); }
+           0% { opacity: 0; transform: translateY(15px); }
+          20% { opacity: 1; transform: translateY(0); }
+          80% { opacity: 1; filter: blur(0px); }
+          100% { opacity: 0; filter: blur(10px); transform: scale(1.3); }
         }
         
         .animate-respire { animation: respire 2.5s ease-in-out forwards; }
