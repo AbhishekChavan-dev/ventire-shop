@@ -5,21 +5,31 @@ const AnimatedBanner = () => {
   const [cycle, setCycle] = useState(0);
 
   useEffect(() => {
-    // Timings: Respire (0-2.5s), Aspire (2.5-5s), Ventire (5-8s)
-    const timer1 = setTimeout(() => setStep(1), 2500);
-    const timer2 = setTimeout(() => setStep(2), 5000);
-    const resetTimer = setTimeout(() => {
-      setStep(0);
-      setCycle(c => c + 1); // Reset the loop
-    }, 8500);
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(resetTimer);
+    // 1. Fetch dynamic coupon from your API
+    const fetchPromotion = async () => {
+      try {
+        const res = await fetch('/api/get-promotion'); // Create this endpoint
+        const data = await res.json();
+        if (data.success) setCoupon(data.data);
+      } catch (err) {
+        console.error("Banner fetch failed, using fallback");
+      }
     };
-  }, [cycle]);
+    fetchPromotion();
+  }, []);
 
+  useEffect(() => {
+    // Timings for 4 stages (Total 13s loop)
+    const t1 = setTimeout(() => setStep(1), 3000); // Respire
+    const t2 = setTimeout(() => setStep(2), 6000); // Aspire
+    const t3 = setTimeout(() => setStep(3), 9500); // Ventire
+    const reset = setTimeout(() => {
+      setStep(0);
+      setCycle(c => c + 1); 
+    }, 13000);
+
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(reset); };
+  }, [cycle]);
   return (
     <div className="relative w-full h-10 overflow-hidden flex items-center justify-center z-[60] shadow-sm">
       {/* 🟢 AESTHETIC BACKGROUND: Deep Emerald Mesh Gradient */}
