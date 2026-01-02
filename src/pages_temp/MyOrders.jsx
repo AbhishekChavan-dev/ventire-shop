@@ -98,7 +98,7 @@ const MyOrders = ({ user }) => {
                             {/* 1. Order Header (Keep your existing header) */}
                             <div className="flex justify-between border-b pb-4 mb-4">
                                 <div>
-                                    <p className="text-sm text-gray-500">Order ID: {order.displayId}</p>
+                                    <p className="text-sm text-gray-500">Order ID: {order.orderNumber}</p>
                                     <p className="font-bold">Total: ₹{order.amount}</p>
                                 </div>
                                 <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs self-start">
