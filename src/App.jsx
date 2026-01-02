@@ -178,6 +178,7 @@ const Navbar = ({ cart, user, onLogout }) => {
   };
   const hiddenPages = ['/cart', '/myorders', '/success'];
   const shouldHideLinks = hiddenPages.includes(location.pathname);
+  const totalItems = cart.reduce((acc, item) => acc + (item.quantity || 0), 0);
   return (
 
     <nav className="sticky top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-green-50">
@@ -275,7 +276,7 @@ const Navbar = ({ cart, user, onLogout }) => {
                   to="/cart"
                   className="bg-green-600 text-white px-5 py-2 rounded-full hover:bg-green-700"
                 >
-                  Cart ({cart.quantity})
+                  Cart ({totalItems})
                 </Link>
               </>
             )}
@@ -437,7 +438,7 @@ const Navbar = ({ cart, user, onLogout }) => {
                   onClick={() => setIsOpen(false)}
                   className="block mt-4 bg-green-600 text-white px-5 py-3 rounded-lg text-center"
                 >
-                  Cart ({cart.quantity})
+                  Cart ({totalItems})
                 </Link>
               </>
             )}
@@ -924,7 +925,7 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
   const totalAmount = PRICE * quantity;
   const mrpAmount = (product.mrp || PRICE * 1.4) * quantity;
 
-  // // --- Payment & Cart Logic ---
+  // --- Payment & Cart Logic ---
   // const buyNow = async () => {
   //   if (!user) {
   //     alert("Please login to purchase");
@@ -978,36 +979,45 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
   //   } catch (err) { alert("Payment failed to start."); }
   // };
 
-  const buyNow = () => {
-    // 1. Check if item is already in cart
+  // const addToCart = () => {
+  //   // Logic to add specific product object to cart
+  //   setCart((prev) => ({
+  //     ...prev,
+  //     quantity: prev.quantity + quantity,
+  //     items: [...(prev.items || []), { ...product, qty: quantity }]
+  //   }));
+  //   setAddedMsg(true);
+  //   setTimeout(() => setAddedMsg(false), 2000);
+  // };
+  // A helper function to handle the array logic
+  const addItemToCartArray = () => {
     const existingItem = cart.find((item) => item._id === product._id);
+    let newCart;
 
     if (existingItem) {
-      // If it exists, just update quantity (optional)
-      setCart(cart.map((item) =>
-        item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
-      ));
+      newCart = cart.map((item) =>
+        item._id === product._id ? { ...item, quantity: item.quantity + quantity } : item
+      );
     } else {
-      // 2. Add new item to cart
-      setCart([...cart, { ...product, quantity: 1 }]);
+      newCart = [...cart, { ...product, quantity: quantity }];
     }
 
-    // 3. Immediately take user to the cart page
-    navigate('/cart'); 
+    setCart(newCart);
+    localStorage.setItem("ventire_cart", JSON.stringify(newCart));
   };
 
- 
+  // 1. Add to Cart: Adds item and shows success message
   const addToCart = () => {
-    // Logic to add specific product object to cart
-    setCart((prev) => ({
-      ...prev,
-      quantity: prev.quantity + quantity,
-      items: [...(prev.items || []), { ...product, qty: quantity }]
-    }));
+    addItemToCartArray();
     setAddedMsg(true);
     setTimeout(() => setAddedMsg(false), 2000);
   };
 
+  // 2. Buy Now: Adds item and immediately jumps to Cart
+  const buyNow = () => {
+    addItemToCartArray();
+    navigate("/cart");
+  };
   return (
     <div className="py-12 border-b border-gray-100 last:border-0">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -1401,9 +1411,19 @@ const App = () => {
     fetchProducts();
   }, []);
   // 🛒 CART STATE
+  // const [cart, setCart] = useState(() => {
+  //   const saved = localStorage.getItem("ventire_cart");
+  //   return saved ? JSON.parse(saved) : { quantity: 0 };
+  // });
   const [cart, setCart] = useState(() => {
     const saved = localStorage.getItem("ventire_cart");
-    return saved ? JSON.parse(saved) : { quantity: 0 };
+    try {
+      const parsed = JSON.parse(saved);
+      // If it's the old object style {quantity: 0} or null, reset to []
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
   });
 
   useEffect(() => {
