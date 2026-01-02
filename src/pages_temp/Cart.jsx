@@ -583,7 +583,36 @@ export default function Cart({ cart, setCart }) {
     setCart(updatedCart);
     localStorage.setItem("ventire_cart", JSON.stringify(updatedCart));
   };
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState(null); // Stores { code, value, isPercentage }
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const handleApplyCoupon = async () => {
+    try {
+      const res = await fetch("/api/validate-coupon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: couponInput }),
+      });
+      const data = await res.json();
 
+      if (res.ok) {
+        let saved = 0;
+        if (data.isPercentage) {
+          saved = (totalAmount * data.discountValue) / 100;
+        } else {
+          saved = data.discountValue;
+        }
+
+        setDiscountAmount(saved);
+        setAppliedPromo(data);
+        setCouponError("");
+      } else {
+        setCouponError(data.message);
+      }
+    } catch (err) {
+      setCouponError("Service unavailable.");
+    }
+  };
   const checkout = async () => {
     // 1. Validation
     if (!address.street || !address.pincode || !address.phone) {
@@ -605,12 +634,13 @@ export default function Cart({ cart, setCart }) {
     }
     let finalEmail = user ? user.email : guestEmail;
     try {
+      const finalAmountToPay = totalAmount - discountAmount;
       // 2. Create Razorpay Order
       const resCreate = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: totalAmount,
+          amount: finalAmountToPay,
           quantity: totalItemsCount,
           userId: user ? (user.id || user._id) : "000000000000000000000000",
         }),
@@ -640,7 +670,7 @@ export default function Cart({ cart, setCart }) {
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
                 signature: response.razorpay_signature,
-                amount: totalAmount,
+                amount: finalAmountToPay,
                 quantity: totalItemsCount,
                 items: cart,
                 userId: user ? (user.id || user._id) : "000000000000000000000000",
@@ -717,52 +747,96 @@ export default function Cart({ cart, setCart }) {
         <div className="md:col-span-1">
           <div className="bg-white p-6 rounded-xl shadow sticky top-32">
             <h2 className="text-xl font-bold mb-4">Summary</h2>
-            <div className="flex justify-between mb-6 border-b pb-4">
+            <div className="space-y-3 border-b pb-4 text-sm">
+              <div className="flex justify-between text-gray-500">
+                <span>Subtotal ({totalItemsCount} items)</span>
+                <span>₹{totalAmount}</span>
+              </div>
+
+              {appliedPromo && (
+                <div className="flex justify-between text-green-600 font-bold">
+                  <span className="flex items-center gap-1">
+                    Discount ({appliedPromo.code})
+                    <button onClick={() => { setAppliedPromo(null); setDiscountAmount(0); }} className="text-gray-400 hover:text-red-500">
+                      <Trash2 size={12} />
+                    </button>
+                  </span>
+                  <span>- ₹{discountAmount.toFixed(0)}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-between py-4 text-xl font-black">
               <span>Total</span>
-              <span className="font-bold">₹{totalAmount}</span>
+              <span>₹{totalAmount - discountAmount}</span>
             </div>
 
-            <div className="mb-6">
-              <p className="text-xs font-bold text-gray-400 uppercase mb-2">Shipping Address</p>
-              <AddressForm address={address} setAddress={setAddress} />
-            </div>
-
-            {isGuestMode && !user && (
-              <div id="guest-email-section" className="mb-6 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-                <label className="block text-xs font-bold mb-2">Email for tracking</label>
+            {/* Coupon Input Area */}
+            {!appliedPromo && (
+              <div className="mt-2 flex gap-2">
                 <input
-                  type="email"
-                  value={guestEmail}
-                  onChange={(e) => { setGuestEmail(e.target.value); setEmailError(false); }}
-                  className={`w-full p-3 rounded-lg border ${emailError ? 'border-red-500' : 'border-gray-300'}`}
-                  placeholder="your@email.com"
+                  type="text"
+                  placeholder="Coupon Code"
+                  className="flex-1 bg-gray-50 px-4 py-2 rounded-xl text-sm border focus:border-green-500 outline-none uppercase"
+                  value={couponInput}
+                  onChange={(e) => setCouponInput(e.target.value)}
                 />
-                {emailError && <p className="text-red-500 text-[10px] mt-1">Valid email required</p>}
+                <button
+                  onClick={handleApplyCoupon}
+                  className="bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-black"
+                >
+                  Apply
+                </button>
               </div>
             )}
+          {/* <div className="flex justify-between mb-6 border-b pb-4">
+              <span>Total</span>
+              <span className="font-bold">₹{totalAmount}</span>
+            </div> */}
 
-            <button
-              onClick={isGuestMode || user ? checkout : handleCheckoutClick}
-              className="w-full bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition-all"
-            >
-              {user ? `Pay ₹${totalAmount}` : isGuestMode ? "Finalize Guest Order" : "Checkout Now"}
-            </button>
-
-            {!user && !isGuestMode && (
-              <button onClick={() => navigate('/Login')} className="w-full mt-3 text-sm text-green-600 font-medium">
-                Or Login to your account
-              </button>
-            )}
+          <div className="mb-6">
+            <p className="text-xs font-bold text-gray-400 uppercase mb-2">Shipping Address</p>
+            <AddressForm address={address} setAddress={setAddress} />
           </div>
+
+          {isGuestMode && !user && (
+            <div id="guest-email-section" className="mb-6 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+              <label className="block text-xs font-bold mb-2">Email for tracking</label>
+              <input
+                type="email"
+                value={guestEmail}
+                onChange={(e) => { setGuestEmail(e.target.value); setEmailError(false); }}
+                className={`w-full p-3 rounded-lg border ${emailError ? 'border-red-500' : 'border-gray-300'}`}
+                placeholder="your@email.com"
+              />
+              {emailError && <p className="text-red-500 text-[10px] mt-1">Valid email required</p>}
+            </div>
+          )}
+
+          <button
+            onClick={isGuestMode || user ? checkout : handleCheckoutClick}
+            className="w-full bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition-all"
+          >
+            {user ? `Pay ₹${totalAmount}` : isGuestMode ? "Finalize Guest Order" : "Checkout Now"}
+          </button>
+
+          {!user && !isGuestMode && (
+            <button onClick={() => navigate('/Login')} className="w-full mt-3 text-sm text-green-600 font-medium">
+              Or Login to your account
+            </button>
+          )}
         </div>
       </div>
-
-      {isProcessing && (
-        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/90 backdrop-blur-md">
-          <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
-          <h2 className="text-xl font-bold">Processing Order...</h2>
-        </div>
-      )}
     </div>
+
+      {
+    isProcessing && (
+      <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/90 backdrop-blur-md">
+        <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
+        <h2 className="text-xl font-bold">Processing Order...</h2>
+      </div>
+    )
+  }
+    </div >
   );
 }
