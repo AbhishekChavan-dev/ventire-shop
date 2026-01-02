@@ -541,10 +541,317 @@
 //     </div>
 //   );
 // }
+// import { useNavigate } from "react-router-dom";
+// import { useEffect, useState } from "react";
+// import AddressForm from "../components/AddressForm";
+// import { Trash2, ShieldCheck, Minus, Plus } from "lucide-react";
+
+// export default function Cart({ cart, setCart }) {
+//   const navigate = useNavigate();
+//   const [user, setUser] = useState(null);
+//   const [isProcessing, setIsProcessing] = useState(false);
+//   const [guestEmail, setGuestEmail] = useState("");
+//   const [emailError, setEmailError] = useState(false);
+//   const [isGuestMode, setIsGuestMode] = useState(false);
+
+//   const [address, setAddress] = useState({
+//     street: '',
+//     city: '',
+//     pincode: '',
+//     phone: ''
+//   });
+
+//   useEffect(() => {
+//     const savedUser = localStorage.getItem("user");
+//     if (savedUser) {
+//       setUser(JSON.parse(savedUser));
+//     }
+//   }, []);
+
+//   const totalAmount = Array.isArray(cart) ? cart.reduce((acc, item) => acc + (item.price * item.quantity), 0) : 0;
+//   const totalItemsCount = Array.isArray(cart) ? cart.reduce((acc, item) => acc + item.quantity, 0) : 0;
+
+//   const removeItem = (productId) => {
+//     const updatedCart = cart.filter(item => item._id !== productId);
+//     setCart(updatedCart);
+//     localStorage.setItem("ventire_cart", JSON.stringify(updatedCart));
+//   };
+
+//   const updateQuantity = (productId, newQty) => {
+//     if (newQty < 1) return;
+//     const updatedCart = cart.map(item => item._id === productId ? { ...item, quantity: newQty } : item);
+//     setCart(updatedCart);
+//     localStorage.setItem("ventire_cart", JSON.stringify(updatedCart));
+//   };
+// Add this inside your Cart component
+//   const [couponInput, setCouponInput] = useState("");
+//   const [discountAmount, setDiscountAmount] = useState(0);
+//   const [appliedPromo, setAppliedPromo] = useState(null);
+//   const [couponError, setCouponError] = useState("");
+
+//   const handleApplyCoupon = async () => {
+//     if (!couponInput) return;
+
+//     try {
+//       const res = await fetch("/api/validate-coupon", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ code: couponInput.toUpperCase() }),
+//       });
+
+//       const data = await res.json();
+
+//       if (res.ok) {
+//         // Logic to handle your "20%" or "500" string from DB
+//         const isPercentage = data.discountValue.toString().includes("%") || data.isPercentage;
+//         const numericValue = parseFloat(data.discountValue.toString().replace("%", ""));
+
+//         let saved = isPercentage
+//           ? (totalAmount * numericValue) / 100
+//           : numericValue;
+
+//         setDiscountAmount(saved);
+//         setAppliedPromo(data.code);
+//         setCouponError("");
+//       } else {
+//         setCouponError(data.message || "Invalid Code");
+//         setDiscountAmount(0);
+//       }
+//     } catch (err) {
+//       setCouponError("Server error. Try again.");
+//     }
+//   };
+//   const checkout = async () => {
+//     // 1. Validation
+//     if (!address.street || !address.pincode || !address.phone) {
+//       alert("Please fill in your delivery address and phone number.");
+//       return;
+//     }
+
+//     // Identify who is buying
+//     let currentUserData = user;
+
+
+//     if (!user) {
+//       if (!guestEmail || !guestEmail.includes('@')) {
+//         setEmailError(true);
+//         document.getElementById('guest-email-section')?.scrollIntoView({ behavior: 'smooth' });
+//         return;
+//       }
+//       currentUserData = { _id: "guest", name: "Guest", email: guestEmail };
+//     }
+//     let finalEmail = user ? user.email : guestEmail;
+//     try {
+//       const finalAmountToPay = totalAmount - discountAmount;
+//       // 2. Create Razorpay Order
+//       const resCreate = await fetch("/api/create-order", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({
+//           amount: finalAmountToPay,
+//           quantity: totalItemsCount,
+//           userId: user ? (user.id || user._id) : "000000000000000000000000",
+//         }),
+//       });
+
+//       const order = await resCreate.json();
+
+//       const options = {
+//         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+//         amount: order.amount,
+//         currency: "INR",
+//         name: "Ventire",
+//         description: "Ventire Purifier Order",
+//         order_id: order.id,
+//         prefill: {
+//           name: user ? user.name : "Guest Customer",
+//           email: finalEmail,
+//           contact: address.phone
+//         },
+//         handler: async function (response) {
+//           setIsProcessing(true);
+//           try {
+//             const res = await fetch("/api/store-order", {
+//               method: "POST",
+//               headers: { "Content-Type": "application/json" },
+//               body: JSON.stringify({
+//                 orderId: response.razorpay_order_id,
+//                 paymentId: response.razorpay_payment_id,
+//                 signature: response.razorpay_signature,
+//                 amount: finalAmountToPay,
+//                 quantity: totalItemsCount,
+//                 items: cart,
+//                 userId: user ? (user.id || user._id) : "000000000000000000000000",
+//                 useremail: finalEmail,
+//                 address: address,
+//                 status: "paid",
+//               }),
+//             });
+
+//             const data = await res.json();
+//             if (data.success) {
+//               setCart([]);
+//               localStorage.removeItem("ventire_cart");
+//               navigate(`/Success?orderNo=${data.displayId}`, { state: { address } });
+//             }
+//           } catch (err) {
+//             navigate("/Failure");
+//           }
+//         },
+//         modal: { ondismiss: () => setIsProcessing(false) },
+//         theme: { color: "#16a34a" },
+//       };
+
+//       const rzp = new window.Razorpay(options);
+//       rzp.open();
+//     } catch (err) {
+//       alert("Payment initiation failed.");
+//     }
+//   };
+
+//   const handleCheckoutClick = () => {
+//     if (user) {
+//       checkout();
+//     } else {
+//       setIsGuestMode(true);
+//     }
+//   };
+
+//   if (!cart || cart.length === 0) {
+//     return (
+//       <div className="pt-32 text-center">
+//         <h2 className="text-2xl font-bold text-gray-400">Your cart is empty</h2>
+//         <button onClick={() => navigate("/")} className="mt-4 text-green-600 font-semibold underline">
+//           Continue Shopping
+//         </button>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="pt-32 max-w-4xl mx-auto px-4 pb-20">
+//       <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
+//       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+//         <div className="md:col-span-2 space-y-4">
+//           {cart.map((item) => (
+//             <div key={item._id} className="bg-white p-4 rounded-xl shadow border border-gray-50 flex items-center gap-4">
+//               <img src={item.images?.[0] || "/Air purifier.jpg"} alt="" className="w-20 h-20 object-contain" />
+//               <div className="flex-1">
+//                 <h3 className="font-bold text-gray-900">{item.name}</h3>
+//                 <p className="text-green-600 font-bold">₹{item.price}</p>
+//                 <div className="flex items-center gap-4 mt-2">
+//                   <div className="flex items-center border rounded-lg px-2 py-1">
+//                     <button onClick={() => updateQuantity(item._id, item.quantity - 1)}><Minus size={14} /></button>
+//                     <span className="px-3 font-bold">{item.quantity}</span>
+//                     <button onClick={() => updateQuantity(item._id, item.quantity + 1)}><Plus size={14} /></button>
+//                   </div>
+//                   <button onClick={() => removeItem(item._id)} className="text-red-500"><Trash2 size={18} /></button>
+//                 </div>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+
+//         <div className="md:col-span-1">
+//           <div className="bg-white p-6 rounded-xl shadow sticky top-32">
+//             <h2 className="text-xl font-bold mb-4">Summary</h2>
+//             <div className="space-y-3 border-b pb-4 text-sm">
+//               <div className="flex justify-between text-gray-500">
+//                 <span>Subtotal ({totalItemsCount} items)</span>
+//                 <span>₹{totalAmount}</span>
+//               </div>
+
+//               {appliedPromo && (
+//                 <div className="flex justify-between text-green-600 font-bold">
+//                   <span className="flex items-center gap-1">
+//                     Discount ({appliedPromo.code})
+//                     <button onClick={() => { setAppliedPromo(null); setDiscountAmount(0); }} className="text-gray-400 hover:text-red-500">
+//                       <Trash2 size={12} />
+//                     </button>
+//                   </span>
+//                   <span>- ₹{discountAmount.toFixed(0)}</span>
+//                 </div>
+//               )}
+//             </div>
+// {/* 
+//             <div className="flex justify-between py-4 text-xl font-black">
+//               <span>Total</span>
+//               <span>₹{totalAmount - discountAmount}</span>
+//             </div> */}
+
+//             {/* Coupon Input Area */}
+//             {!appliedPromo && (
+//               <div className="mt-2 flex gap-2">
+//                 <input
+//                   type="text"
+//                   placeholder="Coupon Code"
+//                   className="flex-1 bg-gray-50 px-4 py-2 rounded-xl text-sm border focus:border-green-500 outline-none uppercase"
+//                   value={couponInput}
+//                   onChange={(e) => setCouponInput(e.target.value)}
+//                 />
+//                 <button
+//                   onClick={handleApplyCoupon}
+//                   className="bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-black"
+//                 >
+//                   Apply
+//                 </button>
+//               </div>
+//             )}
+//             {/* <div className="flex justify-between mb-6 border-b pb-4">
+//               <span>Total</span>
+//               <span className="font-bold">₹{totalAmount}</span>
+//             </div> */}
+
+//             <div className="mb-6">
+//               <p className="text-xs font-bold text-gray-400 uppercase mb-2">Shipping Address</p>
+//               <AddressForm address={address} setAddress={setAddress} />
+//             </div>
+
+//             {isGuestMode && !user && (
+//               <div id="guest-email-section" className="mb-6 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+//                 <label className="block text-xs font-bold mb-2">Email for tracking</label>
+//                 <input
+//                   type="email"
+//                   value={guestEmail}
+//                   onChange={(e) => { setGuestEmail(e.target.value); setEmailError(false); }}
+//                   className={`w-full p-3 rounded-lg border ${emailError ? 'border-red-500' : 'border-gray-300'}`}
+//                   placeholder="your@email.com"
+//                 />
+//                 {emailError && <p className="text-red-500 text-[10px] mt-1">Valid email required</p>}
+//               </div>
+//             )}
+
+//             <button
+//               onClick={isGuestMode || user ? checkout : handleCheckoutClick}
+//               className="w-full bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition-all"
+//             >
+//               {user ? `Pay ₹${totalAmount}` : isGuestMode ? "Finalize Guest Order" : "Checkout Now"}
+//             </button>
+
+//             {!user && !isGuestMode && (
+//               <button onClick={() => navigate('/Login')} className="w-full mt-3 text-sm text-green-600 font-medium">
+//                 Or Login to your account
+//               </button>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+
+//       {
+//         isProcessing && (
+//           <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/90 backdrop-blur-md">
+//             <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
+//             <h2 className="text-xl font-bold">Processing Order...</h2>
+//           </div>
+//         )
+//       }
+//     </div >
+//   );
+// }
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import AddressForm from "../components/AddressForm";
-import { Trash2, ShieldCheck, Minus, Plus } from "lucide-react";
+import { Trash2, ShieldCheck, Minus, Plus, Ticket } from "lucide-react";
 
 export default function Cart({ cart, setCart }) {
   const navigate = useNavigate();
@@ -561,15 +868,21 @@ export default function Cart({ cart, setCart }) {
     phone: ''
   });
 
+  // Coupon States
+  const [couponInput, setCouponInput] = useState("");
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [appliedPromo, setAppliedPromo] = useState(null);
+  const [couponError, setCouponError] = useState("");
+
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
+    if (savedUser) setUser(JSON.parse(savedUser));
   }, []);
 
-  const totalAmount = Array.isArray(cart) ? cart.reduce((acc, item) => acc + (item.price * item.quantity), 0) : 0;
+  // Price Calculations
+  const subtotal = Array.isArray(cart) ? cart.reduce((acc, item) => acc + (item.price * item.quantity), 0) : 0;
   const totalItemsCount = Array.isArray(cart) ? cart.reduce((acc, item) => acc + item.quantity, 0) : 0;
+  const finalPayableAmount = subtotal - discountAmount;
 
   const removeItem = (productId) => {
     const updatedCart = cart.filter(item => item._id !== productId);
@@ -583,36 +896,29 @@ export default function Cart({ cart, setCart }) {
     setCart(updatedCart);
     localStorage.setItem("ventire_cart", JSON.stringify(updatedCart));
   };
-  // Add this inside your Cart component
-  const [couponInput, setCouponInput] = useState("");
-  const [discountAmount, setDiscountAmount] = useState(0);
-  const [appliedPromo, setAppliedPromo] = useState(null);
-  const [couponError, setCouponError] = useState("");
 
   const handleApplyCoupon = async () => {
     if (!couponInput) return;
+    setCouponError("");
 
     try {
       const res = await fetch("/api/validate-coupon", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: couponInput.toUpperCase() }),
+        body: JSON.stringify({ code: couponInput.trim().toUpperCase() }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        // Logic to handle your "20%" or "500" string from DB
-        const isPercentage = data.discountValue.toString().includes("%") || data.isPercentage;
-        const numericValue = parseFloat(data.discountValue.toString().replace("%", ""));
+        const isPercentage = data.isPercentage;
+        const numericValue = data.discountValue;
 
-        let saved = isPercentage
-          ? (totalAmount * numericValue) / 100
-          : numericValue;
+        let saved = isPercentage ? (subtotal * numericValue) / 100 : numericValue;
 
         setDiscountAmount(saved);
         setAppliedPromo(data.code);
-        setCouponError("");
+        setCouponInput("");
       } else {
         setCouponError(data.message || "Invalid Code");
         setDiscountAmount(0);
@@ -621,34 +927,25 @@ export default function Cart({ cart, setCart }) {
       setCouponError("Server error. Try again.");
     }
   };
+
   const checkout = async () => {
-    // 1. Validation
     if (!address.street || !address.pincode || !address.phone) {
-      alert("Please fill in your delivery address and phone number.");
+      alert("Please fill in your delivery address.");
       return;
     }
 
-    // Identify who is buying
-    let currentUserData = user;
-
-
-    if (!user) {
-      if (!guestEmail || !guestEmail.includes('@')) {
-        setEmailError(true);
-        document.getElementById('guest-email-section')?.scrollIntoView({ behavior: 'smooth' });
-        return;
-      }
-      currentUserData = { _id: "guest", name: "Guest", email: guestEmail };
-    }
     let finalEmail = user ? user.email : guestEmail;
+    if (!user && (!finalEmail || !finalEmail.includes('@'))) {
+      setEmailError(true);
+      return;
+    }
+
     try {
-      const finalAmountToPay = totalAmount - discountAmount;
-      // 2. Create Razorpay Order
       const resCreate = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: finalAmountToPay,
+          amount: finalPayableAmount, // 🟢 Correct Discounted Amount
           quantity: totalItemsCount,
           userId: user ? (user.id || user._id) : "000000000000000000000000",
         }),
@@ -663,11 +960,7 @@ export default function Cart({ cart, setCart }) {
         name: "Ventire",
         description: "Ventire Purifier Order",
         order_id: order.id,
-        prefill: {
-          name: user ? user.name : "Guest Customer",
-          email: finalEmail,
-          contact: address.phone
-        },
+        prefill: { name: user ? user.name : "Guest", email: finalEmail, contact: address.phone },
         handler: async function (response) {
           setIsProcessing(true);
           try {
@@ -678,16 +971,15 @@ export default function Cart({ cart, setCart }) {
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
                 signature: response.razorpay_signature,
-                amount: finalAmountToPay,
+                amount: finalPayableAmount,
                 quantity: totalItemsCount,
                 items: cart,
                 userId: user ? (user.id || user._id) : "000000000000000000000000",
                 useremail: finalEmail,
-                address: address,
+                address,
                 status: "paid",
               }),
             });
-
             const data = await res.json();
             if (data.success) {
               setCart([]);
@@ -698,35 +990,21 @@ export default function Cart({ cart, setCart }) {
             navigate("/Failure");
           }
         },
-        modal: { ondismiss: () => setIsProcessing(false) },
         theme: { color: "#16a34a" },
       };
-
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (err) {
-      alert("Payment initiation failed.");
+      alert("Payment failed.");
     }
   };
 
-  const handleCheckoutClick = () => {
-    if (user) {
-      checkout();
-    } else {
-      setIsGuestMode(true);
-    }
-  };
-
-  if (!cart || cart.length === 0) {
-    return (
-      <div className="pt-32 text-center">
-        <h2 className="text-2xl font-bold text-gray-400">Your cart is empty</h2>
-        <button onClick={() => navigate("/")} className="mt-4 text-green-600 font-semibold underline">
-          Continue Shopping
-        </button>
-      </div>
-    );
-  }
+  if (!cart || cart.length === 0) return (
+    <div className="pt-32 text-center">
+      <h2 className="text-2xl font-bold text-gray-400">Your cart is empty</h2>
+      <button onClick={() => navigate("/")} className="mt-4 text-green-600 font-semibold underline">Continue Shopping</button>
+    </div>
+  );
 
   return (
     <div className="pt-32 max-w-4xl mx-auto px-4 pb-20">
@@ -735,7 +1013,7 @@ export default function Cart({ cart, setCart }) {
         <div className="md:col-span-2 space-y-4">
           {cart.map((item) => (
             <div key={item._id} className="bg-white p-4 rounded-xl shadow border border-gray-50 flex items-center gap-4">
-              <img src={item.images?.[0] || "/Air purifier.jpg"} alt="" className="w-20 h-20 object-contain" />
+              <img src={item.images?.[0] || "/Air purifier.jpg"} className="w-20 h-20 object-contain" alt="" />
               <div className="flex-1">
                 <h3 className="font-bold text-gray-900">{item.name}</h3>
                 <p className="text-green-600 font-bold">₹{item.price}</p>
@@ -755,17 +1033,18 @@ export default function Cart({ cart, setCart }) {
         <div className="md:col-span-1">
           <div className="bg-white p-6 rounded-xl shadow sticky top-32">
             <h2 className="text-xl font-bold mb-4">Summary</h2>
+
             <div className="space-y-3 border-b pb-4 text-sm">
-              <div className="flex justify-between text-gray-500">
-                <span>Subtotal ({totalItemsCount} items)</span>
-                <span>₹{totalAmount}</span>
+              <div className="flex justify-between text-gray-500 font-medium">
+                <span>Subtotal</span>
+                <span>₹{subtotal}</span>
               </div>
 
               {appliedPromo && (
-                <div className="flex justify-between text-green-600 font-bold">
+                <div className="flex justify-between text-green-600 font-bold bg-green-50 p-2 rounded-lg">
                   <span className="flex items-center gap-1">
-                    Discount ({appliedPromo.code})
-                    <button onClick={() => { setAppliedPromo(null); setDiscountAmount(0); }} className="text-gray-400 hover:text-red-500">
+                    <Ticket size={14} /> {appliedPromo}
+                    <button onClick={() => { setAppliedPromo(null); setDiscountAmount(0); }} className="ml-1 text-red-400 hover:text-red-600">
                       <Trash2 size={12} />
                     </button>
                   </span>
@@ -773,78 +1052,67 @@ export default function Cart({ cart, setCart }) {
                 </div>
               )}
             </div>
-{/* 
+
             <div className="flex justify-between py-4 text-xl font-black">
               <span>Total</span>
-              <span>₹{totalAmount - discountAmount}</span>
-            </div> */}
+              <span className="text-green-600 font-black">₹{finalPayableAmount.toFixed(0)}</span>
+            </div>
 
-            {/* Coupon Input Area */}
+            {/* Coupon Section - Improved Alignment */}
             {!appliedPromo && (
-              <div className="mt-2 flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Coupon Code"
-                  className="flex-1 bg-gray-50 px-4 py-2 rounded-xl text-sm border focus:border-green-500 outline-none uppercase"
-                  value={couponInput}
-                  onChange={(e) => setCouponInput(e.target.value)}
-                />
-                <button
-                  onClick={handleApplyCoupon}
-                  className="bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-black"
-                >
-                  Apply
-                </button>
+              <div className="mb-6">
+                <div className="flex items-stretch h-10 w-full overflow-hidden rounded-xl border border-gray-200 focus-within:border-green-500">
+                  <input
+                    type="text"
+                    placeholder="Coupon Code"
+                    className="flex-1 bg-white px-3 text-xs outline-none uppercase font-bold"
+                    value={couponInput}
+                    onChange={(e) => setCouponInput(e.target.value)}
+                  />
+                  <button
+                    onClick={handleApplyCoupon}
+                    className="bg-gray-900 text-white px-4 text-xs font-bold hover:bg-black transition-colors"
+                  >
+                    Apply
+                  </button>
+                </div>
+                {couponError && <p className="text-red-500 text-[10px] mt-1 ml-1 font-bold">✕ {couponError}</p>}
               </div>
             )}
-            {/* <div className="flex justify-between mb-6 border-b pb-4">
-              <span>Total</span>
-              <span className="font-bold">₹{totalAmount}</span>
-            </div> */}
 
             <div className="mb-6">
               <p className="text-xs font-bold text-gray-400 uppercase mb-2">Shipping Address</p>
               <AddressForm address={address} setAddress={setAddress} />
             </div>
 
-            {isGuestMode && !user && (
-              <div id="guest-email-section" className="mb-6 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-                <label className="block text-xs font-bold mb-2">Email for tracking</label>
+            {!user && (
+              <div className="mb-4">
                 <input
                   type="email"
+                  placeholder="Email for tracking"
+                  className={`w-full p-3 rounded-xl border text-sm ${emailError ? 'border-red-500 bg-red-50' : 'border-gray-200'}`}
                   value={guestEmail}
                   onChange={(e) => { setGuestEmail(e.target.value); setEmailError(false); }}
-                  className={`w-full p-3 rounded-lg border ${emailError ? 'border-red-500' : 'border-gray-300'}`}
-                  placeholder="your@email.com"
                 />
-                {emailError && <p className="text-red-500 text-[10px] mt-1">Valid email required</p>}
               </div>
             )}
 
             <button
-              onClick={isGuestMode || user ? checkout : handleCheckoutClick}
-              className="w-full bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition-all"
+              onClick={checkout}
+              className="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 shadow-lg shadow-green-100 transition-all"
             >
-              {user ? `Pay ₹${totalAmount}` : isGuestMode ? "Finalize Guest Order" : "Checkout Now"}
+              Pay ₹{finalPayableAmount.toFixed(0)}
             </button>
-
-            {!user && !isGuestMode && (
-              <button onClick={() => navigate('/Login')} className="w-full mt-3 text-sm text-green-600 font-medium">
-                Or Login to your account
-              </button>
-            )}
           </div>
         </div>
       </div>
 
-      {
-        isProcessing && (
-          <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/90 backdrop-blur-md">
-            <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
-            <h2 className="text-xl font-bold">Processing Order...</h2>
-          </div>
-        )
-      }
-    </div >
+      {isProcessing && (
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/90 backdrop-blur-md">
+          <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
+          <h2 className="text-2xl font-bold text-gray-900">Processing...</h2>
+        </div>
+      )}
+    </div>
   );
 }
