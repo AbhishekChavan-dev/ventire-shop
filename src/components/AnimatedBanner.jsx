@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 const AnimatedBanner = () => {
   const [step, setStep] = useState(0);
   const [cycle, setCycle] = useState(0);
-
+// 🟢 FIX 1: Ensure coupon state is defined to prevent "ReferenceError"
+  const [coupon, setCoupon] = useState({ code: "WELCOME10", discount: "10%" });
   useEffect(() => {
     // 1. Fetch dynamic coupon from your API
     const fetchPromotion = async () => {
