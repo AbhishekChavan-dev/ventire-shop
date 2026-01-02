@@ -287,12 +287,7 @@ export default function Cart({ cart, setCart }) {
         //   return;
         // }
         // 2. Aesthetic Guest Check
-        if (!user && !guestEmail.includes('@')) {
-          setEmailError(true);
-          // Smooth scroll back to the email field if it's off-screen
-          document.getElementById('guest-email-section')?.scrollIntoView({ behavior: 'smooth' });
-          return;
-        }
+        
 
         setEmailError(false); // Clear error if validation passes
       }
@@ -386,11 +381,16 @@ export default function Cart({ cart, setCart }) {
   const [isGuestMode, setIsGuestMode] = useState(false);
 
   const handleCheckoutClick = () => {
-    // If logged in, go straight to payment
-    if (user) {
-      checkout();
+    // Perform validation here, not in the component body
+    if (!user && (!guestEmail || !guestEmail.includes('@'))) {
+      setEmailError(true);
+      // Optional: scroll to the input so the user sees the error
+      document.getElementById('guest-input')?.scrollIntoView({ behavior: 'smooth' });
       return;
     }
+
+    // If valid, proceed to payment logic
+     checkout();
     // If not logged in, show the Guest/Login selection UI
     setIsGuestMode(true);
   };
