@@ -593,7 +593,7 @@ export default function Cart({ cart, setCart }) {
 
     // Identify who is buying
     let currentUserData = user;
-    let finalEmail = user ? user.email : guestEmail;
+
 
     if (!user) {
       if (!guestEmail || !guestEmail.includes('@')) {
@@ -603,7 +603,7 @@ export default function Cart({ cart, setCart }) {
       }
       currentUserData = { _id: "guest", name: "Guest", email: guestEmail };
     }
-
+    let finalEmail = user ? user.email : guestEmail;
     try {
       // 2. Create Razorpay Order
       const resCreate = await fetch("/api/create-order", {
