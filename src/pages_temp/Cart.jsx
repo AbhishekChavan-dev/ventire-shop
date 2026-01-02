@@ -372,7 +372,18 @@ export default function Cart({ cart, setCart }) {
       </div>
     );
   }
+  // Inside Cart Component
+  const [isGuestMode, setIsGuestMode] = useState(false);
 
+  const handleCheckoutClick = () => {
+    // If logged in, go straight to payment
+    if (user) {
+      checkout();
+      return;
+    }
+    // If not logged in, show the Guest/Login selection UI
+    setIsGuestMode(true);
+  };
   return (
     <div className="pt-32 max-w-4xl mx-auto px-4 pb-20">
       <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
@@ -416,12 +427,55 @@ export default function Cart({ cart, setCart }) {
               <AddressForm address={address} setAddress={setAddress} />
             </div>
 
-            <button
+            {/* <button
               onClick={checkout}
               className="w-full mt-6 bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 shadow-lg shadow-green-100 transition-all"
             >
               Proceed to Pay ₹{totalAmount}
-            </button>
+            </button> */}
+            <div className="mt-8 border-t pt-8">
+              {!user && isGuestMode ? (
+                <div className="bg-gray-50 p-6 rounded-2xl border border-gray-200 animate-in fade-in slide-in-from-bottom-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-bold text-gray-900">Guest Checkout</h3>
+                    <button onClick={() => setIsGuestMode(false)} className="text-xs text-gray-500 underline">Back</button>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                      <input
+                        type="email"
+                        placeholder="your@email.com"
+                        value={guestEmail}
+                        onChange={(e) => setGuestEmail(e.target.value)}
+                        className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition-all"
+                      />
+                    </div>
+
+                    <button
+                      onClick={checkout}
+                      disabled={!guestEmail.includes('@')}
+                      className="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 disabled:bg-gray-300 transition-all"
+                    >
+                      Pay as Guest ₹{totalAmount}
+                    </button>
+
+                    <p className="text-center text-sm text-gray-500">
+                      Already have an account?
+                      <button onClick={() => navigate('/Login')} className="ml-1 text-green-600 font-bold">Login</button>
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={handleCheckoutClick}
+                  className="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 shadow-xl shadow-green-100 transition-all flex items-center justify-center gap-2"
+                >
+                  {user ? `Proceed to Pay ₹${totalAmount}` : "Checkout Now"}
+                </button>
+              )}
+            </div>
 
             <p className="text-xs text-center text-gray-400 mt-4">
               Secure Checkout Powered by Razorpay
