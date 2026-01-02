@@ -583,34 +583,42 @@ export default function Cart({ cart, setCart }) {
     setCart(updatedCart);
     localStorage.setItem("ventire_cart", JSON.stringify(updatedCart));
   };
+  // Add this inside your Cart component
   const [couponInput, setCouponInput] = useState("");
-  const [appliedPromo, setAppliedPromo] = useState(null); // Stores { code, value, isPercentage }
   const [discountAmount, setDiscountAmount] = useState(0);
+  const [appliedPromo, setAppliedPromo] = useState(null);
+  const [couponError, setCouponError] = useState("");
+
   const handleApplyCoupon = async () => {
+    if (!couponInput) return;
+
     try {
       const res = await fetch("/api/validate-coupon", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: couponInput }),
+        body: JSON.stringify({ code: couponInput.toUpperCase() }),
       });
+
       const data = await res.json();
 
       if (res.ok) {
-        let saved = 0;
-        if (data.isPercentage) {
-          saved = (totalAmount * data.discountValue) / 100;
-        } else {
-          saved = data.discountValue;
-        }
+        // Logic to handle your "20%" or "500" string from DB
+        const isPercentage = data.discountValue.toString().includes("%") || data.isPercentage;
+        const numericValue = parseFloat(data.discountValue.toString().replace("%", ""));
+
+        let saved = isPercentage
+          ? (totalAmount * numericValue) / 100
+          : numericValue;
 
         setDiscountAmount(saved);
-        setAppliedPromo(data);
+        setAppliedPromo(data.code);
         setCouponError("");
       } else {
-        setCouponError(data.message);
+        setCouponError(data.message || "Invalid Code");
+        setDiscountAmount(0);
       }
     } catch (err) {
-      setCouponError("Service unavailable.");
+      setCouponError("Server error. Try again.");
     }
   };
   const checkout = async () => {
@@ -765,11 +773,11 @@ export default function Cart({ cart, setCart }) {
                 </div>
               )}
             </div>
-
+{/* 
             <div className="flex justify-between py-4 text-xl font-black">
               <span>Total</span>
               <span>₹{totalAmount - discountAmount}</span>
-            </div>
+            </div> */}
 
             {/* Coupon Input Area */}
             {!appliedPromo && (
@@ -789,54 +797,54 @@ export default function Cart({ cart, setCart }) {
                 </button>
               </div>
             )}
-          {/* <div className="flex justify-between mb-6 border-b pb-4">
+            {/* <div className="flex justify-between mb-6 border-b pb-4">
               <span>Total</span>
               <span className="font-bold">₹{totalAmount}</span>
             </div> */}
 
-          <div className="mb-6">
-            <p className="text-xs font-bold text-gray-400 uppercase mb-2">Shipping Address</p>
-            <AddressForm address={address} setAddress={setAddress} />
-          </div>
-
-          {isGuestMode && !user && (
-            <div id="guest-email-section" className="mb-6 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-              <label className="block text-xs font-bold mb-2">Email for tracking</label>
-              <input
-                type="email"
-                value={guestEmail}
-                onChange={(e) => { setGuestEmail(e.target.value); setEmailError(false); }}
-                className={`w-full p-3 rounded-lg border ${emailError ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="your@email.com"
-              />
-              {emailError && <p className="text-red-500 text-[10px] mt-1">Valid email required</p>}
+            <div className="mb-6">
+              <p className="text-xs font-bold text-gray-400 uppercase mb-2">Shipping Address</p>
+              <AddressForm address={address} setAddress={setAddress} />
             </div>
-          )}
 
-          <button
-            onClick={isGuestMode || user ? checkout : handleCheckoutClick}
-            className="w-full bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition-all"
-          >
-            {user ? `Pay ₹${totalAmount}` : isGuestMode ? "Finalize Guest Order" : "Checkout Now"}
-          </button>
+            {isGuestMode && !user && (
+              <div id="guest-email-section" className="mb-6 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                <label className="block text-xs font-bold mb-2">Email for tracking</label>
+                <input
+                  type="email"
+                  value={guestEmail}
+                  onChange={(e) => { setGuestEmail(e.target.value); setEmailError(false); }}
+                  className={`w-full p-3 rounded-lg border ${emailError ? 'border-red-500' : 'border-gray-300'}`}
+                  placeholder="your@email.com"
+                />
+                {emailError && <p className="text-red-500 text-[10px] mt-1">Valid email required</p>}
+              </div>
+            )}
 
-          {!user && !isGuestMode && (
-            <button onClick={() => navigate('/Login')} className="w-full mt-3 text-sm text-green-600 font-medium">
-              Or Login to your account
+            <button
+              onClick={isGuestMode || user ? checkout : handleCheckoutClick}
+              className="w-full bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition-all"
+            >
+              {user ? `Pay ₹${totalAmount}` : isGuestMode ? "Finalize Guest Order" : "Checkout Now"}
             </button>
-          )}
+
+            {!user && !isGuestMode && (
+              <button onClick={() => navigate('/Login')} className="w-full mt-3 text-sm text-green-600 font-medium">
+                Or Login to your account
+              </button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
 
       {
-    isProcessing && (
-      <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/90 backdrop-blur-md">
-        <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
-        <h2 className="text-xl font-bold">Processing Order...</h2>
-      </div>
-    )
-  }
+        isProcessing && (
+          <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/90 backdrop-blur-md">
+            <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
+            <h2 className="text-xl font-bold">Processing Order...</h2>
+          </div>
+        )
+      }
     </div >
   );
 }
