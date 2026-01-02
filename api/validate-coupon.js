@@ -1,5 +1,5 @@
-import connectDB from "../../lib/mongodb";
-import Promotion from "../../models/Promotion";
+import connectDB from "../lib/mongodb.js";
+import Promotion from "../models/Promotion.js";
 
 export default async function handler(req, res) {
   // 1. Prevent non-POST requests
