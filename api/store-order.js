@@ -42,7 +42,7 @@ export default async function handler(req, res) {
 
         const savedOrder = await Order.create({
             orderNumber: customOrderId, // 🟢 Save the simple number
-            userId: userId, // 👈 Link the order to the user
+            userId: userId.toString().includes("guest") ? null : userId, // 👈 Link the order to the user
             useremail: useremail,
             razorpayOrderId: orderId,
             razorpayPaymentId: paymentId,
