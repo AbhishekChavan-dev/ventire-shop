@@ -601,7 +601,7 @@ export default function Cart({ cart, setCart }) {
         document.getElementById('guest-email-section')?.scrollIntoView({ behavior: 'smooth' });
         return;
       }
-      currentUserData = { _id: "guest_" + Date.now(), name: "Guest", email: guestEmail };
+      currentUserData = { _id: "guest", name: "Guest", email: guestEmail };
     }
 
     try {
@@ -612,7 +612,7 @@ export default function Cart({ cart, setCart }) {
         body: JSON.stringify({
           amount: totalAmount,
           quantity: totalItemsCount,
-          userId: user ? (user.id || user._id) : currentUserData._id,
+          userId: user._id || currentUserData._id,
         }),
       });
 
@@ -643,7 +643,7 @@ export default function Cart({ cart, setCart }) {
                 amount: totalAmount,
                 quantity: totalItemsCount,
                 items: cart,
-                userId: user ? (user._id || user.id) : currentUserData._id,
+                userId: user._id || currentUserData._id,
                 useremail: finalEmail,
                 address: address,
                 status: "paid",
