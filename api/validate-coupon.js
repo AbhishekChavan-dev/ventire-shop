@@ -1,5 +1,5 @@
-import connectDB from "../../lib/mongodb.js";
-import Promotion from "../../models/Promotion.js";
+import connectDB from "../lib/mongodb.js";
+import Promotion from "../models/Promotion.js";
 
 export default async function handler(req, res) {
     if (req.method !== "POST") return res.status(405).end();
