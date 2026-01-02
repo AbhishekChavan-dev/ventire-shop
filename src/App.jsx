@@ -924,60 +924,79 @@ const ProductShowcase = ({ product, cart, setCart, user }) => {
   const totalAmount = PRICE * quantity;
   const mrpAmount = (product.mrp || PRICE * 1.4) * quantity;
 
-  // --- Payment & Cart Logic ---
-  const buyNow = async () => {
-    if (!user) {
-      alert("Please login to purchase");
-      navigate("/login");
-      return;
-    }
-    if (!showAddress) { setShowAddress(true); return; }
-    if (!address.street || !address.pincode || !address.phone) {
-      alert("Please enter delivery details.");
-      return;
+  // // --- Payment & Cart Logic ---
+  // const buyNow = async () => {
+  //   if (!user) {
+  //     alert("Please login to purchase");
+  //     navigate("/login");
+  //     return;
+  //   }
+  //   if (!showAddress) { setShowAddress(true); return; }
+  //   if (!address.street || !address.pincode || !address.phone) {
+  //     alert("Please enter delivery details.");
+  //     return;
+  //   }
+
+  //   try {
+  //     const resCreate = await fetch("/api/create-order", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ quantity, userID: user._id, productId: product._id }),
+  //     });
+  //     const order = await resCreate.json();
+
+  //     const options = {
+  //       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+  //       amount: order.amount,
+  //       currency: "INR",
+  //       name: "Ventire",
+  //       description: product.name,
+  //       order_id: order.id,
+  //       handler: async (response) => {
+  //         setIsProcessing(true);
+  //         const res = await fetch("/api/store-order", {
+  //           method: "POST",
+  //           headers: { "Content-Type": "application/json" },
+  //           body: JSON.stringify({
+  //             orderId: response.razorpay_order_id,
+  //             paymentId: response.razorpay_payment_id,
+  //             signature: response.razorpay_signature,
+  //             amount: totalAmount,
+  //             quantity,
+  //             productId: product._id, // Track which product was bought
+  //             userId: user._id,
+  //             address: address,
+  //             status: "paid",
+  //           }),
+  //         });
+  //         const data = await res.json();
+  //         if (data.success) window.location.href = `/Success?orderNo=${data.displayId}`;
+  //       },
+  //       theme: { color: "#16a34a" },
+  //     };
+  //     new window.Razorpay(options).open();
+  //   } catch (err) { alert("Payment failed to start."); }
+  // };
+
+  const buyNow = () => {
+    // 1. Check if item is already in cart
+    const existingItem = cart.find((item) => item._id === product._id);
+
+    if (existingItem) {
+      // If it exists, just update quantity (optional)
+      setCart(cart.map((item) =>
+        item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
+      ));
+    } else {
+      // 2. Add new item to cart
+      setCart([...cart, { ...product, quantity: 1 }]);
     }
 
-    try {
-      const resCreate = await fetch("/api/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ quantity, userID: user._id, productId: product._id }),
-      });
-      const order = await resCreate.json();
-
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: order.amount,
-        currency: "INR",
-        name: "Ventire",
-        description: product.name,
-        order_id: order.id,
-        handler: async (response) => {
-          setIsProcessing(true);
-          const res = await fetch("/api/store-order", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              orderId: response.razorpay_order_id,
-              paymentId: response.razorpay_payment_id,
-              signature: response.razorpay_signature,
-              amount: totalAmount,
-              quantity,
-              productId: product._id, // Track which product was bought
-              userId: user._id,
-              address: address,
-              status: "paid",
-            }),
-          });
-          const data = await res.json();
-          if (data.success) window.location.href = `/Success?orderNo=${data.displayId}`;
-        },
-        theme: { color: "#16a34a" },
-      };
-      new window.Razorpay(options).open();
-    } catch (err) { alert("Payment failed to start."); }
+    // 3. Immediately take user to the cart page
+    navigate('/cart'); 
   };
 
+ 
   const addToCart = () => {
     // Logic to add specific product object to cart
     setCart((prev) => ({
