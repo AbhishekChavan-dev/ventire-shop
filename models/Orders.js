@@ -5,6 +5,7 @@ const OrderSchema = new mongoose.Schema(
     orderNumber: { type: String },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     useremail: { type: String }, // Add this
+    guestEmail: { type: String }, // Optional: add this to keep track of guest contact
     razorpayOrderId: { type: String, required: true },
     razorpayPaymentId: { type: String },
     amount: { type: Number, required: true },

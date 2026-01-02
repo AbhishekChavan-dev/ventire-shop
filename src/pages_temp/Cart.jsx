@@ -260,17 +260,35 @@ export default function Cart({ cart, setCart }) {
     setCart(updatedCart);
     localStorage.setItem("ventire_cart", JSON.stringify(updatedCart));
   };
-
+  const [guestEmail, setGuestEmail] = useState("");
   const checkout = async () => {
     const totalQty = cart.reduce((acc, item) => acc + item.quantity, 0);
     if (!address.street || !address.pincode || !address.phone) {
       alert("Please fill in your delivery address and phone number.");
       return;
     }
+    // 2. Guest Logic
+    let currentUser = user;
+
     if (!user) {
-      alert("Please login to proceed with payment");
-      navigate("/Login");
-      return;
+      const proceedAsGuest = window.confirm(
+        "You are not logged in. Would you like to proceed as a Guest? \n\n(Note: You won't be able to track this order in 'My Orders')"
+      );
+
+      if (!proceedAsGuest) {
+        navigate("/Login");
+        return;
+      }
+      else {
+        // If not logged in, ensure we have a guest email
+        if (!user && !guestEmail) {
+          alert("Please provide an email address for order tracking.");
+          return;
+        }
+      }
+      const finalEmail = user ? user.email : guestEmail;
+      // Create a temporary guest object so the backend doesn't crash
+      currentUser = { _id: "guest_user", name: "Guest", email: "guest@ventire.com" };
     }
 
     try {
@@ -297,7 +315,7 @@ export default function Cart({ cart, setCart }) {
         order_id: order.id,
         prefill: {
           name: user.name,
-          email: user.email,
+          email: user.email || finalEmail,
         },
         handler: async function (response) {
           setIsProcessing(true);
@@ -314,7 +332,7 @@ export default function Cart({ cart, setCart }) {
                 quantity: totalQty,
                 items: cart, // Store full array
                 userId: user._id,
-                useremail: user.email,
+                useremail: user.email || finalEmail,
                 address: address,
                 status: "paid",
               }),
