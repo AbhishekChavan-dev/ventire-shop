@@ -314,7 +314,7 @@ export default function Cart({ cart, setCart }) {
         description: "Ventire Purifier Order",
         order_id: order.id,
         prefill: {
-          name: user.name,
+          name: user.name || currentUser.name,
           email: user.email || finalEmail,
         },
         handler: async function (response) {
@@ -331,7 +331,7 @@ export default function Cart({ cart, setCart }) {
                 // 🟢 ADD THIS LINE: This satisfies the Mongoose 'required' check
                 quantity: totalQty,
                 items: cart, // Store full array
-                userId: user._id,
+                userId: user._id || currentUser._id,
                 useremail: user.email || finalEmail,
                 address: address,
                 status: "paid",
