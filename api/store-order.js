@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { orderId, paymentId, signature, amount, quantity, status, userId, useremail, address } = req.body;
+        const { orderId, paymentId, signature, amount, quantity,items, status, userId, useremail, address } = req.body;
         // 1. SECURITY CHECK: Verify the Signature
         const secret = process.env.RAZORPAY_KEY_SECRET;
         const generated_signature = crypto
@@ -48,6 +48,7 @@ export default async function handler(req, res) {
             razorpayPaymentId: paymentId,
             amount,
             quantity,
+            items, // 🟢 Get the array from the frontend
             status,
             address: address, // 👈 This saves the street, city, pincode, and phone
         });

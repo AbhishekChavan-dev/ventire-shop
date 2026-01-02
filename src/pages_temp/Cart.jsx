@@ -236,13 +236,13 @@ export default function Cart({ cart, setCart }) {
 
   // --- NEW ARRAY-BASED CALCULATIONS ---
   // Calculates total price for all items in the array
-  const totalAmount = Array.isArray(cart) 
-    ? cart.reduce((acc, item) => acc + (item.price * item.quantity), 0) 
+  const totalAmount = Array.isArray(cart)
+    ? cart.reduce((acc, item) => acc + (item.price * item.quantity), 0)
     : 0;
 
   // Calculates total number of items
-  const totalItemsCount = Array.isArray(cart) 
-    ? cart.reduce((acc, item) => acc + item.quantity, 0) 
+  const totalItemsCount = Array.isArray(cart)
+    ? cart.reduce((acc, item) => acc + item.quantity, 0)
     : 0;
 
   // --- UPDATED HANDLERS FOR ARRAY ---
@@ -254,7 +254,7 @@ export default function Cart({ cart, setCart }) {
 
   const updateQuantity = (productId, newQty) => {
     if (newQty < 1) return;
-    const updatedCart = cart.map(item => 
+    const updatedCart = cart.map(item =>
       item._id === productId ? { ...item, quantity: newQty } : item
     );
     setCart(updatedCart);
@@ -262,6 +262,7 @@ export default function Cart({ cart, setCart }) {
   };
 
   const checkout = async () => {
+    const totalQty = cart.reduce((acc, item) => acc + item.quantity, 0);
     if (!address.street || !address.pincode || !address.phone) {
       alert("Please fill in your delivery address and phone number.");
       return;
@@ -278,7 +279,7 @@ export default function Cart({ cart, setCart }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           // We now send the total amount and full cart info
-          amount: totalAmount, 
+          amount: totalAmount,
           quantity: totalItemsCount,
           userId: user.id || user._id,
           items: cart // Pass the full array to your backend
@@ -309,6 +310,8 @@ export default function Cart({ cart, setCart }) {
                 paymentId: response.razorpay_payment_id,
                 signature: response.razorpay_signature,
                 amount: totalAmount,
+                // 🟢 ADD THIS LINE: This satisfies the Mongoose 'required' check
+                quantity: totalQty,
                 items: cart, // Store full array
                 userId: user._id,
                 useremail: user.email,
@@ -346,7 +349,7 @@ export default function Cart({ cart, setCart }) {
       <div className="pt-32 text-center">
         <h2 className="text-2xl font-bold text-gray-400">Your cart is empty</h2>
         <button onClick={() => navigate("/")} className="mt-4 text-green-600 font-semibold underline">
-           Continue Shopping
+          Continue Shopping
         </button>
       </div>
     );
@@ -365,12 +368,12 @@ export default function Cart({ cart, setCart }) {
               <div className="flex-1">
                 <h3 className="font-bold text-gray-900">{item.name || "Ventire Purifier"}</h3>
                 <p className="text-green-600 font-bold">₹{item.price}</p>
-                
+
                 <div className="flex items-center gap-4 mt-2">
                   <div className="flex items-center border rounded-lg px-2 py-1">
-                    <button onClick={() => updateQuantity(item._id, item.quantity - 1)} className="px-2 text-gray-500 hover:text-green-600"><Minus size={16}/></button>
+                    <button onClick={() => updateQuantity(item._id, item.quantity - 1)} className="px-2 text-gray-500 hover:text-green-600"><Minus size={16} /></button>
                     <span className="px-2 font-bold">{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item._id, item.quantity + 1)} className="px-2 text-gray-500 hover:text-green-600"><Plus size={16}/></button>
+                    <button onClick={() => updateQuantity(item._id, item.quantity + 1)} className="px-2 text-gray-500 hover:text-green-600"><Plus size={16} /></button>
                   </div>
                   <button onClick={() => removeItem(item._id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition">
                     <Trash2 size={18} />
@@ -401,7 +404,7 @@ export default function Cart({ cart, setCart }) {
             >
               Proceed to Pay ₹{totalAmount}
             </button>
-            
+
             <p className="text-xs text-center text-gray-400 mt-4">
               Secure Checkout Powered by Razorpay
             </p>

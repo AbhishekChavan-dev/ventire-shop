@@ -9,13 +9,21 @@ const OrderSchema = new mongoose.Schema(
     razorpayPaymentId: { type: String },
     amount: { type: Number, required: true },
     quantity: { type: Number, required: true },
+    // 🟢 The New Items Array
+    items: [{
+      _id: String,
+      name: String,
+      price: Number,
+      quantity: Number,
+      images: [String]
+    }],
     status: { type: String, required: true },
     // 🟢 NEW: Nested Address Object
     address: {
-        street: { type: String, required: true },
-        city: { type: String, required: true },
-        pincode: { type: String, required: true },
-        phone: { type: String, required: true }
+      street: { type: String, required: true },
+      city: { type: String, required: true },
+      pincode: { type: String, required: true },
+      phone: { type: String, required: true }
     },
   },
   { timestamps: true }
