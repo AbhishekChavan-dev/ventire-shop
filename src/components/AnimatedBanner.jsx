@@ -25,7 +25,7 @@ const AnimatedBanner = () => {
         const t2 = setTimeout(() => setStep(2), 6000); // Aspire
         const t3 = setTimeout(() => setStep(3), 9500); // Ventire
         const reset = setTimeout(() => {
-            setStep(0);
+            setStep(3);
             setCycle(c => c + 1);
         }, 13000);
 
