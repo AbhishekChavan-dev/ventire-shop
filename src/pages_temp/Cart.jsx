@@ -648,7 +648,7 @@ export default function Cart({ cart, setCart }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: finalAmountToPay,
+          amount: totalAmount - discountAmount,
           quantity: totalItemsCount,
           userId: user ? (user.id || user._id) : "000000000000000000000000",
         }),
@@ -678,7 +678,7 @@ export default function Cart({ cart, setCart }) {
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
                 signature: response.razorpay_signature,
-                amount: finalAmountToPay,
+                amount: totalAmount - discountAmount,
                 quantity: totalItemsCount,
                 items: cart,
                 userId: user ? (user.id || user._id) : "000000000000000000000000",
@@ -806,7 +806,7 @@ export default function Cart({ cart, setCart }) {
               <span className="font-bold">₹{totalAmount}</span>
             </div> */}
 
-            <div className="mb-11">
+            <div className="mt-11">
               <p className="text-xs font-bold text-gray-400 uppercase mb-2">Shipping Address</p>
               <AddressForm address={address} setAddress={setAddress} />
             </div>
