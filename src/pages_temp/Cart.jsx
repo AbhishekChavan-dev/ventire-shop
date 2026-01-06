@@ -609,7 +609,6 @@ export default function Cart({ cart, setCart }) {
         let saved = isPercentage
           ? (totalAmount * numericValue) / 100
           : numericValue;
-        const finalAmountToPay = totalAmount - saved;
         setDiscountAmount(saved);
         setAppliedPromo(data.code);
         setCouponError("");
@@ -648,7 +647,7 @@ export default function Cart({ cart, setCart }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: finalAmountToPay,
+          amount: discountAmount,
           quantity: totalItemsCount,
           userId: user ? (user.id || user._id) : "000000000000000000000000",
         }),
