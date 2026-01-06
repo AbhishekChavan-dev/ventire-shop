@@ -648,7 +648,7 @@ export default function Cart({ cart, setCart }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: finalAmountToPayt,
+          amount: finalAmountToPay,
           quantity: totalItemsCount,
           userId: user ? (user.id || user._id) : "000000000000000000000000",
         }),
