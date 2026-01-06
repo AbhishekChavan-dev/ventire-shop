@@ -610,6 +610,7 @@ export default function Cart({ cart, setCart }) {
           ? (totalAmount * numericValue) / 100
           : numericValue;
         setDiscountAmount(saved);
+        finalAmountToPay = totalAmount - discountAmount;
         setAppliedPromo(data.code);
         setCouponError("");
       } else {
@@ -757,7 +758,7 @@ export default function Cart({ cart, setCart }) {
             <div className="space-y-3 border-b pb-4 text-sm">
               <div className="flex justify-between text-gray-500">
                 <span>Subtotal ({totalItemsCount} items)</span>
-                <span>₹{totalAmount}</span>
+                <span>₹{finalAmountToPay || totalAmount}</span>
               </div>
 
               {appliedPromo && (
