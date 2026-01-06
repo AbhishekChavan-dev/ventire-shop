@@ -758,7 +758,7 @@ export default function Cart({ cart, setCart }) {
             <div className="space-y-3 border-b pb-4 text-sm">
               <div className="flex justify-between text-gray-500">
                 <span>Subtotal ({totalItemsCount} items)</span>
-                <span>₹{totalAmount}</span>
+                <span>₹{finalAmountToPay}</span>
               </div>
 
               {appliedPromo && (
@@ -825,7 +825,7 @@ export default function Cart({ cart, setCart }) {
               onClick={isGuestMode || user ? checkout : handleCheckoutClick}
               className="w-full bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition-all"
             >
-              {user ? `Pay ₹${totalAmount}` : isGuestMode ? "Finalize Guest Order" : "Checkout Now"}
+              {user ? `Pay ₹${finalAmountToPay}` : isGuestMode ? "Finalize Guest Order" : "Checkout Now"}
             </button>
 
             {!user && !isGuestMode && (
