@@ -609,7 +609,7 @@ export default function Cart({ cart, setCart }) {
         let saved = isPercentage
           ? (totalAmount * numericValue) / 100
           : numericValue;
-
+        const finalAmountToPay = totalAmount - saved;
         setDiscountAmount(saved);
         setAppliedPromo(data.code);
         setCouponError("");
