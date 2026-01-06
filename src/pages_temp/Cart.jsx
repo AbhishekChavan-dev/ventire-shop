@@ -806,7 +806,7 @@ export default function Cart({ cart, setCart }) {
               <span className="font-bold">₹{totalAmount}</span>
             </div> */}
 
-            <div className="mb-6">
+            <div className="mb-11">
               <p className="text-xs font-bold text-gray-400 uppercase mb-2">Shipping Address</p>
               <AddressForm address={address} setAddress={setAddress} />
             </div>
