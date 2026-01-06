@@ -610,7 +610,6 @@ export default function Cart({ cart, setCart }) {
           ? (totalAmount * numericValue) / 100
           : numericValue;
         setDiscountAmount(saved);
-        finalAmountToPay = totalAmount - discountAmount;
         setAppliedPromo(data.code);
         setCouponError("");
       } else {
@@ -640,15 +639,16 @@ export default function Cart({ cart, setCart }) {
       }
       currentUserData = { _id: "guest", name: "Guest", email: guestEmail };
     }
+    const finalAmountToPay = totalAmount - discountAmount;
     let finalEmail = user ? user.email : guestEmail;
     try {
-      const finalAmountToPay = totalAmount - discountAmount;
+
       // 2. Create Razorpay Order
       const resCreate = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: discountAmount,
+          amount: finalAmountToPayt,
           quantity: totalItemsCount,
           userId: user ? (user.id || user._id) : "000000000000000000000000",
         }),
@@ -758,7 +758,7 @@ export default function Cart({ cart, setCart }) {
             <div className="space-y-3 border-b pb-4 text-sm">
               <div className="flex justify-between text-gray-500">
                 <span>Subtotal ({totalItemsCount} items)</span>
-                <span>₹{finalAmountToPay || totalAmount}</span>
+                <span>₹{totalAmount}</span>
               </div>
 
               {appliedPromo && (
@@ -772,8 +772,12 @@ export default function Cart({ cart, setCart }) {
                   <span>- ₹{discountAmount.toFixed(0)}</span>
                 </div>
               )}
+              <div className="flex justify-between py-2 text-lg font-bold border-t">
+                <span>Total</span>
+                <span>₹{totalAmount - discountAmount}</span>
+              </div>
             </div>
-{/* 
+            {/* 
             <div className="flex justify-between py-4 text-xl font-black">
               <span>Total</span>
               <span>₹{totalAmount - discountAmount}</span>
