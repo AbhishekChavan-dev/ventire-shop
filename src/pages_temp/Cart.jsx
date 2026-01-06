@@ -758,7 +758,7 @@ export default function Cart({ cart, setCart }) {
             <div className="space-y-3 border-b pb-4 text-sm">
               <div className="flex justify-between text-gray-500">
                 <span>Subtotal ({totalItemsCount} items)</span>
-                <span>₹{finalAmountToPay}</span>
+                <span>₹{totalAmount}</span>
               </div>
 
               {appliedPromo && (
