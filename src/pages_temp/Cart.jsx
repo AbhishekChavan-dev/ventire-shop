@@ -785,70 +785,72 @@ export default function Cart({ cart, setCart }) {
 
             {/* Coupon Input Area */}
             {!appliedPromo && (
-              <div className="mt-2 flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Coupon Code"
-                  className="flex-1 bg-gray-50 px-4 py-2 rounded-xl text-sm border focus:border-green-500 outline-none uppercase"
-                  value={couponInput}
-                  onChange={(e) => setCouponInput(e.target.value)}
-                />
-                <button
-                  onClick={handleApplyCoupon}
-                  className="w-full bg-gray-900 text-white px-4 py-3 rounded-xl text-sm font-bold hover:bg-black active:opacity-90 active:scale-95 transition-all shadow-sm"
-                >
-                  Apply
-                </button>
-              </div>
+              <div className="flex flex-col gap-3"> {/* Changed from flex to flex-col */}
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Coupon Code"
+                    className="flex-1 bg-gray-50 px-4 py-2 rounded-xl text-sm border focus:border-green-500 outline-none uppercase"
+                    value={couponInput}
+                    onChange={(e) => setCouponInput(e.target.value)}
+                  />
+                  </div>
+                  <button
+                    onClick={handleApplyCoupon}
+                    className="w-full bg-gray-900 text-white px-4 py-3 rounded-xl text-sm font-bold hover:bg-black active:opacity-90 active:scale-95 transition-all shadow-sm"
+                  >
+                    Apply
+                  </button>
+                </div>
             )}
-            {/* <div className="flex justify-between mb-6 border-b pb-4">
+                {/* <div className="flex justify-between mb-6 border-b pb-4">
               <span>Total</span>
               <span className="font-bold">₹{totalAmount}</span>
             </div> */}
 
-            <div className="mt-11">
-              <p className="text-xs font-bold text-gray-400 uppercase mb-2">Shipping Address</p>
-              <AddressForm address={address} setAddress={setAddress} />
-            </div>
+                <div className="mt-11">
+                  <p className="text-xs font-bold text-gray-400 uppercase mb-2">Shipping Address</p>
+                  <AddressForm address={address} setAddress={setAddress} />
+                </div>
 
-            {isGuestMode && !user && (
-              <div id="guest-email-section" className="mb-6 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-                <label className="block text-xs font-bold mb-2">Email for tracking</label>
-                <input
-                  type="email"
-                  value={guestEmail}
-                  onChange={(e) => { setGuestEmail(e.target.value); setEmailError(false); }}
-                  className={`w-full p-3 rounded-lg border ${emailError ? 'border-red-500' : 'border-gray-300'}`}
-                  placeholder="your@email.com"
-                />
-                {emailError && <p className="text-red-500 text-[10px] mt-1">Valid email required</p>}
+                {isGuestMode && !user && (
+                  <div id="guest-email-section" className="mb-6 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                    <label className="block text-xs font-bold mb-2">Email for tracking</label>
+                    <input
+                      type="email"
+                      value={guestEmail}
+                      onChange={(e) => { setGuestEmail(e.target.value); setEmailError(false); }}
+                      className={`w-full p-3 rounded-lg border ${emailError ? 'border-red-500' : 'border-gray-300'}`}
+                      placeholder="your@email.com"
+                    />
+                    {emailError && <p className="text-red-500 text-[10px] mt-1">Valid email required</p>}
+                  </div>
+                )}
+
+                <button
+                  onClick={isGuestMode || user ? checkout : handleCheckoutClick}
+                  className="w-full bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition-all"
+                >
+                  {user ? `Pay ₹${totalAmount - discountAmount}` : isGuestMode ? "Finalize Guest Order" : "Checkout Now"}
+                </button>
+
+                {!user && !isGuestMode && (
+                  <button onClick={() => navigate('/Login')} className="w-full mt-3 text-sm text-green-600 font-medium">
+                    Or Login to your account
+                  </button>
+                )}
               </div>
-            )}
-
-            <button
-              onClick={isGuestMode || user ? checkout : handleCheckoutClick}
-              className="w-full bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition-all"
-            >
-              {user ? `Pay ₹${totalAmount - discountAmount}` : isGuestMode ? "Finalize Guest Order" : "Checkout Now"}
-            </button>
-
-            {!user && !isGuestMode && (
-              <button onClick={() => navigate('/Login')} className="w-full mt-3 text-sm text-green-600 font-medium">
-                Or Login to your account
-              </button>
-            )}
-          </div>
         </div>
-      </div>
+        </div>
 
-      {
-        isProcessing && (
-          <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/90 backdrop-blur-md">
-            <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
-            <h2 className="text-xl font-bold">Processing Order...</h2>
-          </div>
-        )
-      }
-    </div >
-  );
+        {
+          isProcessing && (
+            <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/90 backdrop-blur-md">
+              <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
+              <h2 className="text-xl font-bold">Processing Order...</h2>
+            </div>
+          )
+        }
+      </div >
+      );
 }
