@@ -795,7 +795,7 @@ export default function Cart({ cart, setCart }) {
                 />
                 <button
                   onClick={handleApplyCoupon}
-                  className="bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-black"
+                  className="w-full bg-gray-900 text-white px-4 py-3 rounded-xl text-sm font-bold hover:bg-black active:opacity-90 active:scale-95 transition-all shadow-sm"
                 >
                   Apply
                 </button>
