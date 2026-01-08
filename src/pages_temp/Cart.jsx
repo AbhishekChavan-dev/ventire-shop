@@ -793,6 +793,7 @@ export default function Cart({ cart, setCart }) {
                     className="flex-1 bg-gray-50 px-4 py-2 rounded-xl text-sm border focus:border-green-500 outline-none uppercase"
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
                   />
                   </div>
                   <button
