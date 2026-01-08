@@ -764,7 +764,7 @@ export default function Cart({ cart, setCart }) {
               {appliedPromo && (
                 <div className="flex justify-between text-green-600 font-bold">
                   <span className="flex items-center gap-1">
-                    Discount ({appliedPromo.code})
+                    Discount ({appliedPromo})
                     <button onClick={() => { setAppliedPromo(null); setDiscountAmount(0); }} className="text-gray-400 hover:text-red-500">
                       <Trash2 size={12} />
                     </button>
