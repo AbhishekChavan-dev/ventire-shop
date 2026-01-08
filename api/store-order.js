@@ -53,6 +53,15 @@ export default async function handler(req, res) {
             status,
             address: address, // 👈 This saves the street, city, pincode, and phone
         });
+        // ... savedOrder logic ...
+
+        const shippingInfo = await createShippingOrder(savedOrder);
+
+        if (shippingInfo.order_id) {
+            // Optional: Update your DB with Shiprocket's internal ID
+            savedOrder.shiprocket_order_id = shippingInfo.order_id;
+            await savedOrder.save();
+        }
         // 3. Generate Invoice (Internal Helper)
         // You can now email this 'invoiceBase64' to the user using Nodemailer
         // const invoiceBase64 = await generateInvoice(savedOrder);
@@ -135,11 +144,75 @@ export default async function handler(req, res) {
 //     const response = await fetch("https://apiv2.shiprocket.in/v1/external/orders/create/adhoc", {
 //         method: "POST",
 //         headers: {
-//             "Content-Type": "application/json",
+//             "Content-Type": "application/json"}
 //             "Authorization": `Bearer ${shiprocketToken}`
 //         },
 //         body: JSON.stringify(payload)
+// body: JSON.stringify({
+//             email: process.env.SHIPROCKET_EMAIL,
+//             password: process.env.SHIPROCKET_PASSWORD
+//         })
 //     });
 
 //     return await response.json();
-// }
+// }/
+async function getShiprocketToken() {
+    const authResponse = await fetch("https://apiv2.shiprocket.in/v1/external/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            email: process.env.SHIPROCKET_EMAIL,
+            password: process.env.SHIPROCKET_PASSWORD
+        })
+    });
+
+    const authData = await authResponse.json();
+    if (!authData.token) {
+        throw new Error("Shiprocket Authentication Failed: " + authData.message);
+    }
+    return authData.token;
+}
+async function createShippingOrder(orderData) {
+    try {
+        // First, get the dynamic token
+        const token = await getShiprocketToken();
+
+        const payload = {
+            "order_id": orderData.orderNumber, // Using your VT-XXXX ID
+            "order_date": new Date().toISOString(),
+            "pickup_location": "Primary", // Ensure this name exists in Shiprocket Panel
+            "billing_customer_name": orderData.address.name || "Customer",
+            "billing_last_name": "",
+            "billing_address": orderData.address.street,
+            "billing_city": orderData.address.city,
+            "billing_pincode": orderData.address.pincode,
+            "billing_state": orderData.address.state || "Maharashtra",
+            "billing_country": "India",
+            "billing_email": orderData.useremail,
+            "billing_phone": orderData.address.phone,
+            "order_items": orderData.items.map(item => ({
+                "name": item.name || "Ventire Air Purifier",
+                "sku": item.sku || "VNT-001",
+                "units": item.quantity,
+                "selling_price": item.price
+            })),
+            "payment_method": "Prepaid",
+            "sub_total": orderData.amount,
+            "length": 30, "width": 30, "height": 50, "weight": 4.5
+        };
+
+        const response = await fetch("https://apiv2.shiprocket.in/v1/external/orders/create/adhoc", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` // Use the token here
+            },
+            body: JSON.stringify(payload)
+        });
+
+        return await response.json();
+    } catch (error) {
+        console.error("Shiprocket API Error:", error);
+        return { success: false, message: error.message };
+    }
+}
