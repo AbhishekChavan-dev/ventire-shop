@@ -172,32 +172,79 @@ async function getShiprocketToken() {
     }
     return authData.token;
 }
+// async function createShippingOrder(orderData) {
+//     try {
+//         // First, get the dynamic token
+//         const token = await getShiprocketToken();
+
+//         const payload = {
+//             "order_id": orderData.orderNumber, // Using your VT-XXXX ID
+//             "order_date": new Date().toISOString(),
+//             "pickup_location": "Primary", // Ensure this name exists in Shiprocket Panel
+//             "billing_customer_name": orderData.address.name || "Customer",
+//             "billing_last_name": "",
+//             "billing_address": orderData.address,
+//             "billing_city": orderData.address.city,
+//             "billing_pincode": orderData.address.pincode,
+//             "billing_state": orderData.address.state || "Maharashtra",
+//             "billing_country": "India",
+//             "billing_email": orderData.useremail,
+//             "billing_phone": orderData.address.phone,
+//             "order_items": orderData.items.map(item => ({
+//                 "name": item.name || "Ventire Air Purifier",
+//                 "sku": item.sku || "VNT-001",
+//                 "units": item.quantity,
+//                 "selling_price": item.price
+//             })),
+//             "payment_method": "Prepaid",
+//             "sub_total": orderData.amount,
+//             "length": 30, "width": 30, "height": 50, "weight": 4.5
+//         };
+
+//         const response = await fetch("https://apiv2.shiprocket.in/v1/external/orders/create/adhoc", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json",
+//                 "Authorization": `Bearer ${token}` // Use the token here
+//             },
+//             body: JSON.stringify(payload)
+//         });
+
+//         return await response.json();
+//     } catch (error) {
+//         console.error("Shiprocket API Error:", error);
+//         return { success: false, message: error.message };
+//     }
+// }
 async function createShippingOrder(orderData) {
     try {
-        // First, get the dynamic token
         const token = await getShiprocketToken();
 
+        // 1. Format Date correctly (YYYY-MM-DD HH:mm)
+        const date = new Date();
+        const formattedDate = date.toISOString().split('T')[0] + " " + date.toTimeString().split(' ')[0].slice(0, 5);
+
         const payload = {
-            "order_id": orderData.orderNumber, // Using your VT-XXXX ID
-            "order_date": new Date().toISOString(),
-            "pickup_location": "Primary", // Ensure this name exists in Shiprocket Panel
-            "billing_customer_name": orderData.address.name || "Customer",
-            "billing_last_name": "",
-            "billing_address": orderData.address,
-            "billing_city": orderData.address.city,
-            "billing_pincode": orderData.address.pincode,
+            "order_id": String(orderData.orderNumber || Date.now()), // Must be a string
+            "order_date": formattedDate,
+            "pickup_location": "Primary", // 🟢 Ensure this matches your nickname in Shiprocket Settings
+            "billing_customer_name": String(orderData.address.name).slice(0, 30),
+            "billing_last_name": " ", // Shiprocket sometimes fails if this is empty
+            "billing_address": String(orderData.address.street).slice(0, 190),
+            "billing_city": String(orderData.address.city),
+            "billing_pincode": parseInt(orderData.address.pincode), // Must be a number
             "billing_state": orderData.address.state || "Maharashtra",
             "billing_country": "India",
-            "billing_email": orderData.useremail,
-            "billing_phone": orderData.address.phone,
+            "billing_email": orderData.useremail || "test@test.com",
+            "billing_phone": String(orderData.address.phone).replace(/\D/g, '').slice(-10), // Clean phone number
             "order_items": orderData.items.map(item => ({
-                "name": item.name || "Ventire Air Purifier",
-                "sku": item.sku || "VNT-001",
-                "units": item.quantity,
-                "selling_price": item.price
+                "name": (item.name || "Ventire Air Purifier").slice(0, 30),
+                "sku": (item.sku || "VNT-001"),
+                "units": parseInt(item.quantity) || 1,
+                "selling_price": parseInt(item.price)
             })),
             "payment_method": "Prepaid",
-            "sub_total": orderData.amount,
+            "sub_total": parseInt(orderData.amount),
             "length": 30, "width": 30, "height": 50, "weight": 4.5
         };
 
@@ -205,14 +252,21 @@ async function createShippingOrder(orderData) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}` // Use the token here
+                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify(payload)
         });
 
-        return await response.json();
+        const result = await response.json();
+        
+        // 🔴 CRITICAL: This will show in your Vercel logs if it fails
+        if (!result.order_id) {
+            console.error("SHIPROCKET REJECTION:", JSON.stringify(result));
+        }
+
+        return result;
     } catch (error) {
-        console.error("Shiprocket API Error:", error);
-        return { success: false, message: error.message };
+        console.error("SHIPROCKET_API_CRASH:", error);
+        return { error: error.message };
     }
 }
