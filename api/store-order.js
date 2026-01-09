@@ -8,6 +8,7 @@ import Order from "../models/Orders.js";
 import nodemailer from "nodemailer";
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 
+
 // Helper to generate code
 const generateShortId = () => `VT-${Math.floor(1000 + Math.random() * 9000)}`;
 
@@ -147,15 +148,15 @@ async function generateInvoice(orderData) {
     orderData.items.forEach((item) => {
         page.drawText(item.name || 'Ventire Air Purifier', { x: 60, y: currentY, size: 10, font: fontRegular });
         page.drawText(String(item.quantity || 1), { x: 350, y: currentY, size: 10, font: fontRegular });
-        page.drawText(`₹${item.price}`, { x: 400, y: currentY, size: 10, font: fontRegular });
-        page.drawText(`₹${item.price * item.quantity}`, { x: 480, y: currentY, size: 10, font: fontRegular });
+        page.drawText(`Rs${item.price}`, { x: 400, y: currentY, size: 10, font: fontRegular });
+        page.drawText(`Rs${item.price * item.quantity}`, { x: 480, y: currentY, size: 10, font: fontRegular });
         currentY -= 20;
     });
 
     // 7. Grand Total
     page.drawRectangle({ x: 350, y: currentY - 30, width: 200, height: 1, color: rgb(0, 0, 0) });
     page.drawText('Grand Total:', { x: 350, y: currentY - 50, size: 14, font: fontBold });
-    page.drawText(`₹${orderData.amount}`, { x: 470, y: currentY - 50, size: 14, font: fontBold });
+    page.drawText(`Rs${orderData.amount}`, { x: 470, y: currentY - 50, size: 14, font: fontBold });
 
     // 8. Footer
     page.drawText('Thank you for choosing Ventire!', { x: width / 2 - 80, y: 50, size: 10, font: fontRegular, color: rgb(0.5, 0.5, 0.5) });
