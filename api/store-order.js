@@ -55,29 +55,48 @@ export default async function handler(req, res) {
         });
         // ... savedOrder logic ...
 
+        // const shippingInfo = await createShippingOrder(savedOrder);
+
+        // if (shippingInfo.order_id) {
+        //     // Optional: Update your DB with Shiprocket's internal ID
+        //     savedOrder.shiprocket_order_id = shippingInfo.order_id;
+        //     await savedOrder.save();
+        // }
+        // // 3. Generate Invoice (Internal Helper)
+        // // You can now email this 'invoiceBase64' to the user using Nodemailer
+        // // const invoiceBase64 = await generateInvoice(savedOrder);
+        // // // 2. Send to Shipping Partner
+        // // const shippingResponse = await createShippingOrder(savedOrder);
+        // // // 3. Update order with tracking ID if available
+        // // if (shippingResponse.shipment_id) {
+        // //     savedOrder.shippingId = shippingResponse.shipment_id;
+        // //     await newOrder.save();
+        // // }
+        // {/*} return res.status(201).json({
+        //     success: true,
+        //     order: savedOrder,
+        // });*/}
+        // // 🟢 Send the custom ID back to the frontend
+        // res.status(200).json({
+        //     success: true,
+        //     displayId: customOrderId
+        // });
+        // 1. Await the shipping creation
         const shippingInfo = await createShippingOrder(savedOrder);
 
-        if (shippingInfo.order_id) {
-            // Optional: Update your DB with Shiprocket's internal ID
+        // 2. Log the result so you can see it in Vercel
+        console.log("Shiprocket API Result:", shippingInfo);
+
+        if (shippingInfo && shippingInfo.order_id) {
             savedOrder.shiprocket_order_id = shippingInfo.order_id;
             await savedOrder.save();
+        } else {
+            // This will tell you EXACTLY why it failed in your Vercel Logs
+            console.error("Shipping failed to sync:", shippingInfo);
         }
-        // 3. Generate Invoice (Internal Helper)
-        // You can now email this 'invoiceBase64' to the user using Nodemailer
-        // const invoiceBase64 = await generateInvoice(savedOrder);
-        // // 2. Send to Shipping Partner
-        // const shippingResponse = await createShippingOrder(savedOrder);
-        // // 3. Update order with tracking ID if available
-        // if (shippingResponse.shipment_id) {
-        //     savedOrder.shippingId = shippingResponse.shipment_id;
-        //     await newOrder.save();
-        // }
-        {/*} return res.status(201).json({
-            success: true,
-            order: savedOrder,
-        });*/}
-        // 🟢 Send the custom ID back to the frontend
-        res.status(200).json({
+
+        // 3. ONLY NOW send the response to the user
+        return res.status(200).json({
             success: true,
             displayId: customOrderId
         });
@@ -258,7 +277,7 @@ async function createShippingOrder(orderData) {
         });
 
         const result = await response.json();
-        
+
         // 🔴 CRITICAL: This will show in your Vercel logs if it fails
         if (!result.order_id) {
             console.error("SHIPROCKET REJECTION:", JSON.stringify(result));
