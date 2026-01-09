@@ -183,7 +183,7 @@ async function createShippingOrder(orderData) {
             "pickup_location": "Primary", // Ensure this name exists in Shiprocket Panel
             "billing_customer_name": orderData.address.name || "Customer",
             "billing_last_name": "",
-            "billing_address": orderData.address.street,
+            "billing_address": orderData.address,
             "billing_city": orderData.address.city,
             "billing_pincode": orderData.address.pincode,
             "billing_state": orderData.address.state || "Maharashtra",
