@@ -256,6 +256,9 @@ async function createShippingOrder(orderData) {
             "billing_country": "India",
             "billing_email": orderData.useremail || "test@test.com",
             "billing_phone": String(orderData.address.phone).replace(/\D/g, '').slice(-10), // Clean phone number
+            // 🟢 ADD THESE TWO LINES BELOW
+            "shipping_is_billing": true,
+            "breadth": 30, // You had 'width', but Shiprocket specifically wants 'breadth'
             "order_items": orderData.items.map(item => ({
                 "name": (item.name || "Ventire Air Purifier").slice(0, 30),
                 "sku": (item.sku || "VNT-001"),
