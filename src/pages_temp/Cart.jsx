@@ -639,7 +639,7 @@ export default function Cart({ cart, setCart }) {
       }
       currentUserData = { _id: "guest", name: "Guest", email: guestEmail };
     }
-    const finalAmountToPay = totalAmount - discountAmount;
+    const finalAmountToPay = Math.round(totalAmount - discountAmount);
     let finalEmail = user ? user.email : guestEmail;
     try {
 
@@ -648,7 +648,7 @@ export default function Cart({ cart, setCart }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: totalAmount - discountAmount,
+          amount: Math.round(totalAmount - discountAmount),
           quantity: totalItemsCount,
           userId: user ? (user.id || user._id) : "000000000000000000000000",
         }),
@@ -678,7 +678,7 @@ export default function Cart({ cart, setCart }) {
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
                 signature: response.razorpay_signature,
-                amount: totalAmount - discountAmount,
+                amount: Math.round(totalAmount - discountAmount),
                 quantity: totalItemsCount,
                 items: cart,
                 userId: user ? (user.id || user._id) : "000000000000000000000000",
@@ -774,7 +774,7 @@ export default function Cart({ cart, setCart }) {
               )}
               <div className="flex justify-between py-2 text-lg font-bold border-t">
                 <span>Total</span>
-                <span>₹{totalAmount - discountAmount}</span>
+                <span>₹{Math.round(totalAmount - discountAmount)}</span>
               </div>
             </div>
             {/* 
@@ -832,7 +832,7 @@ export default function Cart({ cart, setCart }) {
                   onClick={isGuestMode || user ? checkout : handleCheckoutClick}
                   className="w-full bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition-all"
                 >
-                  {user ? `Pay ₹${totalAmount - discountAmount}` : isGuestMode ? "Finalize Guest Order" : "Checkout Now"}
+                  {user ? `Pay ₹${Math.round(totalAmount - discountAmount)}` : isGuestMode ? "Finalize Guest Order" : "Checkout Now"}
                 </button>
 
                 {!user && !isGuestMode && (
