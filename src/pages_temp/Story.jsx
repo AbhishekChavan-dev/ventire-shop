@@ -55,7 +55,7 @@ const Story = () => {
                 <h3 className="text-3xl font-bold mb-4">VENTIRE. Breathe Pure. Live Better.</h3>
                 {/* 🟢 CHANGE THIS FROM <button> TO <Link> */}
                 <Link
-                    to="/shop"
+                    to="/"
                     className="inline-block bg-blue-600 text-white px-10 py-3 rounded-full hover:bg-blue-700 transition shadow-lg"
                 >
                     Shop the Collection

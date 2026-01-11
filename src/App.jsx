@@ -177,7 +177,7 @@ const Navbar = ({ cart, user, onLogout }) => {
     setCart({ quantity: 0 });
     window.location.href = "/"; // Force refresh to clear state
   };
-  const hiddenPages = ['/cart', '/myorders', '/success'];
+  const hiddenPages = ['/cart', '/myorders', '/success', '/story'];
   const shouldHideLinks = hiddenPages.includes(location.pathname);
   const totalItems = cart.reduce((acc, item) => acc + (item.quantity || 0), 0);
   return (
