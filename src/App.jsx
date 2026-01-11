@@ -1318,16 +1318,30 @@ const Footer = () => {
 
           <div>
 
-            <h4 className="text-lg font-semibold mb-6">Support</h4>
+            <h4 className="text-lg font-semibold mb-6">Contact Us</h4>
 
             <ul className="space-y-4 text-gray-400">
 
-              <li><a href="#" className="hover:text-green-400 transition-colors">User Manuals</a></li>
+              {/* <li><a href="#" className="hover:text-green-400 transition-colors">User Manuals</a></li>
 
-              <li><a href="#" className="hover:text-green-400 transition-colors">Warranty</a></li>
+              <li><a href="#" className="hover:text-green-400 transition-colors">Warranty</a></li> */}
 
-              <li><a href="#" className="hover:text-green-400 transition-colors">Contact Us</a></li>
-
+              {/* <li><a href="#" className="hover:text-green-400 transition-colors">Contact Us</a></li> */}
+              {/* 🟢 Contact Us Section */}
+              <div>
+                {/* <h4 className="text-lg font-bold mb-4">Contact Us</h4> */}
+                <p className="text-gray-400 text-sm mb-2">Have questions or need support?</p>
+                <a
+                  href="mailto:support@ventire.in"
+                  className="text-blue-400 font-medium hover:text-white transition-colors flex items-center gap-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                  </svg>
+                  support@ventire.in
+                </a>
+              </div>
             </ul>
 
           </div>
