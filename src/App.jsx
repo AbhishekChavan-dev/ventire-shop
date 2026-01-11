@@ -1251,7 +1251,31 @@ const Features = () => {
 // 6. Footer
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("");
 
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    setStatus("Subscribing...");
+
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        setStatus("Success! Check your inbox soon.");
+        setEmail("");
+      } else {
+        setStatus(data.message || "Something went wrong.");
+      }
+    } catch (err) {
+      setStatus("Error connecting to server.");
+    }
+  };
   return (
 
     <footer className="bg-gray-900 text-white pt-16 pb-8">
@@ -1348,7 +1372,7 @@ const Footer = () => {
 
 
 
-          <div>
+          {/* <div>
 
             <h4 className="text-lg font-semibold mb-6">Newsletter</h4>
 
@@ -1366,6 +1390,24 @@ const Footer = () => {
 
             </div>
 
+          </div> */}
+          <div className="md:col-span-1">
+            <h4 className="text-lg font-bold mb-4">Newsletter</h4>
+            <p className="text-gray-400 text-sm mb-4">Get updates on air quality tips and new products.</p>
+            <form onSubmit={handleSubscribe} className="space-y-2">
+              <input
+                type="email"
+                placeholder="Your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-2 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-blue-500"
+                required
+              />
+              <button className="w-full bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-bold transition">
+                Subscribe
+              </button>
+            </form>
+            {status && <p className="text-xs mt-2 text-blue-400">{status}</p>}
           </div>
 
         </div>
@@ -1374,7 +1416,7 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
 
-          <p>© 2024 Ventire Inc. All rights reserved.</p>
+          <p>© 2026 Ventire Inc. All rights reserved.</p>
 
           <div className="flex space-x-6 mt-4 md:mt-0">
 
