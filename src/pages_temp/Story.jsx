@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // 🟢 ADD THIS IMPORT
 
 const Story = () => {
     return (
