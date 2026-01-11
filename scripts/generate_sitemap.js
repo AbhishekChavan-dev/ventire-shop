@@ -9,7 +9,7 @@ async function generateSitemap() {
   const uri = process.env.MONGODB_URI;
   
   if (!uri) {
-    console.error('❌ MONGODB_URI is not defined in environment variables');
+    console.error('❌ MONGODB_URI is not defined in environment variables vercel');
     return;
   }
 
