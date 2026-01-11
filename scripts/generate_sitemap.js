@@ -22,7 +22,7 @@ async function generateSitemap() {
     // Fetch products from your 'products' collection
     const products = await db.collection('products').find({}).toArray();
 
-    const baseUrl = 'https://ventirein/';
+    const baseUrl = 'https://ventire.in/';
 
     // 1. Static Routes
     const staticPages = ['', '/story', '/about', '/shop', '/contact'];
