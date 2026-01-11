@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Exclude sensitive pages
+Disallow: /api/
+Disallow: /admin/
+Disallow: /success
+Disallow: /checkout
+
+Sitemap: https://ventire.in/sitemap.xml

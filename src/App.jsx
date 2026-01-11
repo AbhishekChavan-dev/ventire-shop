@@ -2,6 +2,7 @@ import { Routes, Route, Link, useNavigate, useLocation, Navigate, BrowserRouter 
 import Cart from "./pages_temp/Cart";
 import Success from "./pages_temp/Success";
 import Failure from "./pages_temp/Failure";
+import Story from './pages_temp/Story';
 import MyOrders from "./pages_temp/MyOrders";
 import AnimatedBanner from "./components/AnimatedBanner";
 import AddressForm from "./components/AddressForm";
@@ -217,6 +218,9 @@ const Navbar = ({ cart, user, onLogout }) => {
                 <a href="#home" className="text-gray-600 hover:text-green-600">Home</a>
                 <a href="#features" className="text-gray-600 hover:text-green-600">Technology</a>
                 <a href="#product" className="text-gray-600 hover:text-green-600">Shop</a>
+                <Link to="/story" className="text-gray-600 hover:text-blue-600 font-medium">
+                  Our Story
+                </Link>
                 {/* 👤 PROFILE LOGIC START */}
                 {user ? (
                   <div className="relative">
@@ -1503,7 +1507,7 @@ const App = () => {
           element={<Cart cart={cart} setCart={setCart} />}
         />
 
-
+        <Route path="/story" element={<Story />} />
         <Route path="/success" element={<Success />} />
         <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} onLogout={handleLogout} />} />
         <Route path="/failure" element={<Failure />} />
