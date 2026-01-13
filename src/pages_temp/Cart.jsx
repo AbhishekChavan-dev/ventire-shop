@@ -556,7 +556,6 @@ export default function Cart({ cart, setCart }) {
 
   const [address, setAddress] = useState({
     fullName: '',
-    email: '',
     street: '',
     city: '',
     state: '',

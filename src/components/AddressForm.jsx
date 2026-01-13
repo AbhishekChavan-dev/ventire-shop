@@ -36,8 +36,8 @@
 import React, { useState } from 'react';
 
 const AddressForm = ({ address, setAddress }) => {
-  const [emailSuggestions, setEmailSuggestions] = useState([]);
-  const domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com'];
+  // const [emailSuggestions, setEmailSuggestions] = useState([]);
+  // const domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com'];
 
   // Handle Input Changes
   const handleChange = (e) => {
@@ -50,9 +50,9 @@ const AddressForm = ({ address, setAddress }) => {
     }
 
     // Trigger Email Suggestions
-    if (name === 'email') {
-      handleEmailLogic(value);
-    }
+    // if (name === 'email') {
+    //   handleEmailLogic(value);
+    // }
   };
 
   const fetchCityState = async (pin) => {
@@ -72,21 +72,21 @@ const AddressForm = ({ address, setAddress }) => {
     }
   };
 
-  const handleEmailLogic = (val) => {
-    if (val.includes('@')) {
-      const [user, domain] = val.split('@');
-      const matches = domains
-        .filter(d => d.startsWith(domain))
-        .map(d => `${user}@${d}`);
-      setEmailSuggestions(matches);
-    } else {
-      setEmailSuggestions([]);
-    }
-  };
+  // const handleEmailLogic = (val) => {
+  //   if (val.includes('@')) {
+  //     const [user, domain] = val.split('@');
+  //     const matches = domains
+  //       .filter(d => d.startsWith(domain))
+  //       .map(d => `${user}@${d}`);
+  //     setEmailSuggestions(matches);
+  //   } else {
+  //     setEmailSuggestions([]);
+  //   }
+  // };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {/* Email with Dropdown */}
+      {/* Email with Dropdown
       <div className="relative md:col-span-2">
         <input
           name="email"
@@ -111,7 +111,7 @@ const AddressForm = ({ address, setAddress }) => {
             ))}
           </div>
         )}
-      </div>
+      </div> */}
 
       {/* Standard Fields */}
       <input name="fullName" placeholder="Full Name" value={address.fullName || ''} onChange={handleChange} className="p-3 border rounded-lg" />
