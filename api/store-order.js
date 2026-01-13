@@ -115,53 +115,144 @@ export default async function handler(req, res) {
         });
     }
 }
+// async function generateInvoice(orderData) {
+//     // 1. Create a new PDF Document
+//     const pdfDoc = await PDFDocument.create();
+//     const page = pdfDoc.addPage([600, 800]);
+//     const { width, height } = page.getSize();
+
+//     // 2. Load Fonts
+//     const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+//     const fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+//     // 3. Header
+//     page.drawText('INVOICE', { x: 50, y: height - 50, size: 24, font: fontBold });
+//     page.drawText(`Order ID: ${orderData.orderNumber}`, { x: 50, y: height - 80, size: 12, font: fontRegular });
+//     page.drawText(`Date: ${new Date().toLocaleDateString()}`, { x: 50, y: height - 95, size: 12, font: fontRegular });
+
+//     // 4. Billing Details
+//     page.drawText('Bill To:', { x: 50, y: height - 140, size: 14, font: fontBold });
+//     page.drawText(orderData.useremail || 'Customer', { x: 50, y: height - 160, size: 11, font: fontRegular });
+//     page.drawText(orderData.address.street, { x: 50, y: height - 175, size: 11, font: fontRegular });
+//     page.drawText(`${orderData.address.city}, ${orderData.address.pincode}`, { x: 50, y: height - 190, size: 11, font: fontRegular });
+
+//     // 5. Product Table Header
+//     page.drawRectangle({ x: 50, y: height - 250, width: 500, height: 25, color: rgb(0.95, 0.95, 0.95) });
+//     page.drawText('Item Description', { x: 60, y: height - 243, size: 10, font: fontBold });
+//     page.drawText('Qty', { x: 350, y: height - 243, size: 10, font: fontBold });
+//     page.drawText('Price', { x: 400, y: height - 243, size: 10, font: fontBold });
+//     page.drawText('Total', { x: 480, y: height - 243, size: 10, font: fontBold });
+
+//     // 6. Draw Items
+//     let currentY = height - 275;
+//     orderData.items.forEach((item) => {
+//         page.drawText(item.name || 'Ventire Air Purifier', { x: 60, y: currentY, size: 10, font: fontRegular });
+//         page.drawText(String(item.quantity || 1), { x: 350, y: currentY, size: 10, font: fontRegular });
+//         page.drawText(`Rs${item.price}`, { x: 400, y: currentY, size: 10, font: fontRegular });
+//         page.drawText(`Rs${item.price * item.quantity}`, { x: 480, y: currentY, size: 10, font: fontRegular });
+//         currentY -= 20;
+//     });
+
+//     // 7. Grand Total
+//     page.drawRectangle({ x: 350, y: currentY - 30, width: 200, height: 1, color: rgb(0, 0, 0) });
+//     page.drawText('Grand Total:', { x: 350, y: currentY - 50, size: 14, font: fontBold });
+//     page.drawText(`Rs${orderData.amount}`, { x: 470, y: currentY - 50, size: 14, font: fontBold });
+
+//     // 8. Footer
+//     page.drawText('Thank you for choosing Ventire!', { x: width / 2 - 80, y: 50, size: 10, font: fontRegular, color: rgb(0.5, 0.5, 0.5) });
+
+//     // 9. Serialize to Base64 (Useful for emailing as attachment)
+//     const pdfBytes = await pdfDoc.saveAsBase64();
+//     return pdfBytes;
+// }
 async function generateInvoice(orderData) {
-    // 1. Create a new PDF Document
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([600, 800]);
     const { width, height } = page.getSize();
 
-    // 2. Load Fonts
     const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
     const fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-    // 3. Header
-    page.drawText('INVOICE', { x: 50, y: height - 50, size: 24, font: fontBold });
-    page.drawText(`Order ID: ${orderData.orderNumber}`, { x: 50, y: height - 80, size: 12, font: fontRegular });
-    page.drawText(`Date: ${new Date().toLocaleDateString()}`, { x: 50, y: height - 95, size: 12, font: fontRegular });
+    // --- 1. SELLER & BRANDING HEADER ---
+    page.drawText('VENTIRE', { x: 50, y: height - 50, size: 24, font: fontBold, color: rgb(0, 0.4, 0.8) });
+    page.drawText('TAX INVOICE', { x: 450, y: height - 50, size: 16, font: fontBold });
 
-    // 4. Billing Details
-    page.drawText('Bill To:', { x: 50, y: height - 140, size: 14, font: fontBold });
-    page.drawText(orderData.useremail || 'Customer', { x: 50, y: height - 160, size: 11, font: fontRegular });
-    page.drawText(orderData.address.street, { x: 50, y: height - 175, size: 11, font: fontRegular });
-    page.drawText(`${orderData.address.city}, ${orderData.address.pincode}`, { x: 50, y: height - 190, size: 11, font: fontRegular });
+    const sellerY = height - 85;
+    page.drawText('Sold By:', { x: 50, y: sellerY, size: 10, font: fontBold });
+    page.drawText('Ventire Solutions India\n123, Clean Air Business Park\nPune, Maharashtra - 411045\nGSTIN: 27AAAAA0000A1Z5', {
+        x: 50, y: sellerY - 15, size: 9, font: fontRegular, lineHeight: 12
+    });
 
-    // 5. Product Table Header
-    page.drawRectangle({ x: 50, y: height - 250, width: 500, height: 25, color: rgb(0.95, 0.95, 0.95) });
-    page.drawText('Item Description', { x: 60, y: height - 243, size: 10, font: fontBold });
-    page.drawText('Qty', { x: 350, y: height - 243, size: 10, font: fontBold });
-    page.drawText('Price', { x: 400, y: height - 243, size: 10, font: fontBold });
-    page.drawText('Total', { x: 480, y: height - 243, size: 10, font: fontBold });
+    // Order Meta Info
+    page.drawText(`Invoice No: ${orderData.orderNumber}`, { x: 400, y: sellerY - 15, size: 10, font: fontRegular });
+    page.drawText(`Date: ${new Date().toLocaleDateString('en-IN')}`, { x: 400, y: sellerY - 30, size: 10, font: fontRegular });
 
-    // 6. Draw Items
-    let currentY = height - 275;
+    // --- 2. BILLING & SHIPPING DETAILS ---
+    const billToY = height - 180;
+    page.drawText('Bill To / Ship To:', { x: 50, y: billToY, size: 10, font: fontBold });
+    page.drawText(`${orderData.address.fullName || 'Valued Customer'}\n${orderData.address.addressLine}\n${orderData.address.city}, ${orderData.address.state} - ${orderData.address.pincode}\nContact: ${orderData.address.phone}`, {
+        x: 50, y: billToY - 15, size: 9, font: fontRegular, lineHeight: 12
+    });
+
+    // --- 3. PRODUCT TABLE ---
+    const tableHeaderY = height - 280;
+    // Table Background
+    page.drawRectangle({ x: 50, y: tableHeaderY, width: 500, height: 20, color: rgb(0.95, 0.95, 0.95) });
+
+    // Header Labels
+    const headers = [
+        { text: 'Description', x: 60 },
+        { text: 'HSN', x: 280 },
+        { text: 'Qty', x: 340 },
+        { text: 'Rate', x: 390 },
+        { text: 'Total', x: 480 }
+    ];
+    headers.forEach(h => page.drawText(h.text, { x: h.x, y: tableHeaderY + 6, size: 9, font: fontBold }));
+
+    // Draw Items
+    let currentY = tableHeaderY - 20;
     orderData.items.forEach((item) => {
-        page.drawText(item.name || 'Ventire Air Purifier', { x: 60, y: currentY, size: 10, font: fontRegular });
-        page.drawText(String(item.quantity || 1), { x: 350, y: currentY, size: 10, font: fontRegular });
-        page.drawText(`Rs${item.price}`, { x: 400, y: currentY, size: 10, font: fontRegular });
-        page.drawText(`Rs${item.price * item.quantity}`, { x: 480, y: currentY, size: 10, font: fontRegular });
+        page.drawText(item.name || 'Ventire Air Purifier', { x: 60, y: currentY, size: 9, font: fontRegular });
+        page.drawText('8421', { x: 280, y: currentY, size: 9, font: fontRegular }); // HSN Code for Air Purifiers
+        page.drawText(String(item.quantity || 1), { x: 340, y: currentY, size: 9, font: fontRegular });
+        page.drawText(`Rs. ${item.price.toLocaleString('en-IN')}`, { x: 390, y: currentY, size: 9, font: fontRegular });
+        page.drawText(`Rs. ${(item.price * item.quantity).toLocaleString('en-IN')}`, { x: 480, y: currentY, size: 9, font: fontRegular });
         currentY -= 20;
     });
 
-    // 7. Grand Total
-    page.drawRectangle({ x: 350, y: currentY - 30, width: 200, height: 1, color: rgb(0, 0, 0) });
-    page.drawText('Grand Total:', { x: 350, y: currentY - 50, size: 14, font: fontBold });
-    page.drawText(`Rs${orderData.amount}`, { x: 470, y: currentY - 50, size: 14, font: fontBold });
+    // --- 4. TAX CALCULATION & TOTALS ---
+    const totalBoxY = currentY - 20;
+    page.drawLine({ start: { x: 350, y: totalBoxY + 10 }, end: { x: 550, y: totalBoxY + 10 }, thickness: 1 });
 
-    // 8. Footer
-    page.drawText('Thank you for choosing Ventire!', { x: width / 2 - 80, y: 50, size: 10, font: fontRegular, color: rgb(0.5, 0.5, 0.5) });
+    const totalLines = [
+        { label: 'Sub-Total:', value: `Rs. ${orderData.amount}` },
+        { label: 'Tax (GST 18%):', value: 'Included' },
+        { label: 'Shipping:', value: 'FREE' }
+    ];
 
-    // 9. Serialize to Base64 (Useful for emailing as attachment)
+    let summaryY = totalBoxY - 10;
+    totalLines.forEach(line => {
+        page.drawText(line.label, { x: 350, y: summaryY, size: 9, font: fontRegular });
+        page.drawText(line.value, { x: 480, y: summaryY, size: 9, font: fontRegular });
+        summaryY -= 15;
+    });
+
+    // Grand Total Highlight
+    page.drawRectangle({ x: 345, y: summaryY - 10, width: 205, height: 25, color: rgb(0.1, 0.4, 0.8) });
+    page.drawText('Grand Total:', { x: 350, y: summaryY + 2, size: 12, font: fontBold, color: rgb(1, 1, 1) });
+    page.drawText(`Rs. ${Math.round(orderData.amount).toLocaleString('en-IN')}`, { x: 460, y: summaryY + 2, size: 12, font: fontBold, color: rgb(1, 1, 1) });
+
+    // --- 5. COMPLIANCE FOOTER ---
+    const footerY = 80;
+    page.drawText('Terms & Conditions:', { x: 50, y: footerY, size: 8, font: fontBold });
+    page.drawText('1. Goods once sold will not be taken back.\n2. Warranty is covered under manufacturer terms.\n3. This is a computer-generated invoice and requires no physical signature.', {
+        x: 50, y: footerY - 12, size: 7, font: fontRegular, lineHeight: 10, color: rgb(0.4, 0.4, 0.4)
+    });
+
+    page.drawText('Thank you for choosing VENTIRE - Breathe Pure.', {
+        x: width / 2 - 100, y: 30, size: 10, font: fontRegular, color: rgb(0, 0.4, 0.8)
+    });
+
     const pdfBytes = await pdfDoc.saveAsBase64();
     return pdfBytes;
 }
