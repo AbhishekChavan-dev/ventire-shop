@@ -122,7 +122,7 @@ const AddressForm = ({ address, setAddress }) => {
       <input name="city" placeholder="City" value={address.city || ''} onChange={handleChange} className="p-3 border rounded-lg bg-gray-50" readOnly />
       <input name="state" placeholder="State" value={address.state || ''} onChange={handleChange} className="p-3 border rounded-lg bg-gray-50" readOnly />
       
-      <input name="addressLine" placeholder="House No, Street, Area" value={address.addressLine || ''} onChange={handleChange} className="md:col-span-2 p-3 border rounded-lg" />
+      <input name="addressLine" placeholder="House No, Street, Area" value={address.street || ''} onChange={handleChange} className="md:col-span-2 p-3 border rounded-lg" />
     </div>
   );
 };
