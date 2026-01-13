@@ -555,8 +555,11 @@ export default function Cart({ cart, setCart }) {
   const [isGuestMode, setIsGuestMode] = useState(false);
 
   const [address, setAddress] = useState({
+    fullName: '',
+    email: '',
     street: '',
     city: '',
+    state: '',
     pincode: '',
     phone: ''
   });
