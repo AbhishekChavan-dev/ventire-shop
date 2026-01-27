@@ -340,11 +340,11 @@ const Navbar = ({ cart, user, onLogout }) => {
             {/* Mobile Cart Button */}
             <Link to="/cart" className="relative">
               <ShoppingBag size={24} className="text-green-600" />
-              {Cart ({totalItems}) > 0 && (
+              {/* {Cart ({totalItems}) > 0 && ( */}
                 <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                   Cart ({totalItems})
                 </span>
-              )}
+              {/* )} */}
             </Link>
             {/* 👤 PROFILE LOGIC START */}
             {user ? (
